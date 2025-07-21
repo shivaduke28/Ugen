@@ -1,0 +1,21 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:VisualElement name="audio-input-controller" style="padding: 10px; background-color: rgba(0, 0, 0, 0.1); border-radius: 5px; margin: 5px;">
+        <ui:Label text="Audio Input Device" style="font-size: 16px; -unity-font-style: bold; margin-bottom: 10px;" />
+
+        <ui:VisualElement name="device-section" style="flex-direction: row; align-items: center; margin-bottom: 10px;">
+            <ui:DropdownField label="Device" name="device-dropdown" style="flex-grow: 1; margin-right: 5px;" />
+            <Ugen.UI.UgenButton text="Reload" name="reload-button" style="width: 60px; margin-right: 5px;" />
+            <Ugen.UI.UgenButton text="Clear" name="clear-button" style="width: 60px;" />
+        </ui:VisualElement>
+
+        <ui:VisualElement name="status-section" style="background-color: rgba(255, 255, 255, 0.05); padding: 5px; border-radius: 3px;">
+            <ui:Label text="Status: Not Connected" name="status-label" style="font-size: 12px;" />
+            <ui:Label text="Device: None" name="device-info-label" style="font-size: 12px;" />
+        </ui:VisualElement>
+
+        <ui:VisualElement name="level-section" style="margin-top: 10px;">
+            <ui:Label text="Audio Level" style="font-size: 14px; -unity-font-style: bold; margin-bottom: 5px;" />
+            <ui:ProgressBar title="Level" name="level-bar" high-value="1" style="height: 20px;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
