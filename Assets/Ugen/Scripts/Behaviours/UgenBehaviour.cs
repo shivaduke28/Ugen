@@ -7,6 +7,7 @@ namespace Ugen.Behaviours
     {
         [SerializeField] string id;
         [SerializeField] UgenComponent[] components;
+        public string Id => id;
         public UgenComponent[] Components => components;
         public string Name => gameObject.name;
 
