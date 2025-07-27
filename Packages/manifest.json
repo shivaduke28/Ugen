@@ -4,7 +4,7 @@
     "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#2.5.10",
     "com.github-glitchenzo.nugetforunity": "https://github.com/GlitchEnzo/NuGetForUnity.git?path=/src/NuGetForUnity#v4.5.0",
     "com.unity.feature.development": "1.0.2",
-    "com.unity.graphtoolkit": "0.1.0-exp.1",
+    "com.unity.inputsystem": "1.14.1",
     "com.unity.render-pipelines.high-definition": "17.2.0",
     "com.unity.render-pipelines.high-definition-config": "17.2.0",
     "com.unity.timeline": "1.8.8",
