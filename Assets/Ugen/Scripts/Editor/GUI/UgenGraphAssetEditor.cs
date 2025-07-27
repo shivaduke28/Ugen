@@ -1,10 +1,10 @@
+using Ugen.Behaviours;
+using Ugen.Graphs;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Ugen.Behaviours;
-using Ugen.Graphs;
 
-namespace Ugen.Editor
+namespace Ugen.Editor.GUI
 {
     [CustomEditor(typeof(UgenGraphAsset))]
     public sealed class UgenGraphAssetEditor : UnityEditor.Editor
