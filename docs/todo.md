@@ -4,25 +4,26 @@
 最小限の機能でUgenの基本コンセプトを実証する
 
 ### 基盤実装
-- [ ] UgenBehaviourの基底クラス実装
-  - [ ] MonoBehaviourを継承した抽象クラス
-  - [ ] UgenInput/UgenOutputの基本構造
-  - [ ] 入出力の接続メカニズム
+- [x] UgenBehaviourの基底クラス実装
+  - [x] MonoBehaviourを継承した抽象クラス
+  - [x] UgenInput/UgenOutputの基本構造
+  - [x] 入出力の接続メカニズム
 
-- [ ] 基本的な型システム
-  - [ ] float型のサポート
-  - [ ] Observable (R3) での値の伝播
+- [x] 基本的な型システム
+  - [x] float型のサポート
+  - [x] Observable (R3) での値の伝播
 
 ### サンプル実装
-- [ ] UgenSlider実装
-  - [ ] UI Toolkitでスライダー表示
-  - [ ] float値を出力
+- [x] UgenSlider実装
+  - [x] UI Toolkitでスライダー表示
+  - [x] float値を出力
 
-- [ ] UgenYawRotator実装
-  - [ ] float値を入力として受け取る
-  - [ ] GameObjectのY軸回転を制御
+- [x] UgenYawRotator実装
+  - [x] float値を入力として受け取る
+  - [x] GameObjectのY軸回転を制御
 
 ### 動作確認
+- [x] UgenSimpleConnector作成（手動接続用）
 - [ ] シンプルなテストシーン作成
 - [ ] UgenSliderとUgenYawRotatorを手動で接続
 - [ ] 動作検証
