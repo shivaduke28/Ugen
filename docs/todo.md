@@ -32,20 +32,20 @@
 PoCが動作したら、グラフによる接続管理を実装
 
 ### UgenNode実装
-- [ ] UgenNodeの基底クラス
-- [ ] SliderNodeとYawRotatorNodeの実装
-- [ ] 手動でのNode作成（Source Generator導入前）
+- [x] UgenNodeの基底クラス
+- [x] SliderNodeとYawRotatorNodeの実装
+- [x] 手動でのNode作成（Source Generator導入前）
 
 ### UgenGraph実装
-- [ ] グラフデータ構造の設計
-- [ ] ノード間の接続情報の保持
-- [ ] Sceneでのシリアライズ対応
-  - [ ] Scene内オブジェクトへの参照保持
+- [x] グラフデータ構造の設計
+- [x] ノード間の接続情報の保持
+- [x] Sceneでのシリアライズ対応
+  - [x] Scene内オブジェクトへの参照保持
 
 ### UgenManager実装
-- [ ] グラフの実行エンジン
-- [ ] 起動時のグラフ解析と接続確立
-- [ ] 実行順序の制御
+- [x] グラフの実行エンジン
+- [x] 起動時のグラフ解析と接続確立
+- [x] 実行順序の制御
 
 ## フェーズ3: エディタ拡張
 グラフをGUIで編集できるようにする
