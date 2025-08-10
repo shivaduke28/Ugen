@@ -23,6 +23,11 @@ namespace Ugen.Editor
                 manager.CollectBehavioursFromScene();
                 EditorUtility.SetDirty(manager);
             }
+            
+            if (GUILayout.Button("Open Graph Editor"))
+            {
+                GraphView.UgenGraphWindow.OpenWithManager(manager);
+            }
 
             EditorGUILayout.Space();
 

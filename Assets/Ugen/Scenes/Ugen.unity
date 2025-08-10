@@ -748,22 +748,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   graph:
     serializedNodes:
-    - nodeId: Cube
-      nodeTypeName: YawRotatorNode
-      position: {x: 0, y: 0}
     - nodeId: Slider
       nodeTypeName: SliderNode
       position: {x: 0, y: 0}
+    - nodeId: Cube
+      nodeTypeName: YawRotatorNode
+      position: {x: 161, y: 0}
     connections:
     - sourceNodeId: Slider
       sourcePortIndex: 0
       targetNodeId: Cube
       targetPortIndex: 0
     bindings:
-    - nodeId: Cube
-      behaviour: {fileID: 1456945592}
     - nodeId: Slider
       behaviour: {fileID: 602440398}
+    - nodeId: Cube
+      behaviour: {fileID: 1456945592}
   autoExecuteOnStart: 1
 --- !u!1 &1292386023
 GameObject:
