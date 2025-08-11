@@ -4,12 +4,14 @@ using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Ugen.Graph;
+using Ugen.Graph.Nodes;
 
 namespace Ugen.Editor.GraphView
 {
     public class UgenGraphView : UnityEditor.Experimental.GraphView.GraphView
     {
         readonly Dictionary<string, UgenNodeView> nodeViews = new();
+        UgenGraph currentGraph;
 
         public UgenGraphView()
         {
@@ -31,17 +33,32 @@ namespace Ugen.Editor.GraphView
             }
 
             var searchWindowProvider = ScriptableObject.CreateInstance<SampleSearchWindowProvider>();
-            searchWindowProvider.Initialize(this);
+            searchWindowProvider.Initialize(this, currentGraph);
 
             nodeCreationRequest += context =>
             {
+                if (currentGraph != null)
+                {
+                    searchWindowProvider.Initialize(this, currentGraph);
+                }
                 SearchWindow.Open(new SearchWindowContext(context.screenMousePosition), searchWindowProvider);
             };
         }
 
         UgenNodeView CreateNodeView(UgenNode node)
         {
-            var nodeView = new UgenNodeView(node);
+            UgenNodeView nodeView;
+            
+            // Create specialized view for UgenBehaviourNode
+            if (node is UgenBehaviourNode behaviourNode)
+            {
+                nodeView = new UgenBehaviourNodeView(behaviourNode, currentGraph);
+            }
+            else
+            {
+                nodeView = new UgenNodeView(node);
+            }
+            
             nodeView.SetPosition(new Rect(node.Position, Vector2.zero));
 
             AddElement(nodeView);
@@ -85,6 +102,7 @@ namespace Ugen.Editor.GraphView
 
         public void SaveToGraph(UgenGraph graph)
         {
+            currentGraph = graph;
             graph.ClearNodeAndEdges();
 
             // Save nodes
@@ -120,6 +138,7 @@ namespace Ugen.Editor.GraphView
         public void LoadFromGraph(UgenGraph graph)
         {
             ClearGraph();
+            currentGraph = graph;
 
             // Create node views
             foreach (var node in graph.Nodes)
@@ -143,6 +162,17 @@ namespace Ugen.Editor.GraphView
                         var edge = outputPort.ConnectTo(inputPort);
                         AddElement(edge);
                     }
+                }
+            }
+        }
+        
+        public void RefreshBehaviourLists()
+        {
+            foreach (var nodeView in nodeViews.Values)
+            {
+                if (nodeView is UgenBehaviourNodeView behaviourNodeView)
+                {
+                    behaviourNodeView.UpdateGraph(currentGraph);
                 }
             }
         }

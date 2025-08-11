@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Ugen.Graph;
+using Ugen.Graph.Nodes;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
@@ -9,10 +10,12 @@ namespace Ugen.Editor.GraphView
     public class SampleSearchWindowProvider : ScriptableObject, ISearchWindowProvider
     {
         UgenGraphView graphView;
+        UgenGraph graph;
 
-        public void Initialize(UgenGraphView graphView)
+        public void Initialize(UgenGraphView graphView, UgenGraph graph)
         {
             this.graphView = graphView;
+            this.graph = graph;
         }
 
         List<SearchTreeEntry> ISearchWindowProvider.CreateSearchTree(SearchWindowContext context)
@@ -39,7 +42,17 @@ namespace Ugen.Editor.GraphView
             if (searchTreeEntry.userData is Type type && type.IsSubclassOf(typeof(UgenNode)))
             {
                 var node = Activator.CreateInstance(type) as UgenNode;
-                var nodeView = new UgenNodeView(node);
+
+                UgenNodeView nodeView;
+                if (node is UgenBehaviourNode behaviourNode)
+                {
+                    nodeView = new UgenBehaviourNodeView(behaviourNode, graph);
+                }
+                else
+                {
+                    nodeView = new UgenNodeView(node);
+                }
+
                 graphView.AddElement(nodeView);
                 return true;
             }

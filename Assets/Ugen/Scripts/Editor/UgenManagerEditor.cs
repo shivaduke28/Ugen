@@ -42,12 +42,6 @@ namespace Ugen.Editor
                     EditorUtility.SetDirty(manager);
                 }
             }
-
-            EditorGUILayout.Space();
-            EditorGUILayout.LabelField("Graph Info", EditorStyles.boldLabel);
-            EditorGUILayout.LabelField($"Nodes: {manager.Graph.Nodes.Count}");
-            EditorGUILayout.LabelField($"Connections: {manager.Graph.Edges.Count}");
-            EditorGUILayout.LabelField($"Bindings: {manager.Graph.Behaviours.Count}");
         }
     }
 }
