@@ -39,58 +39,29 @@ namespace Ugen.Graph
 
         protected void AddInputPort(string name, Type valueType)
         {
-            inputPorts.Add(new UgenPort
-            {
-                Name = name,
-                ValueType = valueType,
-                Direction = PortDirection.Input,
-                Index = inputPorts.Count
-            });
+            inputPorts.Add(new UgenPort(name, valueType, PortDirection.Input, inputPorts.Count));
         }
 
         protected void AddOutputPort(string name, Type valueType)
         {
-            outputPorts.Add(new UgenPort
-            {
-                Name = name,
-                ValueType = valueType,
-                Direction = PortDirection.Output,
-                Index = outputPorts.Count
-            });
+            outputPorts.Add(new UgenPort(name, valueType, PortDirection.Output, outputPorts.Count));
         }
     }
 
-    [Serializable]
     public class UgenPort
     {
-        [SerializeField] string name;
-        [SerializeField] string valueTypeName;
-        [SerializeField] PortDirection direction;
-        [SerializeField] int index;
-
-        public string Name
+        public UgenPort(string name, Type valueType, PortDirection direction, int index)
         {
-            get => name;
-            set => name = value;
+            Name = name;
+            ValueType = valueType;
+            Direction = direction;
+            Index = index;
         }
 
-        public Type ValueType
-        {
-            get => Type.GetType(valueTypeName);
-            set => valueTypeName = value?.AssemblyQualifiedName;
-        }
-
-        public PortDirection Direction
-        {
-            get => direction;
-            set => direction = value;
-        }
-
-        public int Index
-        {
-            get => index;
-            set => index = value;
-        }
+        public string Name { get; }
+        public Type ValueType { get; }
+        public PortDirection Direction { get; }
+        public int Index { get; }
     }
 
     public enum PortDirection

@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -14,8 +12,8 @@ namespace Ugen.Editor.GraphView
     {
         readonly UgenBehaviourNode behaviourNode;
         readonly Button selectBehaviourButton;
-        UgenGraph currentGraph;
-        BehaviourSearchProvider searchProvider;
+        readonly UgenGraph currentGraph;
+        readonly BehaviourSearchProvider searchProvider;
 
         public UgenBehaviourNodeView(UgenBehaviourNode node, UgenGraph graph) : base(node)
         {
@@ -24,27 +22,21 @@ namespace Ugen.Editor.GraphView
 
             // Remove the base title and create custom title label
             titleContainer.Clear();
-            
+
             // Create a button for selecting behaviour
-            selectBehaviourButton = new Button(() => OpenBehaviourSearch())
+            selectBehaviourButton = new Button(OpenBehaviourSearch)
             {
                 text = GetButtonText()
             };
             selectBehaviourButton.AddToClassList("behaviour-select-button");
             selectBehaviourButton.style.flexGrow = 1;
             selectBehaviourButton.style.unityTextAlign = TextAnchor.MiddleCenter;
-            
+
             titleContainer.Add(selectBehaviourButton);
 
             // Initialize search provider
             searchProvider = ScriptableObject.CreateInstance<BehaviourSearchProvider>();
-            
-            UpdateTitle();
-        }
 
-        public void UpdateGraph(UgenGraph graph)
-        {
-            currentGraph = graph;
             UpdateTitle();
         }
 
@@ -54,13 +46,13 @@ namespace Ugen.Editor.GraphView
 
             // Get the required behaviour type
             var requiredType = GetRequiredBehaviourType();
-            
+
             // Initialize and open search window
             searchProvider.Initialize(behaviourNode, currentGraph, requiredType, OnBehaviourSelected);
-            
-            var mousePosition = UnityEngine.Event.current?.mousePosition ?? Vector2.zero;
+
+            var mousePosition = Event.current?.mousePosition ?? Vector2.zero;
             var screenPoint = GUIUtility.GUIToScreenPoint(mousePosition);
-            
+
             SearchWindow.Open(new SearchWindowContext(screenPoint), searchProvider);
         }
 
@@ -68,7 +60,7 @@ namespace Ugen.Editor.GraphView
         {
             var nodeType = behaviourNode.GetType();
             var baseType = nodeType.BaseType;
-            
+
             while (baseType != null)
             {
                 if (baseType.IsGenericType && baseType.GetGenericTypeDefinition() == typeof(UgenBehaviourNode<>))
@@ -77,7 +69,7 @@ namespace Ugen.Editor.GraphView
                 }
                 baseType = baseType.BaseType;
             }
-            
+
             return null;
         }
 
@@ -91,7 +83,7 @@ namespace Ugen.Editor.GraphView
             // Use reflection to call the SetBehaviour method with the correct type
             var nodeType = behaviourNode.GetType();
             var baseType = nodeType.BaseType;
-            
+
             while (baseType != null)
             {
                 if (baseType.IsGenericType && baseType.GetGenericTypeDefinition() == typeof(UgenBehaviourNode<>))
@@ -124,7 +116,7 @@ namespace Ugen.Editor.GraphView
         void UpdateTitle()
         {
             selectBehaviourButton.text = GetButtonText();
-            
+
             // Also update the node's visual state
             if (behaviourNode.Behaviour != null)
             {
