@@ -1,4 +1,5 @@
 using System;
+using R3;
 using UnityEngine;
 
 namespace Ugen.Behaviours
@@ -16,19 +17,16 @@ namespace Ugen.Behaviours
     {
         [SerializeField] UgenConnection[] connections;
 
+        readonly CompositeDisposable disposable = new();
+
         void Start()
         {
             foreach (var connection in connections)
             {
                 if (connection.source != null && connection.target != null)
                 {
-                    connection.source.ConnectTo(
-                        connection.outputIndex,
-                        connection.target,
-                        connection.inputIndex
-                    );
-
-                    Debug.Log($"Connected {connection.source.name}[{connection.outputIndex}] -> {connection.target.name}[{connection.inputIndex}]");
+                    connection.source.GetOutput(connection.outputIndex)
+                        .ConnectTo(connection.target.GetInput(connection.inputIndex), disposable);
                 }
             }
         }

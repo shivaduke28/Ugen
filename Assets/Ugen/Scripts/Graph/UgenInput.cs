@@ -7,6 +7,7 @@ namespace Ugen.Graph
     {
         public string Name { get; }
         public Type ValueType => typeof(T);
+        public int Index { get; }
         ReactiveProperty<T> Value { get; }
         public Observable<T> Observable => Value;
 
@@ -15,9 +16,10 @@ namespace Ugen.Graph
             Value.Value = value;
         }
 
-        public UgenInput(string name, T defaultValue = default)
+        public UgenInput(string name, int index, T defaultValue = default)
         {
             Name = name;
+            Index = index;
             Value = new ReactiveProperty<T>(defaultValue);
         }
     }

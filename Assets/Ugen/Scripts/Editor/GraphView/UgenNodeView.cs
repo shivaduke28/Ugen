@@ -30,7 +30,7 @@ namespace Ugen.Editor.GraphView
             // Create input ports
             foreach (var port in Node.InputPorts)
             {
-                var inputPort = CreatePort(port, Direction.Input);
+                var inputPort = CreateInputPort(port);
                 inputContainer.Add(inputPort);
                 inputPorts.Add(inputPort);
             }
@@ -38,25 +38,36 @@ namespace Ugen.Editor.GraphView
             // Create output ports
             foreach (var port in Node.OutputPorts)
             {
-                var outputPort = CreatePort(port, Direction.Output);
+                var outputPort = CreateOutputPort(port);
                 outputContainer.Add(outputPort);
                 outputPorts.Add(outputPort);
             }
         }
 
-        Port CreatePort(UgenPort portData, Direction direction)
+        Port CreateInputPort(IUgenInput portData)
         {
-            var port = InstantiatePort(Orientation.Horizontal, direction,
+            var port = InstantiatePort(Orientation.Horizontal, Direction.Input,
                 Port.Capacity.Multi, portData.ValueType);
 
             port.portName = portData.Name;
             port.userData = portData;
 
-            // Add custom edge connector for creating UgenEdgeView
             port.AddManipulator(new EdgeConnector<UgenEdgeView>(new UgenEdgeConnectorListener()));
 
             return port;
         }
+
+        Port CreateOutputPort(IUgenOutput portData)
+        {
+            var port = InstantiatePort(Orientation.Horizontal, Direction.Output,
+                Port.Capacity.Multi, portData.ValueType);
+            port.portName = portData.Name;
+            port.userData = portData;
+
+            port.AddManipulator(new EdgeConnector<UgenEdgeView>(new UgenEdgeConnectorListener()));
+            return port;
+        }
+
 
         public Port GetInputPort(int index)
         {

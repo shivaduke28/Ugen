@@ -13,7 +13,7 @@ namespace Ugen.Behaviours
 
         protected override void InitializePorts()
         {
-            speedInput = new UgenInput<float>("speed", 1f);
+            speedInput = new UgenInput<float>("speed", 0, 1f);
             RegisterInput(speedInput);
         }
 
@@ -22,7 +22,7 @@ namespace Ugen.Behaviours
             targetTransform = transform;
 
             Observable.EveryUpdate()
-                .WithLatestFrom(speedInput.Observable, (_, s) => s)
+                .WithLatestFrom(speedInput.Observable.Do(x => Debug.Log($"speed:{x}")), (_, s) => s)
                 .Subscribe(s =>
                 {
                     var rotationSpeed = s * speedMultiplier;

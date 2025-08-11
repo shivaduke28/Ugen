@@ -13,7 +13,7 @@ namespace Ugen.Graph.Nodes
     [Serializable]
     public abstract class UgenBehaviourNode<T> : UgenBehaviourNode where T : UgenBehaviour
     {
-        [SerializeField] T behaviour;
+        [SerializeField] protected T behaviour;
         public override UgenBehaviour Behaviour => behaviour;
 
         public void SetBehaviour(T behaviour)

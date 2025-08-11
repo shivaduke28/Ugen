@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using NUnit.Framework;
 using UnityEngine;
 
 namespace Ugen.Graph
@@ -9,8 +10,8 @@ namespace Ugen.Graph
     {
         [SerializeField] string nodeId;
         [SerializeField] Vector2 position;
-        List<UgenPort> inputPorts = new();
-        List<UgenPort> outputPorts = new();
+        readonly List<IUgenInput> inputPorts = new();
+        readonly List<IUgenOutput> outputPorts = new();
 
         public string NodeId
         {
@@ -24,51 +25,26 @@ namespace Ugen.Graph
             set => position = value;
         }
 
-        public IReadOnlyList<UgenPort> InputPorts => inputPorts;
-        public IReadOnlyList<UgenPort> OutputPorts => outputPorts;
+        public IReadOnlyList<IUgenInput> InputPorts => inputPorts;
+        public IReadOnlyList<IUgenOutput> OutputPorts => outputPorts;
 
         public abstract string NodeName { get; }
 
         protected UgenNode()
         {
             nodeId = Guid.NewGuid().ToString();
-            InitializePorts();
         }
 
-        protected abstract void InitializePorts();
-
-        protected void AddInputPort(string name, Type valueType)
+        protected void AddInputPort(IUgenInput input)
         {
-            inputPorts.Add(new UgenPort(name, valueType, PortDirection.Input, inputPorts.Count));
+            Assert.IsNotNull(input);
+            inputPorts.Add(input);
         }
 
-        protected void AddOutputPort(string name, Type valueType)
+        protected void AddOutputPort(IUgenOutput output)
         {
-            outputPorts.Add(new UgenPort(name, valueType, PortDirection.Output, outputPorts.Count));
+            Assert.IsNotNull(output);
+            outputPorts.Add(output);
         }
     }
-
-    public class UgenPort
-    {
-        public UgenPort(string name, Type valueType, PortDirection direction, int index)
-        {
-            Name = name;
-            ValueType = valueType;
-            Direction = direction;
-            Index = index;
-        }
-
-        public string Name { get; }
-        public Type ValueType { get; }
-        public PortDirection Direction { get; }
-        public int Index { get; }
-    }
-
-    public enum PortDirection
-    {
-        Input,
-        Output
-    }
-
-
 }

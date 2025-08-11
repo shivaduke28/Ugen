@@ -11,17 +11,20 @@ namespace Ugen.Editor.GraphView
 
         public void OnDrop(UnityEditor.Experimental.GraphView.GraphView graphView, Edge edge)
         {
-            var ugenEdge = new UgenEdgeView
+            if (graphView is UgenGraphView ugenGraphView)
             {
-                output = edge.output,
-                input = edge.input
-            };
+                var ugenEdge = new UgenEdgeView
+                {
+                    output = edge.output,
+                    input = edge.input
+                };
 
-            graphView.RemoveElement(edge);
+                graphView.RemoveElement(edge);
 
-            ugenEdge.output.Connect(ugenEdge);
-            ugenEdge.input.Connect(ugenEdge);
-            graphView.AddElement(ugenEdge);
+                ugenEdge.output.Connect(ugenEdge);
+                ugenEdge.input.Connect(ugenEdge);
+                ugenGraphView.AddEdgeView(ugenEdge);
+            }
         }
     }
 }

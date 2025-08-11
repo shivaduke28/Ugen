@@ -7,10 +7,10 @@ namespace Ugen.Graph
     public sealed class UgenEdge
     {
         [SerializeField] string edgeId;
-        [SerializeField] string sourceNodeId;
-        [SerializeField] int sourcePortIndex;
-        [SerializeField] string targetNodeId;
-        [SerializeField] int targetPortIndex;
+        [SerializeField] string outputNodeId;
+        [SerializeField] int outputPortIndex;
+        [SerializeField] string inputNodeId;
+        [SerializeField] int inputPortIndex;
 
         public string EdgeId
         {
@@ -18,28 +18,28 @@ namespace Ugen.Graph
             set => edgeId = value;
         }
 
-        public string SourceNodeId
+        public string OutputNodeId
         {
-            get => sourceNodeId;
-            set => sourceNodeId = value;
+            get => outputNodeId;
+            set => outputNodeId = value;
         }
 
-        public int SourcePortIndex
+        public int OutputPortIndex
         {
-            get => sourcePortIndex;
-            set => sourcePortIndex = value;
+            get => outputPortIndex;
+            set => outputPortIndex = value;
         }
 
-        public string TargetNodeId
+        public string InputNodeId
         {
-            get => targetNodeId;
-            set => targetNodeId = value;
+            get => inputNodeId;
+            set => inputNodeId = value;
         }
 
-        public int TargetPortIndex
+        public int InputPortIndex
         {
-            get => targetPortIndex;
-            set => targetPortIndex = value;
+            get => inputPortIndex;
+            set => inputPortIndex = value;
         }
 
         public UgenEdge()
@@ -47,13 +47,13 @@ namespace Ugen.Graph
             edgeId = Guid.NewGuid().ToString();
         }
 
-        public UgenEdge(string sourceNode, int sourcePort, string targetNode, int targetPort)
+        public UgenEdge(string outputNode, int outputPort, string inputNode, int inputPort)
         {
             edgeId = Guid.NewGuid().ToString();
-            sourceNodeId = sourceNode;
-            sourcePortIndex = sourcePort;
-            targetNodeId = targetNode;
-            targetPortIndex = targetPort;
+            outputNodeId = outputNode;
+            outputPortIndex = outputPort;
+            inputNodeId = inputNode;
+            inputPortIndex = inputPort;
         }
     }
 }

@@ -1,25 +1,36 @@
 using System;
-using UnityEngine;
+using R3;
 
 namespace Ugen.Graph.Nodes
 {
     [Serializable]
-    public sealed class AddNode : UgenNode
+    public sealed class AddNode : UgenNode, IInitializable, IDisposable
     {
         public override string NodeName => "Add";
 
-        protected override void InitializePorts()
+        readonly UgenInput<float> a = new("a", 0, 0f);
+        readonly UgenInput<float> b = new("b", 1, 0f);
+        readonly Subject<float> result = new();
+        readonly UgenOutput<float> output;
+        IDisposable disposable;
+
+        public AddNode()
         {
-            AddInputPort("a", typeof(float));
-            AddInputPort("b", typeof(float));
-            AddOutputPort("result", typeof(float));
+            output = new UgenOutput<float>("result", 0, result);
+            AddInputPort(a);
+            AddInputPort(b);
+            AddOutputPort(output);
         }
 
-        // This node doesn't have a corresponding Behaviour
-        // The calculation will be done in the graph execution phase
-        public float Calculate(float a, float b)
+        public void Initialize()
         {
-            return a + b;
+            disposable = a.Observable.CombineLatest(b.Observable, (x, y) => x + y)
+                .Subscribe(x => result.OnNext(x));
+        }
+
+        public void Dispose()
+        {
+            disposable?.Dispose();
         }
     }
 }

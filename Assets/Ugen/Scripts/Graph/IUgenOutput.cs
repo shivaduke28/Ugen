@@ -7,6 +7,7 @@ namespace Ugen.Graph
     {
         string Name { get; }
         Type ValueType { get; }
+        int Index { get; }
         void ConnectTo(IUgenInput input, CompositeDisposable disposables);
     }
 }

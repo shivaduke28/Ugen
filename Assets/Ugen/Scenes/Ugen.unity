@@ -171,7 +171,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef9cfa5d9d6d9427b9f204e32fcec746, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultValue: 0.5
+  slider: {fileID: 43342264}
 --- !u!114 &43342264
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -955,7 +955,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef9cfa5d9d6d9427b9f204e32fcec746, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultValue: 0.5
+  slider: {fileID: 602440397}
 --- !u!1 &749465634
 GameObject:
   m_ObjectHideFlags: 0
@@ -1038,32 +1038,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   graph:
     nodes:
-    - rid: 8415219134870585446
-    - rid: 8415219134870585447
-    - rid: 8415219134870585468
-    - rid: 8415219134870585469
-    - rid: 8415219134870585470
+    - rid: 8415219134870585486
+    - rid: 8415219134870585487
+    - rid: 8415219134870585488
+    - rid: 8415219134870585489
     edges:
-    - edgeId: 7dafcf3e-2340-47df-bf81-455d6f600cc8
-      sourceNodeId: 506c6ad6-e7ce-4457-80ee-18a2a0a9b6dd
-      sourcePortIndex: 0
-      targetNodeId: d7af6e52-0340-4155-b91d-d329d4baf486
-      targetPortIndex: 0
-    - edgeId: 0b5ddee6-eadf-4934-9543-c3ef19312580
-      sourceNodeId: 506c6ad6-e7ce-4457-80ee-18a2a0a9b6dd
-      sourcePortIndex: 0
-      targetNodeId: eea0faaa-9f6b-4db4-b04d-a338816c0652
-      targetPortIndex: 0
-    - edgeId: d0cabea2-a921-4ae5-8004-f06433bfbeea
-      sourceNodeId: e2fbd9c2-f75e-496d-9306-931feb421db0
-      sourcePortIndex: 0
-      targetNodeId: eea0faaa-9f6b-4db4-b04d-a338816c0652
-      targetPortIndex: 1
-    - edgeId: 66d3dc14-27d8-41f6-8883-06f9300491bd
-      sourceNodeId: eea0faaa-9f6b-4db4-b04d-a338816c0652
-      sourcePortIndex: 0
-      targetNodeId: 8d91aacd-5ed2-44fa-ac02-f38d1c893e91
-      targetPortIndex: 0
+    - edgeId: e8b20cd4-fe5b-4c4f-9bab-70f2becc68ea
+      outputNodeId: 486ee7e2-a1ad-4d8d-9b10-98d422c14f49
+      outputPortIndex: 0
+      inputNodeId: 8e76eb6a-f6b2-4304-bfad-10cd15e7a0d9
+      inputPortIndex: 0
+    - edgeId: 010aa804-0da1-4938-ad02-74678d63d099
+      outputNodeId: e09084da-314d-4858-943b-a4eceacfffe2
+      outputPortIndex: 0
+      inputNodeId: 8e76eb6a-f6b2-4304-bfad-10cd15e7a0d9
+      inputPortIndex: 1
+    - edgeId: ecc0f890-a12f-451f-a4e1-8d6ece80e67c
+      outputNodeId: 8e76eb6a-f6b2-4304-bfad-10cd15e7a0d9
+      outputPortIndex: 0
+      inputNodeId: 79b79085-5679-4972-abed-319ceaa9f705
+      inputPortIndex: 0
     behaviours:
     - {fileID: 1456945592}
     - {fileID: 602440398}
@@ -1073,35 +1067,29 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 8415219134870585446
-      type: {class: YawRotatorNode, ns: Ugen.Graph.Nodes, asm: Ugen}
-      data:
-        nodeId: d7af6e52-0340-4155-b91d-d329d4baf486
-        position: {x: 385, y: -21}
-        behaviour: {fileID: 1456945592}
-    - rid: 8415219134870585447
-      type: {class: SliderNode, ns: Ugen.Graph.Nodes, asm: Ugen}
-      data:
-        nodeId: 506c6ad6-e7ce-4457-80ee-18a2a0a9b6dd
-        position: {x: 17, y: -21}
-        behaviour: {fileID: 602440398}
-    - rid: 8415219134870585468
+    - rid: 8415219134870585486
       type: {class: AddNode, ns: Ugen.Graph.Nodes, asm: Ugen}
       data:
-        nodeId: eea0faaa-9f6b-4db4-b04d-a338816c0652
-        position: {x: 195, y: 80.5}
-    - rid: 8415219134870585469
+        nodeId: 8e76eb6a-f6b2-4304-bfad-10cd15e7a0d9
+        position: {x: 172, y: 51.5}
+    - rid: 8415219134870585487
       type: {class: SliderNode, ns: Ugen.Graph.Nodes, asm: Ugen}
       data:
-        nodeId: e2fbd9c2-f75e-496d-9306-931feb421db0
-        position: {x: 8.5, y: 164.5}
+        nodeId: 486ee7e2-a1ad-4d8d-9b10-98d422c14f49
+        position: {x: 0, y: 0}
+        behaviour: {fileID: 602440398}
+    - rid: 8415219134870585488
+      type: {class: SliderNode, ns: Ugen.Graph.Nodes, asm: Ugen}
+      data:
+        nodeId: e09084da-314d-4858-943b-a4eceacfffe2
+        position: {x: -19.5, y: 164.5}
         behaviour: {fileID: 43342263}
-    - rid: 8415219134870585470
+    - rid: 8415219134870585489
       type: {class: YawRotatorNode, ns: Ugen.Graph.Nodes, asm: Ugen}
       data:
-        nodeId: 8d91aacd-5ed2-44fa-ac02-f38d1c893e91
-        position: {x: 385, y: 104.5}
-        behaviour: {fileID: 916035210}
+        nodeId: 79b79085-5679-4972-abed-319ceaa9f705
+        position: {x: 400, y: 75.5}
+        behaviour: {fileID: 1456945592}
 --- !u!1 &835100966
 GameObject:
   m_ObjectHideFlags: 0
@@ -1293,7 +1281,7 @@ Transform:
   m_GameObject: {fileID: 916035209}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 4.03, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -7,20 +7,26 @@ namespace Ugen.Graph
     {
         public string Name { get; }
         public Type ValueType => typeof(T);
-        readonly Observable<T> observable;
+        public int Index { get; }
+        public Observable<T> Observable { get; }
 
-        public UgenOutput(string name, Observable<T> observable)
+        public UgenOutput(string name, int index, Observable<T> observable)
         {
             Name = name;
-            this.observable = observable;
+            Index = index;
+            Observable = observable;
         }
 
         public void ConnectTo(IUgenInput input, CompositeDisposable disposables)
         {
             if (input is UgenInput<T> typedInput)
             {
-                observable.Subscribe(v => typedInput.Send(v))
+                Observable.Subscribe(v => typedInput.Send(v))
                     .AddTo(disposables);
+            }
+            else
+            {
+                throw new ArgumentException("Invalid input type");
             }
         }
     }

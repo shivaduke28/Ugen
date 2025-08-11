@@ -6,5 +6,6 @@ namespace Ugen.Graph
     {
         string Name { get; }
         Type ValueType { get; }
+        int Index { get; }
     }
 }

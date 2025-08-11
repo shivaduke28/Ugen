@@ -14,7 +14,8 @@ namespace Ugen.Behaviours
 
         protected override void InitializePorts()
         {
-            output = new UgenOutput<float>("value", slider.OnValueChangedAsObservable());
+            Debug.Log("initialize ports ugen slider");
+            output = new UgenOutput<float>("value", 0, slider.OnValueChangedAsObservable());
             RegisterOutput(output);
         }
 

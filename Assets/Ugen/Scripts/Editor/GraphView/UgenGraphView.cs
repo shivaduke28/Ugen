@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
@@ -12,6 +11,7 @@ namespace Ugen.Editor.GraphView
     public class UgenGraphView : UnityEditor.Experimental.GraphView.GraphView
     {
         readonly Dictionary<string, UgenNodeView> nodeViews = new();
+        readonly Dictionary<string, UgenEdgeView> edgeViews = new();
         UgenGraph currentGraph;
 
         public UgenGraphView()
@@ -73,9 +73,11 @@ namespace Ugen.Editor.GraphView
             nodeViews[nodeView.Node.NodeId] = nodeView;
         }
 
-
-
-
+        public void AddEdgeView(UgenEdgeView edgeView)
+        {
+            AddElement(edgeView);
+            edgeViews[edgeView.EdgeId] = edgeView;
+        }
 
         public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
         {
@@ -102,11 +104,8 @@ namespace Ugen.Editor.GraphView
 
         public void ClearGraph()
         {
-            // Delete all edges
-            edges.ForEach(edge => RemoveElement(edge));
-
-            // Delete all nodes
-            nodes.ForEach(node => RemoveElement(node));
+            edges.ForEach(RemoveElement);
+            nodes.ForEach(RemoveElement);
 
             nodeViews.Clear();
         }
@@ -124,30 +123,28 @@ namespace Ugen.Editor.GraphView
                 graph.AddNode(node);
             }
 
-            // Save edges with stable IDs
-            edges.ForEach(edge =>
+            foreach(var edge in edgeViews.Values)
             {
                 var outputNode = (edge.output.node as UgenNodeView)?.Node;
                 var inputNode = (edge.input.node as UgenNodeView)?.Node;
 
                 if (outputNode != null && inputNode != null)
                 {
-                    if (edge.output.userData is UgenPort outputPort && edge.input.userData is UgenPort inputPort)
+                    if (edge.output.userData is IUgenOutput outputPort && edge.input.userData is IUgenInput inputPort)
                     {
-                        // Use the EdgeId from UgenEdgeView
-                        string edgeId = (edge as UgenEdgeView)?.EdgeId ?? System.Guid.NewGuid().ToString();
+                        var edgeId = edge.EdgeId;
 
                         graph.AddEdge(new UgenEdge
                         {
                             EdgeId = edgeId,
-                            SourceNodeId = outputNode.NodeId,
-                            SourcePortIndex = outputPort.Index,
-                            TargetNodeId = inputNode.NodeId,
-                            TargetPortIndex = inputPort.Index
+                            OutputNodeId = outputNode.NodeId,
+                            OutputPortIndex = outputPort.Index,
+                            InputNodeId = inputNode.NodeId,
+                            InputPortIndex = inputPort.Index
                         });
                     }
                 }
-            });
+            }
         }
 
         public void LoadFromGraph(UgenGraph graph)
@@ -164,13 +161,13 @@ namespace Ugen.Editor.GraphView
             // Create connections
             foreach (var ugenEdge in graph.Edges)
             {
-                var sourceView = nodeViews.GetValueOrDefault(ugenEdge.SourceNodeId);
-                var targetView = nodeViews.GetValueOrDefault(ugenEdge.TargetNodeId);
+                var sourceView = nodeViews.GetValueOrDefault(ugenEdge.OutputNodeId);
+                var targetView = nodeViews.GetValueOrDefault(ugenEdge.InputNodeId);
 
                 if (sourceView != null && targetView != null)
                 {
-                    var outputPort = sourceView.GetOutputPort(ugenEdge.SourcePortIndex);
-                    var inputPort = targetView.GetInputPort(ugenEdge.TargetPortIndex);
+                    var outputPort = sourceView.GetOutputPort(ugenEdge.OutputPortIndex);
+                    var inputPort = targetView.GetInputPort(ugenEdge.InputPortIndex);
 
                     if (outputPort != null && inputPort != null)
                     {

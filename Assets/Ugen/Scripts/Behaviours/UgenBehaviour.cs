@@ -56,25 +56,6 @@ namespace Ugen.Behaviours
             }
             return outputs[index];
         }
-
-        public void ConnectTo(int outputIndex, UgenBehaviour target, int inputIndex)
-        {
-            var output = GetOutput(outputIndex);
-            var input = target.GetInput(inputIndex);
-
-            if (output == null || input == null)
-            {
-                return; // Error already logged in GetInput/GetOutput
-            }
-
-            if (output.ValueType != input.ValueType)
-            {
-                Debug.LogError($"Type mismatch: {output.ValueType} != {input.ValueType}");
-                return;
-            }
-
-            output.ConnectTo(input, disposables);
-        }
     }
 
 }

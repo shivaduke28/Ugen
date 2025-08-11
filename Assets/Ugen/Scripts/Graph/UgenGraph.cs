@@ -29,10 +29,8 @@ namespace Ugen.Graph
 
             // Remove edges related to this node
             edges.RemoveAll(e =>
-                e.SourceNodeId == node.NodeId ||
-                e.TargetNodeId == node.NodeId);
-
-            // Note: We don't remove bindings here because multiple nodes can reference the same binding
+                e.OutputNodeId == node.NodeId ||
+                e.InputNodeId == node.NodeId);
 
             // Remove node
             nodes.Remove(node);
@@ -43,8 +41,8 @@ namespace Ugen.Graph
             if (edge == null) return;
 
             // Validate edge
-            var sourceNode = GetNode(edge.SourceNodeId);
-            var targetNode = GetNode(edge.TargetNodeId);
+            var sourceNode = GetNode(edge.OutputNodeId);
+            var targetNode = GetNode(edge.InputNodeId);
 
             if (sourceNode == null || targetNode == null)
             {
@@ -52,8 +50,8 @@ namespace Ugen.Graph
                 return;
             }
 
-            if (edge.SourcePortIndex >= sourceNode.OutputPorts.Count ||
-                edge.TargetPortIndex >= targetNode.InputPorts.Count)
+            if (edge.OutputPortIndex >= sourceNode.OutputPorts.Count ||
+                edge.InputPortIndex >= targetNode.InputPorts.Count)
             {
                 Debug.LogError("Invalid edge: port index out of range");
                 return;
@@ -83,7 +81,7 @@ namespace Ugen.Graph
             nodes.Clear();
             edges.Clear();
         }
-        
+
         public void ClearEdges()
         {
             edges.Clear();
