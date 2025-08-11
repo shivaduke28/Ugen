@@ -4,7 +4,6 @@ using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Ugen.Graph;
-using Ugen.Graph.Nodes;
 
 namespace Ugen.Editor.GraphView
 {
@@ -23,7 +22,7 @@ namespace Ugen.Editor.GraphView
             var grid = new GridBackground();
             Insert(0, grid);
             grid.StretchToParentSize();
-            
+
             // Load stylesheet
             var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Ugen/Scripts/Editor/GraphView/UgenGraphView.uss");
             if (styleSheet != null)
@@ -31,30 +30,13 @@ namespace Ugen.Editor.GraphView
                 styleSheets.Add(styleSheet);
             }
 
-            // Setup node creation
-            nodeCreationRequest = context => ShowNodeCreationMenu(context.screenMousePosition);
-        }
+            var searchWindowProvider = ScriptableObject.CreateInstance<SampleSearchWindowProvider>();
+            searchWindowProvider.Initialize(this);
 
-        void ShowNodeCreationMenu(Vector2 mousePosition)
-        {
-            var menu = new GenericMenu();
-            var localMousePosition = contentViewContainer.WorldToLocal(mousePosition);
-
-            menu.AddItem(new GUIContent("Add Node/Slider"), false, () =>
+            nodeCreationRequest += context =>
             {
-                var node = new SliderNode();
-                node.Position = localMousePosition;
-                CreateNodeView(node);
-            });
-
-            menu.AddItem(new GUIContent("Add Node/Yaw Rotator"), false, () =>
-            {
-                var node = new YawRotatorNode();
-                node.Position = localMousePosition;
-                CreateNodeView(node);
-            });
-
-            menu.ShowAsContext();
+                SearchWindow.Open(new SearchWindowContext(context.screenMousePosition), searchWindowProvider);
+            };
         }
 
         UgenNodeView CreateNodeView(UgenNode node)

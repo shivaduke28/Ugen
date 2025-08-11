@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using UnityEngine.UIElements;
 using Ugen.Graph;
 
 namespace Ugen.Editor.GraphView
@@ -9,19 +8,19 @@ namespace Ugen.Editor.GraphView
     public class UgenNodeView : Node
     {
         public UgenNode Node { get; }
-        
-        List<Port> inputPorts = new();
-        List<Port> outputPorts = new();
+
+        readonly List<Port> inputPorts = new();
+        readonly List<Port> outputPorts = new();
 
         public UgenNodeView(UgenNode node)
         {
             Node = node;
             title = node.NodeName;
-            
+
             CreatePorts();
-            RefreshExpandedState();
+            // RefreshExpandedState();
             RefreshPorts();
-            
+
             SetPosition(new Rect(node.Position, Vector2.zero));
         }
 
@@ -34,7 +33,7 @@ namespace Ugen.Editor.GraphView
                 inputContainer.Add(inputPort);
                 inputPorts.Add(inputPort);
             }
-            
+
             // Create output ports
             foreach (var port in Node.OutputPorts)
             {
@@ -46,12 +45,12 @@ namespace Ugen.Editor.GraphView
 
         Port CreatePort(UgenPort portData, Direction direction)
         {
-            var port = InstantiatePort(Orientation.Horizontal, direction, 
+            var port = InstantiatePort(Orientation.Horizontal, direction,
                 Port.Capacity.Multi, portData.ValueType);
-            
+
             port.portName = portData.Name;
             port.userData = portData;
-            
+
             return port;
         }
 
