@@ -31,13 +31,13 @@ namespace Ugen.Graph
             foreach (var node in graph.Nodes)
             {
                 UgenBehaviour behaviour = null;
-                
+
                 // For UgenBehaviourNode, try to get behaviour by bindingId
-                if (node is UgenBehaviourNode behaviourNode && !string.IsNullOrEmpty(behaviourNode.BindingId))
+                if (node is UgenBehaviourNode behaviourNode)
                 {
-                    behaviour = graph.GetBoundBehaviourByBindingId(behaviourNode.BindingId);
+                    behaviour = behaviourNode.Behaviour;
                 }
-                
+
                 if (behaviour != null)
                 {
                     // Use existing bound behaviour
@@ -134,35 +134,34 @@ namespace Ugen.Graph
 
         public void CollectBehavioursFromScene()
         {
-            graph.Clear();
+            graph.ClearNodeAndEdges();
 
             var behaviours = FindObjectsByType<UgenBehaviour>(FindObjectsSortMode.None);
             foreach (var behaviour in behaviours)
             {
-                // Create appropriate node based on behaviour type
-                UgenBehaviourNode node = behaviour switch
+                graph.AddBehaviour(behaviour);
+                UgenBehaviourNode node;
+                switch (behaviour)
                 {
-                    UgenSlider => new SliderNode(),
-                    UgenYawRotator => new YawRotatorNode(),
-                    _ => null
-                };
+                    case UgenSlider ugenSlider:
+                        var sliderNode = new SliderNode();
+                        sliderNode.SetBehaviour(ugenSlider);
+                        node = sliderNode;
+                        break;
+                    case UgenYawRotator rotator:
+                        var rotatorNode = new YawRotatorNode();
+                        rotatorNode.SetBehaviour(rotator);
+                        node = rotatorNode;
+                        break;
+                    default:
+                        node = null;
+                        break;
+                }
 
                 if (node != null)
                 {
-                    // Use GameObject name as node ID for easy identification
-                    node.NodeId = behaviour.gameObject.name;
-                    
-                    // Create binding and set the bindingId on the node
-                    var binding = new NodeBehaviourBinding
-                    {
-                        Behaviour = behaviour
-                    };
-                    node.BindingId = binding.BindingId;
-                    
                     graph.AddNode(node);
-                    graph.AddBinding(binding);
-
-                    Debug.Log($"Collected {behaviour.GetType().Name} as node '{node.NodeId}' with binding '{node.BindingId}'");
+                    Debug.Log($"Collected {behaviour.GetType().Name} as node '{node.NodeId}'");
                 }
             }
 

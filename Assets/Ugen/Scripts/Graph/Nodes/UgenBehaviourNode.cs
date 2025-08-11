@@ -1,19 +1,24 @@
 using System;
+using Ugen.Behaviours;
 using UnityEngine;
 
 namespace Ugen.Graph.Nodes
 {
-    [Serializable]
     public abstract class UgenBehaviourNode : UgenNode
     {
-        [SerializeField] string bindingId;
+        public abstract UgenBehaviour Behaviour { get; }
+    }
 
-        public string BindingId
+
+    [Serializable]
+    public abstract class UgenBehaviourNode<T> : UgenBehaviourNode where T : UgenBehaviour
+    {
+        [SerializeField] T behaviour;
+        public override UgenBehaviour Behaviour => behaviour;
+
+        public void SetBehaviour(T behaviour)
         {
-            get => bindingId;
-            set => bindingId = value;
+            this.behaviour = behaviour;
         }
-
-        public abstract Type BehaviourType { get; }
     }
 }

@@ -4,7 +4,6 @@ using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Ugen.Graph;
-using Ugen.Graph.Nodes;
 
 namespace Ugen.Editor.GraphView
 {
@@ -86,14 +85,7 @@ namespace Ugen.Editor.GraphView
 
         public void SaveToGraph(UgenGraph graph)
         {
-            // Store existing bindings before clearing
-            var existingBindings = new Dictionary<string, NodeBehaviourBinding>();
-            foreach (var binding in graph.Bindings)
-            {
-                existingBindings[binding.BindingId] = binding;
-            }
-
-            graph.Clear();
+            graph.ClearNodeAndEdges();
 
             // Save nodes
             foreach (var nodeView in nodeViews.Values)
@@ -101,15 +93,6 @@ namespace Ugen.Editor.GraphView
                 var node = nodeView.Node;
                 node.Position = nodeView.GetPosition().position;
                 graph.AddNode(node);
-
-                // Restore binding if it existed for UgenBehaviourNode
-                if (node is UgenBehaviourNode behaviourNode && !string.IsNullOrEmpty(behaviourNode.BindingId))
-                {
-                    if (existingBindings.TryGetValue(behaviourNode.BindingId, out var binding))
-                    {
-                        graph.AddBinding(binding);
-                    }
-                }
             }
 
             // Save connections

@@ -11,11 +11,11 @@ namespace Ugen.Graph
         [SerializeReference, SerializeReferenceSelector]
         List<UgenNode> nodes = new();
         [SerializeField] List<UgenEdge> edges = new();
-        [SerializeField] List<NodeBehaviourBinding> bindings = new();
+        [SerializeField] List<UgenBehaviour> behaviours = new();
 
         public IReadOnlyList<UgenNode> Nodes => nodes;
         public IReadOnlyList<UgenEdge> Edges => edges;
-        public IReadOnlyList<NodeBehaviourBinding> Bindings => bindings;
+        public IReadOnlyList<UgenBehaviour> Behaviours => behaviours;
 
         public void AddNode(UgenNode node)
         {
@@ -68,71 +68,25 @@ namespace Ugen.Graph
             edges.Remove(edge);
         }
 
-        public void AddBinding(NodeBehaviourBinding binding)
-        {
-            if (binding == null) return;
-            bindings.Add(binding);
-        }
-
-        public string CreateBinding(UgenBehaviour behaviour)
-        {
-            if (behaviour == null) return null;
-
-            var binding = new NodeBehaviourBinding
-            {
-                Behaviour = behaviour
-            };
-
-            bindings.Add(binding);
-            return binding.BindingId;
-        }
-
-        public void RemoveBinding(string bindingId)
-        {
-            if (string.IsNullOrEmpty(bindingId)) return;
-            bindings.RemoveAll(b => b.BindingId == bindingId);
-        }
-
-        public UgenBehaviour GetBoundBehaviourByBindingId(string bindingId)
-        {
-            var binding = bindings.Find(b => b.BindingId == bindingId);
-            return binding?.Behaviour;
-        }
-
         public UgenNode GetNode(string nodeId)
         {
             return nodes.Find(n => n.NodeId == nodeId);
         }
 
-        public void Clear()
+        public void AddBehaviour(UgenBehaviour behaviour)
+        {
+            behaviours.Add(behaviour);
+        }
+
+        public void ClearNodeAndEdges()
         {
             nodes.Clear();
             edges.Clear();
-            bindings.Clear();
-        }
-    }
-
-    [Serializable]
-    public class NodeBehaviourBinding
-    {
-        [SerializeField] string bindingId;
-        [SerializeField] UgenBehaviour behaviour;
-
-        public string BindingId
-        {
-            get => bindingId;
-            set => bindingId = value;
         }
 
-        public UgenBehaviour Behaviour
+        public void ClearBehaviours()
         {
-            get => behaviour;
-            set => behaviour = value;
-        }
-
-        public NodeBehaviourBinding()
-        {
-            bindingId = Guid.NewGuid().ToString();
+            behaviours.Clear();
         }
     }
 }

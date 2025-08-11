@@ -599,8 +599,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -780, y: -99}
-  m_SizeDelta: {x: 160, y: 20}
+  m_AnchoredPosition: {x: -556, y: -99}
+  m_SizeDelta: {x: 500, y: 99.1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &602440397
 MonoBehaviour:
@@ -748,35 +748,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   graph:
     nodes:
-    - rid: 8415219134870585420
-    - rid: 8415219134870585421
+    - rid: 8415219134870585446
+    - rid: 8415219134870585447
     edges:
-    - edgeId: fd9760c6-a886-41b2-8744-c57e2db66755
-      sourceNodeId: Slider
+    - edgeId: 16a0a8e6-53c8-4c67-81de-5689bbf78b76
+      sourceNodeId: 506c6ad6-e7ce-4457-80ee-18a2a0a9b6dd
       sourcePortIndex: 0
-      targetNodeId: Cube
+      targetNodeId: d7af6e52-0340-4155-b91d-d329d4baf486
       targetPortIndex: 0
-    bindings:
-    - bindingId: 645f9835-2580-4dcc-bb22-360bb6d51031
-      behaviour: {fileID: 602440398}
-    - bindingId: 321ae9b2-1b74-48b0-98d6-edeadd11a055
-      behaviour: {fileID: 1456945592}
+    behaviours:
+    - {fileID: 1456945592}
+    - {fileID: 602440398}
   autoExecuteOnStart: 1
   references:
     version: 2
     RefIds:
-    - rid: 8415219134870585420
-      type: {class: SliderNode, ns: Ugen.Graph.Nodes, asm: Ugen}
-      data:
-        nodeId: Slider
-        position: {x: 82.64, y: 38.5}
-        bindingId: 645f9835-2580-4dcc-bb22-360bb6d51031
-    - rid: 8415219134870585421
+    - rid: 8415219134870585446
       type: {class: YawRotatorNode, ns: Ugen.Graph.Nodes, asm: Ugen}
       data:
-        nodeId: Cube
-        position: {x: 192, y: 38.5}
-        bindingId: 321ae9b2-1b74-48b0-98d6-edeadd11a055
+        nodeId: d7af6e52-0340-4155-b91d-d329d4baf486
+        position: {x: 220, y: -25.5}
+        behaviour: {fileID: 1456945592}
+    - rid: 8415219134870585447
+      type: {class: SliderNode, ns: Ugen.Graph.Nodes, asm: Ugen}
+      data:
+        nodeId: 506c6ad6-e7ce-4457-80ee-18a2a0a9b6dd
+        position: {x: -8, y: -40}
+        behaviour: {fileID: 602440398}
 --- !u!1 &1292386023
 GameObject:
   m_ObjectHideFlags: 0
