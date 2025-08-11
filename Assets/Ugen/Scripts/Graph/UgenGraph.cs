@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Ugen.Attributes;
 using Ugen.Behaviours;
 
 namespace Ugen.Graph
@@ -83,7 +82,7 @@ namespace Ugen.Graph
             {
                 Behaviour = behaviour
             };
-            
+
             bindings.Add(binding);
             return binding.BindingId;
         }
