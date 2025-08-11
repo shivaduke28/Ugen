@@ -36,16 +36,6 @@ namespace Ugen.Behaviours
             disposables.Dispose();
         }
 
-        public IUgenInput GetInput(string name)
-        {
-            return inputs.Find(i => i.Name == name);
-        }
-
-        public IUgenOutput GetOutput(string name)
-        {
-            return outputs.Find(o => o.Name == name);
-        }
-        
         public IUgenInput GetInput(int index)
         {
             if (index < 0 || index >= inputs.Count)
@@ -66,37 +56,11 @@ namespace Ugen.Behaviours
             return outputs[index];
         }
 
-        public void ConnectTo(string outputName, UgenBehaviour target, string inputName)
-        {
-            var output = GetOutput(outputName);
-            var input = target.GetInput(inputName);
-            
-            if (output == null)
-            {
-                Debug.LogError($"Output '{outputName}' not found on {GetType().Name}");
-                return;
-            }
-            
-            if (input == null)
-            {
-                Debug.LogError($"Input '{inputName}' not found on {target.GetType().Name}");
-                return;
-            }
-
-            if (output.ValueType != input.ValueType)
-            {
-                Debug.LogError($"Type mismatch: {output.ValueType} != {input.ValueType}");
-                return;
-            }
-
-            output.ConnectTo(input, disposables);
-        }
-        
         public void ConnectTo(int outputIndex, UgenBehaviour target, int inputIndex)
         {
             var output = GetOutput(outputIndex);
             var input = target.GetInput(inputIndex);
-            
+
             if (output == null || input == null)
             {
                 return; // Error already logged in GetInput/GetOutput
