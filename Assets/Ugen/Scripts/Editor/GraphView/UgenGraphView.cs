@@ -32,7 +32,7 @@ namespace Ugen.Editor.GraphView
                 styleSheets.Add(styleSheet);
             }
 
-            var searchWindowProvider = ScriptableObject.CreateInstance<SampleSearchWindowProvider>();
+            var searchWindowProvider = ScriptableObject.CreateInstance<CreateNodeSearchWindowProvider>();
             searchWindowProvider.Initialize(this, currentGraph);
 
             nodeCreationRequest += context =>
@@ -48,7 +48,7 @@ namespace Ugen.Editor.GraphView
         UgenNodeView CreateNodeView(UgenNode node)
         {
             UgenNodeView nodeView;
-            
+
             // Create specialized view for UgenBehaviourNode
             if (node is UgenBehaviourNode behaviourNode)
             {
@@ -58,12 +58,18 @@ namespace Ugen.Editor.GraphView
             {
                 nodeView = new UgenNodeView(node);
             }
-            
+
             nodeView.SetPosition(new Rect(node.Position, Vector2.zero));
 
             AddElement(nodeView);
             nodeViews[node.NodeId] = nodeView;
             return nodeView;
+        }
+
+        public void AddNodeView(UgenNodeView nodeView)
+        {
+            AddElement(nodeView);
+            nodeViews[nodeView.Node.NodeId] = nodeView;
         }
 
         public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
@@ -162,17 +168,6 @@ namespace Ugen.Editor.GraphView
                         var edge = outputPort.ConnectTo(inputPort);
                         AddElement(edge);
                     }
-                }
-            }
-        }
-        
-        public void RefreshBehaviourLists()
-        {
-            foreach (var nodeView in nodeViews.Values)
-            {
-                if (nodeView is UgenBehaviourNodeView behaviourNodeView)
-                {
-                    behaviourNodeView.UpdateGraph(currentGraph);
                 }
             }
         }

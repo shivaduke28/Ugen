@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Ugen.Editor.GraphView
 {
-    public class SampleSearchWindowProvider : ScriptableObject, ISearchWindowProvider
+    public class CreateNodeSearchWindowProvider : ScriptableObject, ISearchWindowProvider
     {
         UgenGraphView graphView;
         UgenGraph graph;
@@ -53,7 +53,7 @@ namespace Ugen.Editor.GraphView
                     nodeView = new UgenNodeView(node);
                 }
 
-                graphView.AddElement(nodeView);
+                graphView.AddNodeView(nodeView);
                 return true;
             }
 
