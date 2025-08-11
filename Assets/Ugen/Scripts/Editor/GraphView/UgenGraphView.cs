@@ -23,6 +23,13 @@ namespace Ugen.Editor.GraphView
             var grid = new GridBackground();
             Insert(0, grid);
             grid.StretchToParentSize();
+            
+            // Load stylesheet
+            var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Ugen/Scripts/Editor/GraphView/UgenGraphView.uss");
+            if (styleSheet != null)
+            {
+                styleSheets.Add(styleSheet);
+            }
 
             // Setup node creation
             nodeCreationRequest = context => ShowNodeCreationMenu(context.screenMousePosition);
@@ -33,14 +40,14 @@ namespace Ugen.Editor.GraphView
             var menu = new GenericMenu();
             var localMousePosition = contentViewContainer.WorldToLocal(mousePosition);
 
-            menu.AddItem(new GUIContent("Add Node/Slider"), false, () => 
+            menu.AddItem(new GUIContent("Add Node/Slider"), false, () =>
             {
                 var node = new SliderNode();
                 node.Position = localMousePosition;
                 CreateNodeView(node);
             });
-            
-            menu.AddItem(new GUIContent("Add Node/Yaw Rotator"), false, () => 
+
+            menu.AddItem(new GUIContent("Add Node/Yaw Rotator"), false, () =>
             {
                 var node = new YawRotatorNode();
                 node.Position = localMousePosition;
@@ -102,7 +109,7 @@ namespace Ugen.Editor.GraphView
             {
                 existingBindings[binding.NodeId] = binding.Behaviour;
             }
-            
+
             graph.Clear();
 
             // Save nodes
@@ -111,7 +118,7 @@ namespace Ugen.Editor.GraphView
                 var node = nodeView.Node;
                 node.Position = nodeView.GetPosition().position;
                 graph.AddNode(node);
-                
+
                 // Restore binding if it existed
                 if (existingBindings.TryGetValue(node.NodeId, out var behaviour))
                 {
