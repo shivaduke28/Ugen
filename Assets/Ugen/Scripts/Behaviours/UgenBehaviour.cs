@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using R3;
+using Ugen.Graph;
 using UnityEngine;
 
 namespace Ugen.Behaviours
@@ -76,58 +77,4 @@ namespace Ugen.Behaviours
         }
     }
 
-    public interface IUgenInput
-    {
-        string Name { get; }
-        Type ValueType { get; }
-    }
-
-    public interface IUgenOutput
-    {
-        string Name { get; }
-        Type ValueType { get; }
-        void ConnectTo(IUgenInput input, CompositeDisposable disposables);
-    }
-
-    public class UgenInput<T> : IUgenInput
-    {
-        public string Name { get; }
-        public Type ValueType => typeof(T);
-        public ReactiveProperty<T> Value { get; }
-
-        public UgenInput(string name, T defaultValue = default)
-        {
-            Name = name;
-            Value = new ReactiveProperty<T>(defaultValue);
-        }
-    }
-
-    public class UgenOutput<T> : IUgenOutput
-    {
-        public string Name { get; }
-        public Type ValueType => typeof(T);
-        public ReadOnlyReactiveProperty<T> Value { get; }
-        readonly ReactiveProperty<T> source;
-
-        public UgenOutput(string name, T defaultValue = default)
-        {
-            Name = name;
-            source = new ReactiveProperty<T>(defaultValue);
-            Value = source.ToReadOnlyReactiveProperty();
-        }
-
-        public void SetValue(T value)
-        {
-            source.Value = value;
-        }
-
-        public void ConnectTo(IUgenInput input, CompositeDisposable disposables)
-        {
-            if (input is UgenInput<T> typedInput)
-            {
-                Value.Subscribe(v => typedInput.Value.Value = v)
-                    .AddTo(disposables);
-            }
-        }
-    }
 }

@@ -1,3 +1,5 @@
+using R3;
+using Ugen.Graph;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,50 +8,19 @@ namespace Ugen.Behaviours
     [RequireComponent(typeof(Slider))]
     public sealed class UgenSlider : UgenBehaviour
     {
-        [SerializeField] float defaultValue = 0.5f;
+        [SerializeField] Slider slider;
 
         UgenOutput<float> output;
-        Slider slider;
 
         protected override void InitializePorts()
         {
-            output = new UgenOutput<float>("value", defaultValue);
+            output = new UgenOutput<float>("value", slider.OnValueChangedAsObservable());
             RegisterOutput(output);
         }
 
-        void Start()
-        {
-            SetupSlider();
-        }
-
-        void SetupSlider()
+        void Reset()
         {
             slider = GetComponent<Slider>();
-            if (slider == null)
-            {
-                Debug.LogError("Slider component not found!");
-                return;
-            }
-
-            slider.value = defaultValue;
-
-            slider.onValueChanged.AddListener(OnSliderValueChanged);
-
-            output.SetValue(slider.value);
-        }
-
-        void OnSliderValueChanged(float value)
-        {
-            output.SetValue(value);
-        }
-
-        protected override void OnDestroy()
-        {
-            if (slider != null)
-            {
-                slider.onValueChanged.RemoveListener(OnSliderValueChanged);
-            }
-            base.OnDestroy();
         }
     }
 }

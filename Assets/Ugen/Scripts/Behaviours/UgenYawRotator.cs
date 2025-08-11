@@ -1,4 +1,5 @@
 using R3;
+using Ugen.Graph;
 using UnityEngine;
 
 namespace Ugen.Behaviours
@@ -21,9 +22,10 @@ namespace Ugen.Behaviours
             targetTransform = transform;
 
             Observable.EveryUpdate()
-                .Subscribe(_ =>
+                .WithLatestFrom(speedInput.Observable, (_, s) => s)
+                .Subscribe(s =>
                 {
-                    var rotationSpeed = speedInput.Value.Value * speedMultiplier;
+                    var rotationSpeed = s * speedMultiplier;
                     targetTransform.Rotate(Vector3.up, rotationSpeed * Time.deltaTime);
                 })
                 .AddTo(this);
