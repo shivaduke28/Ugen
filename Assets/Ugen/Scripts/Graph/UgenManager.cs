@@ -30,7 +30,14 @@ namespace Ugen.Graph
             // Create behaviours for each node
             foreach (var node in graph.Nodes)
             {
-                var behaviour = graph.GetBoundBehaviour(node.NodeId);
+                UgenBehaviour behaviour = null;
+                
+                // For UgenBehaviourNode, try to get behaviour by bindingId
+                if (node is UgenBehaviourNode behaviourNode && !string.IsNullOrEmpty(behaviourNode.BindingId))
+                {
+                    behaviour = graph.GetBoundBehaviourByBindingId(behaviourNode.BindingId);
+                }
+                
                 if (behaviour != null)
                 {
                     // Use existing bound behaviour
@@ -48,32 +55,32 @@ namespace Ugen.Graph
             }
 
             // Establish connections
-            foreach (var connection in graph.Connections)
+            foreach (var edge in graph.Edges)
             {
-                EstablishConnection(connection);
+                EstablishConnection(edge);
             }
 
-            Debug.Log($"Graph executed: {graph.Nodes.Count} nodes, {graph.Connections.Count} connections");
+            Debug.Log($"Graph executed: {graph.Nodes.Count} nodes, {graph.Edges.Count} edges");
         }
 
-        void EstablishConnection(UgenConnection connection)
+        void EstablishConnection(UgenEdge edge)
         {
-            if (!runtimeBehaviours.TryGetValue(connection.SourceNodeId, out var sourceBehaviour))
+            if (!runtimeBehaviours.TryGetValue(edge.SourceNodeId, out var sourceBehaviour))
             {
-                Debug.LogWarning($"Source behaviour not found for node: {connection.SourceNodeId}");
+                Debug.LogWarning($"Source behaviour not found for node: {edge.SourceNodeId}");
                 return;
             }
 
-            if (!runtimeBehaviours.TryGetValue(connection.TargetNodeId, out var targetBehaviour))
+            if (!runtimeBehaviours.TryGetValue(edge.TargetNodeId, out var targetBehaviour))
             {
-                Debug.LogWarning($"Target behaviour not found for node: {connection.TargetNodeId}");
+                Debug.LogWarning($"Target behaviour not found for node: {edge.TargetNodeId}");
                 return;
             }
 
             sourceBehaviour.ConnectTo(
-                connection.SourcePortIndex,
+                edge.SourcePortIndex,
                 targetBehaviour,
-                connection.TargetPortIndex
+                edge.TargetPortIndex
             );
         }
 
@@ -133,7 +140,7 @@ namespace Ugen.Graph
             foreach (var behaviour in behaviours)
             {
                 // Create appropriate node based on behaviour type
-                UgenNode node = behaviour switch
+                UgenBehaviourNode node = behaviour switch
                 {
                     UgenSlider => new SliderNode(),
                     UgenYawRotator => new YawRotatorNode(),
@@ -144,10 +151,18 @@ namespace Ugen.Graph
                 {
                     // Use GameObject name as node ID for easy identification
                     node.NodeId = behaviour.gameObject.name;
+                    
+                    // Create binding and set the bindingId on the node
+                    var binding = new NodeBehaviourBinding
+                    {
+                        Behaviour = behaviour
+                    };
+                    node.BindingId = binding.BindingId;
+                    
                     graph.AddNode(node);
-                    graph.BindNodeToBehaviour(node.NodeId, behaviour);
+                    graph.AddBinding(binding);
 
-                    Debug.Log($"Collected {behaviour.GetType().Name} as node '{node.NodeId}'");
+                    Debug.Log($"Collected {behaviour.GetType().Name} as node '{node.NodeId}' with binding '{node.BindingId}'");
                 }
             }
 

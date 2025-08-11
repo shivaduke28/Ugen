@@ -747,24 +747,36 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   graph:
-    serializedNodes:
-    - nodeId: Slider
-      nodeTypeName: SliderNode
-      position: {x: 0, y: 0}
-    - nodeId: Cube
-      nodeTypeName: YawRotatorNode
-      position: {x: 161, y: 0}
-    connections:
-    - sourceNodeId: Slider
+    nodes:
+    - rid: 8415219134870585420
+    - rid: 8415219134870585421
+    edges:
+    - edgeId: fd9760c6-a886-41b2-8744-c57e2db66755
+      sourceNodeId: Slider
       sourcePortIndex: 0
       targetNodeId: Cube
       targetPortIndex: 0
     bindings:
-    - nodeId: Slider
+    - bindingId: 645f9835-2580-4dcc-bb22-360bb6d51031
       behaviour: {fileID: 602440398}
-    - nodeId: Cube
+    - bindingId: 321ae9b2-1b74-48b0-98d6-edeadd11a055
       behaviour: {fileID: 1456945592}
   autoExecuteOnStart: 1
+  references:
+    version: 2
+    RefIds:
+    - rid: 8415219134870585420
+      type: {class: SliderNode, ns: Ugen.Graph.Nodes, asm: Ugen}
+      data:
+        nodeId: Slider
+        position: {x: 82.64, y: 38.5}
+        bindingId: 645f9835-2580-4dcc-bb22-360bb6d51031
+    - rid: 8415219134870585421
+      type: {class: YawRotatorNode, ns: Ugen.Graph.Nodes, asm: Ugen}
+      data:
+        nodeId: Cube
+        position: {x: 192, y: 38.5}
+        bindingId: 321ae9b2-1b74-48b0-98d6-edeadd11a055
 --- !u!1 &1292386023
 GameObject:
   m_ObjectHideFlags: 0

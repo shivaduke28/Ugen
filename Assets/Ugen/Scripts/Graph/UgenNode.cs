@@ -9,8 +9,8 @@ namespace Ugen.Graph
     {
         [SerializeField] string nodeId;
         [SerializeField] Vector2 position;
-        [SerializeField] List<UgenPort> inputPorts = new();
-        [SerializeField] List<UgenPort> outputPorts = new();
+        List<UgenPort> inputPorts = new();
+        List<UgenPort> outputPorts = new();
 
         public string NodeId
         {
@@ -27,7 +27,6 @@ namespace Ugen.Graph
         public IReadOnlyList<UgenPort> InputPorts => inputPorts;
         public IReadOnlyList<UgenPort> OutputPorts => outputPorts;
 
-        public abstract Type BehaviourType { get; }
         public abstract string NodeName { get; }
 
         protected UgenNode()
@@ -100,36 +99,5 @@ namespace Ugen.Graph
         Output
     }
 
-    [Serializable]
-    public class UgenConnection
-    {
-        [SerializeField] string sourceNodeId;
-        [SerializeField] int sourcePortIndex;
-        [SerializeField] string targetNodeId;
-        [SerializeField] int targetPortIndex;
 
-        public string SourceNodeId
-        {
-            get => sourceNodeId;
-            set => sourceNodeId = value;
-        }
-
-        public int SourcePortIndex
-        {
-            get => sourcePortIndex;
-            set => sourcePortIndex = value;
-        }
-
-        public string TargetNodeId
-        {
-            get => targetNodeId;
-            set => targetNodeId = value;
-        }
-
-        public int TargetPortIndex
-        {
-            get => targetPortIndex;
-            set => targetPortIndex = value;
-        }
-    }
 }

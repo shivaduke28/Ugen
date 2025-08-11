@@ -4,6 +4,7 @@ using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Ugen.Graph;
+using Ugen.Graph.Nodes;
 
 namespace Ugen.Editor.GraphView
 {
@@ -86,10 +87,10 @@ namespace Ugen.Editor.GraphView
         public void SaveToGraph(UgenGraph graph)
         {
             // Store existing bindings before clearing
-            var existingBindings = new Dictionary<string, Ugen.Behaviours.UgenBehaviour>();
+            var existingBindings = new Dictionary<string, NodeBehaviourBinding>();
             foreach (var binding in graph.Bindings)
             {
-                existingBindings[binding.NodeId] = binding.Behaviour;
+                existingBindings[binding.BindingId] = binding;
             }
 
             graph.Clear();
@@ -101,10 +102,13 @@ namespace Ugen.Editor.GraphView
                 node.Position = nodeView.GetPosition().position;
                 graph.AddNode(node);
 
-                // Restore binding if it existed
-                if (existingBindings.TryGetValue(node.NodeId, out var behaviour))
+                // Restore binding if it existed for UgenBehaviourNode
+                if (node is UgenBehaviourNode behaviourNode && !string.IsNullOrEmpty(behaviourNode.BindingId))
                 {
-                    graph.BindNodeToBehaviour(node.NodeId, behaviour);
+                    if (existingBindings.TryGetValue(behaviourNode.BindingId, out var binding))
+                    {
+                        graph.AddBinding(binding);
+                    }
                 }
             }
 
@@ -116,12 +120,9 @@ namespace Ugen.Editor.GraphView
 
                 if (outputNode != null && inputNode != null)
                 {
-                    var outputPort = edge.output.userData as UgenPort;
-                    var inputPort = edge.input.userData as UgenPort;
-
-                    if (outputPort != null && inputPort != null)
+                    if (edge.output.userData is UgenPort outputPort && edge.input.userData is UgenPort inputPort)
                     {
-                        graph.AddConnection(new UgenConnection
+                        graph.AddEdge(new UgenEdge
                         {
                             SourceNodeId = outputNode.NodeId,
                             SourcePortIndex = outputPort.Index,
@@ -144,15 +145,15 @@ namespace Ugen.Editor.GraphView
             }
 
             // Create connections
-            foreach (var connection in graph.Connections)
+            foreach (var ugenEdge in graph.Edges)
             {
-                var sourceView = nodeViews.GetValueOrDefault(connection.SourceNodeId);
-                var targetView = nodeViews.GetValueOrDefault(connection.TargetNodeId);
+                var sourceView = nodeViews.GetValueOrDefault(ugenEdge.SourceNodeId);
+                var targetView = nodeViews.GetValueOrDefault(ugenEdge.TargetNodeId);
 
                 if (sourceView != null && targetView != null)
                 {
-                    var outputPort = sourceView.GetOutputPort(connection.SourcePortIndex);
-                    var inputPort = targetView.GetInputPort(connection.TargetPortIndex);
+                    var outputPort = sourceView.GetOutputPort(ugenEdge.SourcePortIndex);
+                    var inputPort = targetView.GetInputPort(ugenEdge.TargetPortIndex);
 
                     if (outputPort != null && inputPort != null)
                     {

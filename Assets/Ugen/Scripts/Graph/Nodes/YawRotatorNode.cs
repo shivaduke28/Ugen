@@ -4,7 +4,7 @@ using Ugen.Behaviours;
 namespace Ugen.Graph.Nodes
 {
     [Serializable]
-    public sealed class YawRotatorNode : UgenNode
+    public sealed class YawRotatorNode : UgenBehaviourNode
     {
         public override Type BehaviourType => typeof(UgenYawRotator);
         public override string NodeName => "Yaw Rotator";

@@ -46,14 +46,29 @@ UgenBehaviour
 
 UgenNode
 - UgenGraphで使用する抽象クラス
-- UgenNodeを継承したクラスがUgenBehaviourを継承したクラスと1:1で存在する
+- Serializable
+- 一意なidで識別できる
+- InputPortとOutputPortをもつ
+
+UgenBehaviourNode
+- UgenNodeを継承する抽象クラス
+- UgenBehaviourNodeを継承したクラスがUgenBehaviourを継承したクラスと1:1で存在する
   - e.g. `UgenYawRotator`と`YawRotatorNode`
   - UgenNodeの入力と出力はUgenBehaviourの型情報から決定できる
   - SourceGeneratorなどを使ってUgenBehaviourにattributeをつけることで自動生成できるとベター
+- 対応するUgenBehaviourへの参照を直接シリアライズしてよい
+
+Behaviour以外からつくられるNode
+- e.g. `AddNode`: floatのxとyを入力にし、x+yを出力する
+
+UgenEdge
+- UgenGraphで使用する
+- 一意なidで識別できる
 
 UgenGraph
 - pure C#クラスでSerializable
-- UgenBehaviourたちの関係性を保持するデータ構造
+- UgenNodeとUgenEdgeの配列を持つ
+- UgenNodeはSerializeReferenceを使う
 - 専用のエディタを使って編集する
 
 UgenManager
@@ -61,3 +76,12 @@ UgenManager
 - UgenManagerのインスペクタで登録したUgenBehaviourがUgenGraphのエディタでNodeとして使用できるようになる
 - シーン開始時にUgenGraphを実行する
   - つまりUgenGraphによって表現されたUgenBehaviour間の参照をRxで実際に動かす
+
+UgenGraphView
+- Editorで使用するUgenGraphを編集するGUI
+- GraphViewを使用する
+
+UgenNodeView
+- UgenNodeをUgenGraphViewで表示するためのView
+- GraphViewのNodeを継承する
+- UgenNodeの具象に対してViewを個別に作ってもいいが最初は共通のクラスでOK

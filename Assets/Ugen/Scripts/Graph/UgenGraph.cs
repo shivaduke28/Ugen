@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Ugen.Attributes;
 using Ugen.Behaviours;
 
 namespace Ugen.Graph
@@ -8,152 +9,106 @@ namespace Ugen.Graph
     [Serializable]
     public sealed class UgenGraph
     {
-        [SerializeField] List<SerializedUgenNode> serializedNodes = new();
-        [SerializeField] List<UgenConnection> connections = new();
+        [SerializeReference, SerializeReferenceSelector]
+        List<UgenNode> nodes = new();
+        [SerializeField] List<UgenEdge> edges = new();
         [SerializeField] List<NodeBehaviourBinding> bindings = new();
 
-        List<UgenNode> runtimeNodes;
-
-        public IReadOnlyList<UgenNode> Nodes
-        {
-            get
-            {
-                if (runtimeNodes == null)
-                {
-                    DeserializeNodes();
-                }
-                return runtimeNodes;
-            }
-        }
-
-        public IReadOnlyList<UgenConnection> Connections => connections;
+        public IReadOnlyList<UgenNode> Nodes => nodes;
+        public IReadOnlyList<UgenEdge> Edges => edges;
         public IReadOnlyList<NodeBehaviourBinding> Bindings => bindings;
-
-        void DeserializeNodes()
-        {
-            runtimeNodes = new List<UgenNode>();
-            foreach (var serializedNode in serializedNodes)
-            {
-                var node = serializedNode.ToUgenNode();
-                if (node != null)
-                {
-                    runtimeNodes.Add(node);
-                }
-            }
-        }
-
-        void SerializeNodes()
-        {
-            serializedNodes.Clear();
-            if (runtimeNodes != null)
-            {
-                foreach (var node in runtimeNodes)
-                {
-                    serializedNodes.Add(new SerializedUgenNode(node));
-                }
-            }
-        }
 
         public void AddNode(UgenNode node)
         {
             if (node == null) return;
-
-            if (runtimeNodes == null)
-            {
-                DeserializeNodes();
-            }
-
-            runtimeNodes.Add(node);
-            SerializeNodes();
+            nodes.Add(node);
         }
 
         public void RemoveNode(UgenNode node)
         {
             if (node == null) return;
 
-            if (runtimeNodes == null)
-            {
-                DeserializeNodes();
-            }
+            // Remove edges related to this node
+            edges.RemoveAll(e =>
+                e.SourceNodeId == node.NodeId ||
+                e.TargetNodeId == node.NodeId);
 
-            // Remove connections related to this node
-            connections.RemoveAll(c =>
-                c.SourceNodeId == node.NodeId ||
-                c.TargetNodeId == node.NodeId);
-
-            // Remove bindings
-            bindings.RemoveAll(b => b.NodeId == node.NodeId);
+            // Note: We don't remove bindings here because multiple nodes can reference the same binding
 
             // Remove node
-            runtimeNodes.Remove(node);
-            SerializeNodes();
+            nodes.Remove(node);
         }
 
-        public void AddConnection(UgenConnection connection)
+        public void AddEdge(UgenEdge edge)
         {
-            if (connection == null) return;
+            if (edge == null) return;
 
-            // Validate connection
-            var sourceNode = GetNode(connection.SourceNodeId);
-            var targetNode = GetNode(connection.TargetNodeId);
+            // Validate edge
+            var sourceNode = GetNode(edge.SourceNodeId);
+            var targetNode = GetNode(edge.TargetNodeId);
 
             if (sourceNode == null || targetNode == null)
             {
-                Debug.LogError("Invalid connection: node not found");
+                Debug.LogError("Invalid edge: node not found");
                 return;
             }
 
-            if (connection.SourcePortIndex >= sourceNode.OutputPorts.Count ||
-                connection.TargetPortIndex >= targetNode.InputPorts.Count)
+            if (edge.SourcePortIndex >= sourceNode.OutputPorts.Count ||
+                edge.TargetPortIndex >= targetNode.InputPorts.Count)
             {
-                Debug.LogError("Invalid connection: port index out of range");
+                Debug.LogError("Invalid edge: port index out of range");
                 return;
             }
 
-            connections.Add(connection);
+            edges.Add(edge);
         }
 
-        public void RemoveConnection(UgenConnection connection)
+        public void RemoveEdge(UgenEdge edge)
         {
-            if (connection == null) return;
-            connections.Remove(connection);
+            if (edge == null) return;
+            edges.Remove(edge);
         }
 
-        public void BindNodeToBehaviour(string nodeId, UgenBehaviour behaviour)
+        public void AddBinding(NodeBehaviourBinding binding)
         {
-            if (string.IsNullOrEmpty(nodeId) || behaviour == null) return;
+            if (binding == null) return;
+            bindings.Add(binding);
+        }
 
-            // Remove existing binding for this node
-            bindings.RemoveAll(b => b.NodeId == nodeId);
+        public string CreateBinding(UgenBehaviour behaviour)
+        {
+            if (behaviour == null) return null;
 
-            // Add new binding
-            bindings.Add(new NodeBehaviourBinding
+            var binding = new NodeBehaviourBinding
             {
-                NodeId = nodeId,
                 Behaviour = behaviour
-            });
+            };
+            
+            bindings.Add(binding);
+            return binding.BindingId;
         }
 
-        public UgenBehaviour GetBoundBehaviour(string nodeId)
+        public void RemoveBinding(string bindingId)
         {
-            var binding = bindings.Find(b => b.NodeId == nodeId);
+            if (string.IsNullOrEmpty(bindingId)) return;
+            bindings.RemoveAll(b => b.BindingId == bindingId);
+        }
+
+        public UgenBehaviour GetBoundBehaviourByBindingId(string bindingId)
+        {
+            var binding = bindings.Find(b => b.BindingId == bindingId);
             return binding?.Behaviour;
         }
 
         public UgenNode GetNode(string nodeId)
         {
-            if (runtimeNodes == null)
-            {
-                DeserializeNodes();
-            }
-            return runtimeNodes.Find(n => n.NodeId == nodeId);
+            return nodes.Find(n => n.NodeId == nodeId);
         }
 
         public void Clear()
         {
-            serializedNodes.Clear();
-            runtimeNodes?.Clear();
-            connections.Clear();
+            nodes.Clear();
+            edges.Clear();
             bindings.Clear();
         }
     }
@@ -161,19 +116,24 @@ namespace Ugen.Graph
     [Serializable]
     public class NodeBehaviourBinding
     {
-        [SerializeField] string nodeId;
+        [SerializeField] string bindingId;
         [SerializeField] UgenBehaviour behaviour;
 
-        public string NodeId
+        public string BindingId
         {
-            get => nodeId;
-            set => nodeId = value;
+            get => bindingId;
+            set => bindingId = value;
         }
 
         public UgenBehaviour Behaviour
         {
             get => behaviour;
             set => behaviour = value;
+        }
+
+        public NodeBehaviourBinding()
+        {
+            bindingId = Guid.NewGuid().ToString();
         }
     }
 }

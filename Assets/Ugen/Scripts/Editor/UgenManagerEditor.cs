@@ -23,7 +23,7 @@ namespace Ugen.Editor
                 manager.CollectBehavioursFromScene();
                 EditorUtility.SetDirty(manager);
             }
-            
+
             if (GUILayout.Button("Open Graph Editor"))
             {
                 GraphView.UgenGraphWindow.OpenWithManager(manager);
@@ -46,7 +46,7 @@ namespace Ugen.Editor
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("Graph Info", EditorStyles.boldLabel);
             EditorGUILayout.LabelField($"Nodes: {manager.Graph.Nodes.Count}");
-            EditorGUILayout.LabelField($"Connections: {manager.Graph.Connections.Count}");
+            EditorGUILayout.LabelField($"Connections: {manager.Graph.Edges.Count}");
             EditorGUILayout.LabelField($"Bindings: {manager.Graph.Bindings.Count}");
 
             if (manager.Graph.Nodes.Count > 0)
@@ -58,10 +58,17 @@ namespace Ugen.Editor
                     EditorGUILayout.BeginHorizontal();
                     EditorGUILayout.LabelField($"  - {node.NodeId} ({node.NodeName})");
 
-                    var binding = manager.Graph.GetBoundBehaviour(node.NodeId);
-                    if (binding != null)
+                    if (node is Graph.Nodes.UgenBehaviourNode behaviourNode && !string.IsNullOrEmpty(behaviourNode.BindingId))
                     {
-                        EditorGUILayout.ObjectField(binding, typeof(UgenBehaviour), true);
+                        var behaviour = manager.Graph.GetBoundBehaviourByBindingId(behaviourNode.BindingId);
+                        if (behaviour != null)
+                        {
+                            EditorGUILayout.ObjectField(behaviour, typeof(UgenBehaviour), true);
+                        }
+                        else
+                        {
+                            EditorGUILayout.LabelField($"(Binding ID: {behaviourNode.BindingId}, Not found)");
+                        }
                     }
                     else
                     {
@@ -71,11 +78,11 @@ namespace Ugen.Editor
                 }
             }
 
-            if (manager.Graph.Connections.Count > 0)
+            if (manager.Graph.Edges.Count > 0)
             {
                 EditorGUILayout.Space();
                 EditorGUILayout.LabelField("Connections:", EditorStyles.boldLabel);
-                foreach (var connection in manager.Graph.Connections)
+                foreach (var connection in manager.Graph.Edges)
                 {
                     EditorGUILayout.LabelField($"  - {connection.SourceNodeId}[{connection.SourcePortIndex}] → {connection.TargetNodeId}[{connection.TargetPortIndex}]");
                 }
