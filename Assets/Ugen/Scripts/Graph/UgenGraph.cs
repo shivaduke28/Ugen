@@ -83,6 +83,11 @@ namespace Ugen.Graph
             nodes.Clear();
             edges.Clear();
         }
+        
+        public void ClearEdges()
+        {
+            edges.Clear();
+        }
 
         public void ClearBehaviours()
         {

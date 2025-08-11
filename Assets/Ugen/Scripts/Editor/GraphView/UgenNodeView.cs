@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using Ugen.Graph;
+using UnityEngine.UIElements;
 
 namespace Ugen.Editor.GraphView
 {
@@ -50,6 +51,9 @@ namespace Ugen.Editor.GraphView
 
             port.portName = portData.Name;
             port.userData = portData;
+
+            // Add custom edge connector for creating UgenEdgeView
+            port.AddManipulator(new EdgeConnector<UgenEdgeView>(new UgenEdgeConnectorListener()));
 
             return port;
         }

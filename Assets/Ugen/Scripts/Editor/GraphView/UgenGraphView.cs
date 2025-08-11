@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
@@ -72,6 +73,10 @@ namespace Ugen.Editor.GraphView
             nodeViews[nodeView.Node.NodeId] = nodeView;
         }
 
+
+
+
+
         public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
         {
             var compatiblePorts = new List<Port>();
@@ -111,7 +116,7 @@ namespace Ugen.Editor.GraphView
             currentGraph = graph;
             graph.ClearNodeAndEdges();
 
-            // Save nodes
+            // Save nodes with updated positions
             foreach (var nodeView in nodeViews.Values)
             {
                 var node = nodeView.Node;
@@ -119,7 +124,7 @@ namespace Ugen.Editor.GraphView
                 graph.AddNode(node);
             }
 
-            // Save connections
+            // Save edges with stable IDs
             edges.ForEach(edge =>
             {
                 var outputNode = (edge.output.node as UgenNodeView)?.Node;
@@ -129,8 +134,12 @@ namespace Ugen.Editor.GraphView
                 {
                     if (edge.output.userData is UgenPort outputPort && edge.input.userData is UgenPort inputPort)
                     {
+                        // Use the EdgeId from UgenEdgeView
+                        string edgeId = (edge as UgenEdgeView)?.EdgeId ?? System.Guid.NewGuid().ToString();
+
                         graph.AddEdge(new UgenEdge
                         {
+                            EdgeId = edgeId,
                             SourceNodeId = outputNode.NodeId,
                             SourcePortIndex = outputPort.Index,
                             TargetNodeId = inputNode.NodeId,
@@ -165,7 +174,12 @@ namespace Ugen.Editor.GraphView
 
                     if (outputPort != null && inputPort != null)
                     {
-                        var edge = outputPort.ConnectTo(inputPort);
+                        // Create UgenEdgeView with existing EdgeId
+                        var edge = new UgenEdgeView(ugenEdge.EdgeId);
+                        edge.output = outputPort;
+                        edge.input = inputPort;
+                        outputPort.Connect(edge);
+                        inputPort.Connect(edge);
                         AddElement(edge);
                     }
                 }
