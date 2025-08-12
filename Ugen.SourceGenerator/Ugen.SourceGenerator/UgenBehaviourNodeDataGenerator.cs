@@ -26,7 +26,7 @@ public class UgenBehaviourNodeDataGenerator : IIncrementalGenerator
     const string UgenInputTypeName = "UgenInput";
     const string UgenOutputTypeName = "UgenOutput";
     const string PortTypeName = "Port";
-    const string UgenNodeDataTypeName = "UgenNodeData";
+    const string UgenNodeDataTypeName = "UgenBehaviourNodeData";
 
     // Suffix
     const string NodeDataClassSuffix = "NodeData";
@@ -42,46 +42,8 @@ public class UgenBehaviourNodeDataGenerator : IIncrementalGenerator
                 transform: static (ctx, _) => GetClassInfo(ctx))
             .Where(m => m is not null);
 
-        // Ugen.Behaviours名前空間のクラスも収集（属性なしでも対象）
-        var behavioursClasses = context.SyntaxProvider
-            .CreateSyntaxProvider(
-                predicate: static (node, _) => IsBehaviourClass(node),
-                transform: static (ctx, _) => GetBehaviourClassInfo(ctx))
-            .Where(m => m is not null);
 
-        // 両方のソースをマージして重複を排除
-        var allClasses = classDeclarations.Collect()
-            .Combine(behavioursClasses.Collect())
-            .SelectMany((combined, _) =>
-            {
-                var (attributed, behaviours) = combined;
-                var result = new List<ClassInfo>();
-                var processedNames = new HashSet<string>();
-
-                // 属性付きクラスを優先
-                foreach (var cls in attributed)
-                {
-                    if (cls != null && processedNames.Add(cls.ClassName))
-                    {
-                        result.Add(cls);
-                    }
-                }
-
-                // Behaviours名前空間のクラスを追加（重複排除）
-                foreach (var cls in behaviours)
-                {
-                    if (cls != null && processedNames.Add(cls.ClassName))
-                    {
-                        result.Add(cls);
-                    }
-                }
-
-                return result;
-            });
-
-        // コード生成
-        context.RegisterSourceOutput(allClasses,
-            static (spc, model) => { GenerateSource(spc, model); });
+        context.RegisterSourceOutput(classDeclarations, GenerateSource);
     }
 
     static bool IsBehaviourClass(SyntaxNode node)
@@ -241,11 +203,12 @@ public class UgenBehaviourNodeDataGenerator : IIncrementalGenerator
         var source = $$"""
                        using System;
                        using UnityEngine;
+                       using Ugen.Behaviours;
 
                        namespace {{UgenSerializationNamespace}}
                        {
                            [Serializable]
-                           public sealed class {{classInfo.ClassName}}{{NodeDataClassSuffix}} : {{UgenNodeDataTypeName}}
+                           public sealed class {{classInfo.ClassName}}{{NodeDataClassSuffix}} : {{UgenNodeDataTypeName}}<{{classInfo.ClassName}}>
                            {
                                {{PortTypeName}}[] inputPorts;
                                {{PortTypeName}}[] outputPorts;
