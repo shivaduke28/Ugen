@@ -1,10 +1,14 @@
 using System;
 using UnityEngine;
 
+public class ExampleAttribute : Attribute
+{
+}
+
 namespace Ugen.Serialization
 {
-    [Serializable]
-    public sealed class Edge
+    [Serializable, Example]
+    public sealed partial class Edge
     {
         [SerializeField] string id;
         [SerializeField] string inputNodeId;
