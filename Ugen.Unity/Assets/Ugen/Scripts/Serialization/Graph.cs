@@ -1,4 +1,5 @@
 using System;
+using Ugen.Attributes;
 using UnityEngine;
 
 namespace Ugen.Serialization

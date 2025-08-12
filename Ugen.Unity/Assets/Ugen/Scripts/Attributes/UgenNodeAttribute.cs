@@ -1,6 +1,6 @@
 using System;
 
-namespace Ugen
+namespace Ugen.Attributes
 {
     public sealed class UgenNodeAttribute : Attribute
     {

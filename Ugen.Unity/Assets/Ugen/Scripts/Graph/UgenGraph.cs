@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Ugen.Attributes;
 using UnityEngine;
 using Ugen.Behaviours;
 
