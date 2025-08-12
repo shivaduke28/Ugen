@@ -12,8 +12,8 @@ namespace Ugen.Behaviours
         readonly List<IUgenOutput> outputs = new();
         readonly CompositeDisposable disposables = new();
 
-        protected IReadOnlyList<IUgenInput> Inputs => inputs;
-        protected IReadOnlyList<IUgenOutput> Outputs => outputs;
+        public IReadOnlyList<IUgenInput> Inputs => inputs;
+        public IReadOnlyList<IUgenOutput> Outputs => outputs;
 
         protected void RegisterInput(IUgenInput input)
         {

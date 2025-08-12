@@ -58,10 +58,7 @@ namespace Ugen.Editor.GraphView
                 objectType = typeof(UgenManager),
                 value = targetManager
             };
-            managerField.RegisterValueChangedCallback(evt =>
-            {
-                targetManager = evt.newValue as UgenManager;
-            });
+            managerField.RegisterValueChangedCallback(evt => { targetManager = evt.newValue as UgenManager; });
             toolbar.Add(managerField);
 
             var loadManagerButton = new Button(() =>
@@ -91,7 +88,7 @@ namespace Ugen.Editor.GraphView
                 return;
             }
 
-            graphView.SaveToGraph(targetManager.Graph);
+            targetManager.SaveGraph(graphView.ExportToGraph());
             EditorUtility.SetDirty(targetManager);
             Debug.Log("Graph saved to manager");
         }
@@ -110,8 +107,7 @@ namespace Ugen.Editor.GraphView
         void LoadManager(UgenManager manager)
         {
             targetManager = manager;
-            graphView.LoadFromGraph(manager.Graph);
-            Debug.Log($"Loaded graph with {manager.Graph.Nodes.Count} nodes");
+            graphView.LoadFromGraph(manager.GraphData);
         }
     }
 }

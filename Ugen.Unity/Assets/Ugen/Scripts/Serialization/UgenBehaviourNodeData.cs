@@ -5,9 +5,17 @@ using UnityEngine;
 namespace Ugen.Serialization
 {
     [Serializable]
-    public abstract class UgenBehaviourNodeData<T> : UgenNodeData where T : UgenBehaviour
+    public abstract class UgenBehaviourNodeData : UgenNodeData
+    {
+        public abstract UgenBehaviour Behaviour { get; }
+        public abstract void SetBehaviour(UgenBehaviour behaviour);
+    }
+
+    [Serializable]
+    public abstract class UgenBehaviourNodeData<T> : UgenBehaviourNodeData where T : UgenBehaviour
     {
         [SerializeField] T behaviour;
-        public T Behaviour => behaviour;
+        public override UgenBehaviour Behaviour => behaviour;
+        public override void SetBehaviour(UgenBehaviour behaviour) => this.behaviour = (T)behaviour;
     }
 }

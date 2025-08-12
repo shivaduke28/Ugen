@@ -1,4 +1,3 @@
-using Ugen.Behaviours;
 using UnityEditor;
 using UnityEngine;
 using Ugen.Graph;
@@ -38,7 +37,7 @@ namespace Ugen.Editor
                     "Clear", "Cancel"))
                 {
                     Undo.RecordObject(manager, "Clear Graph");
-                    manager.Graph.ClearNodeAndEdges();
+                    manager.ClearGraph();
                     EditorUtility.SetDirty(manager);
                 }
             }

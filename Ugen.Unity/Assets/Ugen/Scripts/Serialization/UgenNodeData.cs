@@ -10,10 +10,16 @@ namespace Ugen.Serialization
         [SerializeField] Vector2 position;
 
         public string Id => id;
-        public Vector2 Position => position;
 
-        public abstract Port[] InputPorts { get; }
-        public abstract Port[] OutputPorts { get; }
+        public Vector2 Position
+        {
+            get => position;
+            set => position = value;
+        }
+
+        public abstract string Name { get; }
+        public abstract PortData[] InputPorts { get; }
+        public abstract PortData[] OutputPorts { get; }
 
         public UgenNodeData()
         {

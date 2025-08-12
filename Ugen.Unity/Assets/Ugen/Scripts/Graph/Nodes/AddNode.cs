@@ -1,26 +1,27 @@
 using System;
 using R3;
+using Ugen.Attributes;
 
 namespace Ugen.Graph.Nodes
 {
-    [Serializable]
     [UgenNode]
-    public sealed partial class AddNode : UgenNode, IInitializable, IDisposable
+    public sealed class AddNode : UgenNode, IInitializable, IDisposable
     {
-        public override string NodeName => "Add";
-
+        [UgenInput(0)]
         readonly UgenInput<float> a = new("a", 0, 0f);
+        [UgenInput(1)]
         readonly UgenInput<float> b = new("b", 1, 0f);
         readonly Subject<float> result = new();
-        readonly UgenOutput<float> output;
+        [UgenOutput(0)]
+        readonly UgenOutput<float> value;
         IDisposable disposable;
 
-        public AddNode()
+        public AddNode(string nodeId) : base(nodeId)
         {
-            output = new UgenOutput<float>("result", 0, result);
+            value = new UgenOutput<float>("result", 0, result);
             AddInputPort(a);
             AddInputPort(b);
-            AddOutputPort(output);
+            AddOutputPort(value);
         }
 
         public void Initialize()

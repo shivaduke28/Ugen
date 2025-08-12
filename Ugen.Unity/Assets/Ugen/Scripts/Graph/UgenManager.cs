@@ -4,17 +4,18 @@ using R3;
 using UnityEngine;
 using Ugen.Behaviours;
 using Ugen.Graph.Nodes;
+using Ugen.Serialization;
+using UnityEngine.Assertions;
 
 namespace Ugen.Graph
 {
     public sealed class UgenManager : MonoBehaviour
     {
-        [SerializeField] UgenGraph graph = new();
+        [SerializeField] UgenGraphData graphData;
         [SerializeField] bool autoExecuteOnStart = true;
 
         readonly CompositeDisposable graphDisposable = new();
-
-        public UgenGraph Graph => graph;
+        public UgenGraphData GraphData => graphData;
 
         void Start()
         {
@@ -27,8 +28,23 @@ namespace Ugen.Graph
         void ExecuteGraph()
         {
             var nodes = new Dictionary<string, UgenNode>();
-            foreach (var node in graph.Nodes)
+            foreach (var nodeData in graphData.Nodes)
             {
+                UgenNode node = null;
+                switch (nodeData)
+                {
+                    case AddNodeData addNodeData:
+                        node = new AddNode(addNodeData.Id);
+                        break;
+                    case UgenBehaviourNodeData behaviourNodeData:
+                        if (behaviourNodeData.Behaviour is { } behaviour)
+                        {
+                            node = new UgenBehaviourNode(nodeData.Id, behaviour);
+                        }
+
+                        break;
+                }
+
                 if (node is IInitializable initializable)
                 {
                     initializable.Initialize();
@@ -39,53 +55,38 @@ namespace Ugen.Graph
                     graphDisposable.Add(dis);
                 }
 
-                nodes[node.NodeId] = node;
+                if (node != null)
+                {
+                    nodes[node.NodeId] = node;
+                }
             }
 
-            foreach (var edge in graph.Edges)
+            foreach (var edge in graphData.Edges)
             {
                 nodes[edge.OutputNodeId].OutputPorts[edge.OutputPortIndex].ConnectTo(
                     nodes[edge.InputNodeId].InputPorts[edge.InputPortIndex], graphDisposable);
             }
 
-            Debug.Log($"Graph executed: {graph.Nodes.Count} nodes, {graph.Edges.Count} edges");
+            Debug.Log($"Graph executed: {graphData.Nodes.Length} nodes, {graphData.Edges.Length} edges");
         }
 
 
         public void CollectBehavioursFromScene()
         {
-            graph.ClearNodeAndEdges();
-
             var behaviours = FindObjectsByType<UgenBehaviour>(FindObjectsSortMode.None);
-            foreach (var behaviour in behaviours)
-            {
-                graph.AddBehaviour(behaviour);
-                UgenBehaviourNode node;
-                switch (behaviour)
-                {
-                    case UgenSlider ugenSlider:
-                        var sliderNode = new SliderNode();
-                        sliderNode.SetBehaviour(ugenSlider);
-                        node = sliderNode;
-                        break;
-                    case UgenYawRotator rotator:
-                        var rotatorNode = new YawRotatorNode();
-                        rotatorNode.SetBehaviour(rotator);
-                        node = rotatorNode;
-                        break;
-                    default:
-                        node = null;
-                        break;
-                }
+            graphData = new UgenGraphData(behaviours, graphData.Nodes, graphData.Edges);
+        }
 
-                if (node != null)
-                {
-                    graph.AddNode(node);
-                    Debug.Log($"Collected {behaviour.GetType().Name} as node '{node.NodeId}'");
-                }
-            }
+        public void ClearGraph()
+        {
+            CollectBehavioursFromScene();
+            graphData = new UgenGraphData(graphData.Behaviours, Array.Empty<UgenNodeData>(), Array.Empty<EdgeData>());
+        }
 
-            Debug.Log($"Collected {graph.Nodes.Count} behaviours from scene");
+        public void SaveGraph(UgenGraphData newGraphData)
+        {
+            Assert.IsFalse(Application.isPlaying, "Cannot save graph while in play mode");
+            graphData = newGraphData;
         }
     }
 }

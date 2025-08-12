@@ -1,34 +1,36 @@
 using System.Collections.Generic;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using Ugen.Graph;
+using Ugen.Serialization;
 using UnityEngine.UIElements;
 
 namespace Ugen.Editor.GraphView
 {
     public class UgenNodeView : Node
     {
-        public UgenNode Node { get; }
+        public UgenNodeData Node { get; }
+
+        public string NodeId => Node.Id;
+        public Vector2 Position => new(style.left.value.value, style.top.value.value);
 
         readonly List<Port> inputPorts = new();
         readonly List<Port> outputPorts = new();
 
-        public UgenNodeView(UgenNode node)
+        public UgenNodeView(UgenNodeData node)
         {
-            Node = node;
-            title = node.NodeName;
+            this.Node = node;
+            title = node.Name;
 
-            CreatePorts();
-            // RefreshExpandedState();
+            CreatePorts(node);
             RefreshPorts();
 
             SetPosition(new Rect(node.Position, Vector2.zero));
         }
 
-        void CreatePorts()
+        void CreatePorts(UgenNodeData node)
         {
             // Create input ports
-            foreach (var port in Node.InputPorts)
+            foreach (var port in node.InputPorts)
             {
                 var inputPort = CreateInputPort(port);
                 inputContainer.Add(inputPort);
@@ -36,7 +38,7 @@ namespace Ugen.Editor.GraphView
             }
 
             // Create output ports
-            foreach (var port in Node.OutputPorts)
+            foreach (var port in node.OutputPorts)
             {
                 var outputPort = CreateOutputPort(port);
                 outputContainer.Add(outputPort);
@@ -44,7 +46,7 @@ namespace Ugen.Editor.GraphView
             }
         }
 
-        Port CreateInputPort(IUgenInput portData)
+        Port CreateInputPort(PortData portData)
         {
             var port = InstantiatePort(Orientation.Horizontal, Direction.Input,
                 Port.Capacity.Multi, portData.ValueType);
@@ -57,7 +59,7 @@ namespace Ugen.Editor.GraphView
             return port;
         }
 
-        Port CreateOutputPort(IUgenOutput portData)
+        Port CreateOutputPort(PortData portData)
         {
             var port = InstantiatePort(Orientation.Horizontal, Direction.Output,
                 Port.Capacity.Multi, portData.ValueType);
@@ -77,12 +79,6 @@ namespace Ugen.Editor.GraphView
         public Port GetOutputPort(int index)
         {
             return index >= 0 && index < outputPorts.Count ? outputPorts[index] : null;
-        }
-
-        public override void SetPosition(Rect newPos)
-        {
-            base.SetPosition(newPos);
-            Node.Position = newPos.position;
         }
     }
 }

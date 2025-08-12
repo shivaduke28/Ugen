@@ -3,19 +3,18 @@ using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Ugen.Behaviours;
-using Ugen.Graph;
-using Ugen.Graph.Nodes;
+using Ugen.Serialization;
 
 namespace Ugen.Editor.GraphView
 {
     public sealed class UgenBehaviourNodeView : UgenNodeView
     {
-        readonly UgenBehaviourNode behaviourNode;
+        readonly UgenBehaviourNodeData behaviourNode;
         readonly Button selectBehaviourButton;
-        readonly UgenGraph currentGraph;
+        readonly UgenGraphData currentGraph;
         readonly BehaviourSearchProvider searchProvider;
 
-        public UgenBehaviourNodeView(UgenBehaviourNode node, UgenGraph graph) : base(node)
+        public UgenBehaviourNodeView(UgenBehaviourNodeData node, UgenGraphData graph) : base(node)
         {
             behaviourNode = node;
             currentGraph = graph;
@@ -48,7 +47,7 @@ namespace Ugen.Editor.GraphView
             var requiredType = GetRequiredBehaviourType();
 
             // Initialize and open search window
-            searchProvider.Initialize(behaviourNode, currentGraph, requiredType, OnBehaviourSelected);
+            searchProvider.Initialize(currentGraph, requiredType, OnBehaviourSelected);
 
             var mousePosition = Event.current?.mousePosition ?? Vector2.zero;
             var screenPoint = GUIUtility.GUIToScreenPoint(mousePosition);
@@ -63,7 +62,7 @@ namespace Ugen.Editor.GraphView
 
             while (baseType != null)
             {
-                if (baseType.IsGenericType && baseType.GetGenericTypeDefinition() == typeof(UgenBehaviourNode<>))
+                if (baseType.IsGenericType && baseType.GetGenericTypeDefinition() == typeof(UgenBehaviourNodeData<>))
                 {
                     return baseType.GetGenericArguments()[0];
                 }
@@ -75,30 +74,8 @@ namespace Ugen.Editor.GraphView
 
         void OnBehaviourSelected(UgenBehaviour behaviour)
         {
-            SetBehaviourInternal(behaviour);
-        }
-
-        void SetBehaviourInternal(UgenBehaviour behaviour)
-        {
-            // Use reflection to call the SetBehaviour method with the correct type
-            var nodeType = behaviourNode.GetType();
-            var baseType = nodeType.BaseType;
-
-            while (baseType != null)
-            {
-                if (baseType.IsGenericType && baseType.GetGenericTypeDefinition() == typeof(UgenBehaviourNode<>))
-                {
-                    var setBehaviourMethod = nodeType.GetMethod("SetBehaviour");
-                    if (setBehaviourMethod != null)
-                    {
-                        setBehaviourMethod.Invoke(behaviourNode, new object[] { behaviour });
-                        UpdateTitle();
-                        return;
-                    }
-                    break;
-                }
-                baseType = baseType.BaseType;
-            }
+            behaviourNode.SetBehaviour(behaviour);
+            UpdateTitle();
         }
 
         string GetButtonText()
@@ -108,9 +85,9 @@ namespace Ugen.Editor.GraphView
                 var behaviourName = behaviourNode.Behaviour.gameObject != null
                     ? behaviourNode.Behaviour.gameObject.name
                     : behaviourNode.Behaviour.name;
-                return $"{behaviourNode.NodeName}: {behaviourName}";
+                return $"{behaviourNode.Name}: {behaviourName}";
             }
-            return $"{behaviourNode.NodeName}: <None>";
+            return $"{behaviourNode.Name}: <None>";
         }
 
         void UpdateTitle()

@@ -1,38 +1,21 @@
-using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using UnityEngine;
 
 namespace Ugen.Graph
 {
-    [Serializable]
     public abstract class UgenNode
     {
-        [SerializeField] string nodeId;
-        [SerializeField] Vector2 position;
         readonly List<IUgenInput> inputPorts = new();
         readonly List<IUgenOutput> outputPorts = new();
 
-        public string NodeId
-        {
-            get => nodeId;
-            set => nodeId = value;
-        }
-
-        public Vector2 Position
-        {
-            get => position;
-            set => position = value;
-        }
+        public string NodeId { get; }
 
         public IReadOnlyList<IUgenInput> InputPorts => inputPorts;
         public IReadOnlyList<IUgenOutput> OutputPorts => outputPorts;
 
-        public abstract string NodeName { get; }
-
-        protected UgenNode()
+        protected UgenNode(string nodeId)
         {
-            nodeId = Guid.NewGuid().ToString();
+            NodeId = nodeId;
         }
 
         protected void AddInputPort(IUgenInput input)

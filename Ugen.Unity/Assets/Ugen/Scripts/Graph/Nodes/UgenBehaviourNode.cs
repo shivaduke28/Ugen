@@ -1,24 +1,23 @@
-using System;
 using Ugen.Behaviours;
-using UnityEngine;
 
 namespace Ugen.Graph.Nodes
 {
-    public abstract class UgenBehaviourNode : UgenNode
+    public sealed class UgenBehaviourNode : UgenNode
     {
-        public abstract UgenBehaviour Behaviour { get; }
-    }
+        readonly UgenBehaviour behaviour;
 
-
-    [Serializable]
-    public abstract class UgenBehaviourNode<T> : UgenBehaviourNode where T : UgenBehaviour
-    {
-        [SerializeField] protected T behaviour;
-        public override UgenBehaviour Behaviour => behaviour;
-
-        public void SetBehaviour(T behaviour)
+        public UgenBehaviourNode(string nodeId, UgenBehaviour behaviour) : base(nodeId)
         {
             this.behaviour = behaviour;
+            foreach (var input in behaviour.Inputs)
+            {
+                AddInputPort(input);
+            }
+
+            foreach (var output in behaviour.Outputs)
+            {
+                AddOutputPort(output);
+            }
         }
     }
 }

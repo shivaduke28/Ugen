@@ -4,7 +4,8 @@ using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Ugen.Graph;
-using Ugen.Graph.Nodes;
+using Ugen.Serialization;
+using UnityEngine.Assertions;
 
 namespace Ugen.Editor.GraphView
 {
@@ -12,7 +13,7 @@ namespace Ugen.Editor.GraphView
     {
         readonly Dictionary<string, UgenNodeView> nodeViews = new();
         readonly Dictionary<string, UgenEdgeView> edgeViews = new();
-        UgenGraph currentGraph;
+        UgenGraphData currentGraph;
 
         public UgenGraphView()
         {
@@ -42,16 +43,17 @@ namespace Ugen.Editor.GraphView
                 {
                     searchWindowProvider.Initialize(this, currentGraph);
                 }
+
                 SearchWindow.Open(new SearchWindowContext(context.screenMousePosition), searchWindowProvider);
             };
         }
 
-        UgenNodeView CreateNodeView(UgenNode node)
+        UgenNodeView CreateNodeView(UgenNodeData node)
         {
             UgenNodeView nodeView;
 
             // Create specialized view for UgenBehaviourNode
-            if (node is UgenBehaviourNode behaviourNode)
+            if (node is UgenBehaviourNodeData behaviourNode)
             {
                 nodeView = new UgenBehaviourNodeView(behaviourNode, currentGraph);
             }
@@ -63,14 +65,14 @@ namespace Ugen.Editor.GraphView
             nodeView.SetPosition(new Rect(node.Position, Vector2.zero));
 
             AddElement(nodeView);
-            nodeViews[node.NodeId] = nodeView;
+            nodeViews[node.Id] = nodeView;
             return nodeView;
         }
 
         public void AddNodeView(UgenNodeView nodeView)
         {
             AddElement(nodeView);
-            nodeViews[nodeView.Node.NodeId] = nodeView;
+            nodeViews[nodeView.NodeId] = nodeView;
         }
 
         public void AddEdgeView(UgenEdgeView edgeView)
@@ -110,45 +112,45 @@ namespace Ugen.Editor.GraphView
             nodeViews.Clear();
         }
 
-        public void SaveToGraph(UgenGraph graph)
+        public UgenGraphData ExportToGraph()
         {
-            currentGraph = graph;
-            graph.ClearNodeAndEdges();
-
+            var nodes = new List<UgenNodeData>();
+            var edges = new List<EdgeData>();
             // Save nodes with updated positions
             foreach (var nodeView in nodeViews.Values)
             {
                 var node = nodeView.Node;
                 node.Position = nodeView.GetPosition().position;
-                graph.AddNode(node);
+                nodes.Add(node);
             }
 
-            foreach(var edge in edgeViews.Values)
+            foreach (var edge in edgeViews.Values)
             {
                 var outputNode = (edge.output.node as UgenNodeView)?.Node;
                 var inputNode = (edge.input.node as UgenNodeView)?.Node;
 
                 if (outputNode != null && inputNode != null)
                 {
-                    if (edge.output.userData is IUgenOutput outputPort && edge.input.userData is IUgenInput inputPort)
+                    if (edge.output.userData is PortData outputPort && edge.input.userData is PortData inputPort)
                     {
                         var edgeId = edge.EdgeId;
 
-                        graph.AddEdge(new UgenEdge
-                        {
-                            EdgeId = edgeId,
-                            OutputNodeId = outputNode.NodeId,
-                            OutputPortIndex = outputPort.Index,
-                            InputNodeId = inputNode.NodeId,
-                            InputPortIndex = inputPort.Index
-                        });
+                        edges.Add(new EdgeData(
+                            edgeId,
+                            inputNode.Id,
+                            inputPort.Index,
+                            outputNode.Id,
+                            outputPort.Index));
                     }
                 }
             }
+
+            return new UgenGraphData(currentGraph.Behaviours, nodes.ToArray(), edges.ToArray());
         }
 
-        public void LoadFromGraph(UgenGraph graph)
+        public void LoadFromGraph(UgenGraphData graph)
         {
+            Assert.IsNotNull(graph);
             ClearGraph();
             currentGraph = graph;
 
@@ -171,8 +173,7 @@ namespace Ugen.Editor.GraphView
 
                     if (outputPort != null && inputPort != null)
                     {
-                        // Create UgenEdgeView with existing EdgeId
-                        var edge = new UgenEdgeView(ugenEdge.EdgeId);
+                        var edge = new UgenEdgeView(ugenEdge.Id);
                         edge.output = outputPort;
                         edge.input = inputPort;
                         outputPort.Connect(edge);

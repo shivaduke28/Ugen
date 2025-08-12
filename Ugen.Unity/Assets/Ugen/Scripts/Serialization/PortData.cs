@@ -2,17 +2,17 @@ using System;
 
 namespace Ugen.Serialization
 {
-    public sealed class Port
+    public sealed class PortData
     {
         public readonly int Index;
         public readonly string Name;
-        public readonly Type Type;
+        public readonly Type ValueType;
 
-        public Port(int index, string name, Type type)
+        public PortData(int index, string name, Type valueType)
         {
             Index = index;
             Name = name;
-            Type = type;
+            ValueType = valueType;
         }
     }
 }

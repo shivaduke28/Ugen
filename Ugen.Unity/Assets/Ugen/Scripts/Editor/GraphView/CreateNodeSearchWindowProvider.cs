@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Ugen.Graph;
 using Ugen.Graph.Nodes;
+using Ugen.Serialization;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
@@ -10,9 +11,9 @@ namespace Ugen.Editor.GraphView
     public class CreateNodeSearchWindowProvider : ScriptableObject, ISearchWindowProvider
     {
         UgenGraphView graphView;
-        UgenGraph graph;
+        UgenGraphData graph;
 
-        public void Initialize(UgenGraphView graphView, UgenGraph graph)
+        public void Initialize(UgenGraphView graphView, UgenGraphData graph)
         {
             this.graphView = graphView;
             this.graph = graph;
@@ -20,14 +21,13 @@ namespace Ugen.Editor.GraphView
 
         List<SearchTreeEntry> ISearchWindowProvider.CreateSearchTree(SearchWindowContext context)
         {
-            var entries = new List<SearchTreeEntry>();
-            entries.Add(new SearchTreeGroupEntry(new GUIContent("Create Node")));
+            var entries = new List<SearchTreeEntry> { new SearchTreeGroupEntry(new GUIContent("Create Node")) };
 
             foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
                 foreach (var type in assembly.GetTypes())
                 {
-                    if (type.IsClass && !type.IsAbstract && (type.IsSubclassOf(typeof(UgenNode)) || type.IsSubclassOf(typeof(UgenNode))))
+                    if (type.IsClass && !type.IsAbstract && type.IsSubclassOf(typeof(UgenNodeData)))
                     {
                         entries.Add(new SearchTreeEntry(new GUIContent(type.Name)) { level = 1, userData = type });
                     }
@@ -39,12 +39,12 @@ namespace Ugen.Editor.GraphView
 
         bool ISearchWindowProvider.OnSelectEntry(SearchTreeEntry searchTreeEntry, SearchWindowContext context)
         {
-            if (searchTreeEntry.userData is Type type && type.IsSubclassOf(typeof(UgenNode)))
+            if (searchTreeEntry.userData is Type type && type.IsSubclassOf(typeof(UgenNodeData)))
             {
-                var node = Activator.CreateInstance(type) as UgenNode;
+                var node = Activator.CreateInstance(type) as UgenNodeData;
 
                 UgenNodeView nodeView;
-                if (node is UgenBehaviourNode behaviourNode)
+                if (node is UgenBehaviourNodeData behaviourNode)
                 {
                     nodeView = new UgenBehaviourNodeView(behaviourNode, graph);
                 }

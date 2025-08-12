@@ -5,19 +5,18 @@ using UnityEngine;
 using Ugen.Behaviours;
 using Ugen.Graph;
 using Ugen.Graph.Nodes;
+using Ugen.Serialization;
 
 namespace Ugen.Editor.GraphView
 {
     public sealed class BehaviourSearchProvider : ScriptableObject, ISearchWindowProvider
     {
-        UgenBehaviourNode targetNode;
-        UgenGraph graph;
+        UgenGraphData graph;
         Type requiredBehaviourType;
         Action<UgenBehaviour> onBehaviourSelected;
 
-        public void Initialize(UgenBehaviourNode node, UgenGraph graph, Type requiredType, Action<UgenBehaviour> callback)
+        public void Initialize(UgenGraphData graph, Type requiredType, Action<UgenBehaviour> callback)
         {
-            targetNode = node;
             this.graph = graph;
             requiredBehaviourType = requiredType;
             onBehaviourSelected = callback;
