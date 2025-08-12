@@ -7,14 +7,14 @@ namespace Ugen.Serialization
     public class Graph
     {
         [SerializeReference, SerializeReferenceSelector]
-        Node[] nodes;
+        UgenNodeData[] nodes;
 
         [SerializeField] Edge[] edges;
 
-        public Node[] Nodes => nodes;
+        public UgenNodeData[] Nodes => nodes;
         public Edge[] Edges => edges;
 
-        public Graph(Node[] nodes, Edge[] edges)
+        public Graph(UgenNodeData[] nodes, Edge[] edges)
         {
             this.nodes = nodes;
             this.edges = edges;

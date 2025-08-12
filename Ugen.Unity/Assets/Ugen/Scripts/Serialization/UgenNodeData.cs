@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Ugen.Serialization
 {
     [Serializable]
-    public abstract class Node
+    public abstract class UgenNodeData
     {
         [SerializeField] string id;
         [SerializeField] Vector2 position;
@@ -15,7 +15,13 @@ namespace Ugen.Serialization
         public abstract Port[] InputPorts { get; }
         public abstract Port[] OutputPorts { get; }
 
-        public Node(string id, Vector2 position)
+        public UgenNodeData()
+        {
+            id = Guid.NewGuid().ToString();
+            position = Vector2.zero;
+        }
+
+        protected UgenNodeData(string id, Vector2 position)
         {
             this.id = id;
             this.position = position;

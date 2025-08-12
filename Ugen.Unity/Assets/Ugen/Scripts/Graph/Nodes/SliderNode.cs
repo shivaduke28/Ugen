@@ -6,7 +6,8 @@ using UnityEngine;
 namespace Ugen.Graph.Nodes
 {
     [Serializable]
-    public sealed class SliderNode : UgenBehaviourNode<UgenSlider>, IInitializable, IDisposable
+    [UgenNode]
+    public sealed partial class SliderNode : UgenBehaviourNode<UgenSlider>, IInitializable, IDisposable
     {
         public override string NodeName => "Slider";
 

@@ -4,7 +4,8 @@ using R3;
 namespace Ugen.Graph.Nodes
 {
     [Serializable]
-    public sealed class AddNode : UgenNode, IInitializable, IDisposable
+    [UgenNode]
+    public sealed partial class AddNode : UgenNode, IInitializable, IDisposable
     {
         public override string NodeName => "Add";
 
