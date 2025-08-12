@@ -1036,60 +1036,72 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e4e7b3581bbf47cb8b023002b5b234b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  graph:
-    nodes:
-    - rid: 8415219134870585486
-    - rid: 8415219134870585487
-    - rid: 8415219134870585488
-    - rid: 8415219134870585489
-    edges:
-    - edgeId: e8b20cd4-fe5b-4c4f-9bab-70f2becc68ea
-      outputNodeId: 486ee7e2-a1ad-4d8d-9b10-98d422c14f49
-      outputPortIndex: 0
-      inputNodeId: 8e76eb6a-f6b2-4304-bfad-10cd15e7a0d9
-      inputPortIndex: 0
-    - edgeId: 010aa804-0da1-4938-ad02-74678d63d099
-      outputNodeId: e09084da-314d-4858-943b-a4eceacfffe2
-      outputPortIndex: 0
-      inputNodeId: 8e76eb6a-f6b2-4304-bfad-10cd15e7a0d9
-      inputPortIndex: 1
-    - edgeId: ecc0f890-a12f-451f-a4e1-8d6ece80e67c
-      outputNodeId: 8e76eb6a-f6b2-4304-bfad-10cd15e7a0d9
-      outputPortIndex: 0
-      inputNodeId: 79b79085-5679-4972-abed-319ceaa9f705
-      inputPortIndex: 0
+  graphData:
     behaviours:
-    - {fileID: 1456945592}
     - {fileID: 602440398}
-    - {fileID: 916035210}
     - {fileID: 43342263}
+    - {fileID: 1456945592}
+    - {fileID: 916035210}
+    nodes:
+    - rid: 8415219242531815489
+    - rid: 8415219242531815490
+    - rid: 8415219242531815491
+    - rid: 8415219242531815492
+    - rid: 8415219242531815493
+    edges:
+    - id: b0a193a8-0711-4b42-83ca-4db0b0d76cee
+      inputNodeId: e2ee14ef-dbf9-45d9-ab31-b6b18e3d5664
+      inputPortIndex: 1
+      outputNodeId: 876cc724-155c-4985-88d0-307961d4b033
+      outputPortIndex: 0
+    - id: b38e4077-93b4-4fdb-8f33-fcfae7d114d7
+      inputNodeId: 24c58579-277a-4740-9558-8d0629e8fb57
+      inputPortIndex: 0
+      outputNodeId: e2ee14ef-dbf9-45d9-ab31-b6b18e3d5664
+      outputPortIndex: 0
+    - id: 9e561718-e03a-4ef0-919f-48623fb490bb
+      inputNodeId: a3268900-6e10-4cdb-9fc3-2e5f58b3a2de
+      inputPortIndex: 0
+      outputNodeId: d43fe605-b79c-4abc-b6f1-72956f69e86c
+      outputPortIndex: 0
+    - id: e2369154-9f16-421d-9621-186439cfaec1
+      inputNodeId: e2ee14ef-dbf9-45d9-ab31-b6b18e3d5664
+      inputPortIndex: 0
+      outputNodeId: d43fe605-b79c-4abc-b6f1-72956f69e86c
+      outputPortIndex: 0
   autoExecuteOnStart: 1
   references:
     version: 2
     RefIds:
-    - rid: 8415219134870585486
-      type: {class: AddNode, ns: Ugen.Graph.Nodes, asm: Ugen}
+    - rid: 8415219242531815489
+      type: {class: UgenSliderNodeData, ns: Ugen.Serialization, asm: Ugen}
       data:
-        nodeId: 8e76eb6a-f6b2-4304-bfad-10cd15e7a0d9
-        position: {x: 172, y: 51.5}
-    - rid: 8415219134870585487
-      type: {class: SliderNode, ns: Ugen.Graph.Nodes, asm: Ugen}
-      data:
-        nodeId: 486ee7e2-a1ad-4d8d-9b10-98d422c14f49
-        position: {x: 0, y: 0}
+        id: d43fe605-b79c-4abc-b6f1-72956f69e86c
+        position: {x: 0, y: -2}
         behaviour: {fileID: 602440398}
-    - rid: 8415219134870585488
-      type: {class: SliderNode, ns: Ugen.Graph.Nodes, asm: Ugen}
+    - rid: 8415219242531815490
+      type: {class: UgenYawRotatorNodeData, ns: Ugen.Serialization, asm: Ugen}
       data:
-        nodeId: e09084da-314d-4858-943b-a4eceacfffe2
-        position: {x: -19.5, y: 164.5}
-        behaviour: {fileID: 43342263}
-    - rid: 8415219134870585489
-      type: {class: YawRotatorNode, ns: Ugen.Graph.Nodes, asm: Ugen}
-      data:
-        nodeId: 79b79085-5679-4972-abed-319ceaa9f705
-        position: {x: 400, y: 75.5}
+        id: a3268900-6e10-4cdb-9fc3-2e5f58b3a2de
+        position: {x: 217.5, y: -2}
         behaviour: {fileID: 1456945592}
+    - rid: 8415219242531815491
+      type: {class: UgenSliderNodeData, ns: Ugen.Serialization, asm: Ugen}
+      data:
+        id: 876cc724-155c-4985-88d0-307961d4b033
+        position: {x: 0, y: 180}
+        behaviour: {fileID: 43342263}
+    - rid: 8415219242531815492
+      type: {class: AddNodeData, ns: Ugen.Serialization, asm: Ugen}
+      data:
+        id: e2ee14ef-dbf9-45d9-ab31-b6b18e3d5664
+        position: {x: 234.5, y: 129}
+    - rid: 8415219242531815493
+      type: {class: UgenYawRotatorNodeData, ns: Ugen.Serialization, asm: Ugen}
+      data:
+        id: 24c58579-277a-4740-9558-8d0629e8fb57
+        position: {x: 419, y: 129}
+        behaviour: {fileID: 916035210}
 --- !u!1 &835100966
 GameObject:
   m_ObjectHideFlags: 0

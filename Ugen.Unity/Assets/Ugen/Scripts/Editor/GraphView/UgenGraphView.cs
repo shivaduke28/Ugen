@@ -114,14 +114,14 @@ namespace Ugen.Editor.GraphView
 
         public UgenGraphData ExportToGraph()
         {
-            var nodes = new List<UgenNodeData>();
-            var edges = new List<EdgeData>();
+            var nodeDatas = new List<UgenNodeData>();
+            var edgeDatas = new List<EdgeData>();
             // Save nodes with updated positions
             foreach (var nodeView in nodeViews.Values)
             {
                 var node = nodeView.Node;
                 node.Position = nodeView.GetPosition().position;
-                nodes.Add(node);
+                nodeDatas.Add(node);
             }
 
             foreach (var edge in edgeViews.Values)
@@ -135,7 +135,7 @@ namespace Ugen.Editor.GraphView
                     {
                         var edgeId = edge.EdgeId;
 
-                        edges.Add(new EdgeData(
+                        edgeDatas.Add(new EdgeData(
                             edgeId,
                             inputNode.Id,
                             inputPort.Index,
@@ -143,9 +143,13 @@ namespace Ugen.Editor.GraphView
                             outputPort.Index));
                     }
                 }
+                else
+                {
+                    Debug.LogWarning($"Edge {edge.EdgeId} has invalid nodes. Output: {outputNode?.Id}, Input: {inputNode?.Id}");
+                }
             }
 
-            return new UgenGraphData(currentGraph.Behaviours, nodes.ToArray(), edges.ToArray());
+            return new UgenGraphData(currentGraph.Behaviours, nodeDatas.ToArray(), edgeDatas.ToArray());
         }
 
         public void LoadFromGraph(UgenGraphData graph)
@@ -173,12 +177,14 @@ namespace Ugen.Editor.GraphView
 
                     if (outputPort != null && inputPort != null)
                     {
-                        var edge = new UgenEdgeView(ugenEdge.Id);
-                        edge.output = outputPort;
-                        edge.input = inputPort;
+                        var edge = new UgenEdgeView(ugenEdge.Id)
+                        {
+                            output = outputPort,
+                            input = inputPort
+                        };
                         outputPort.Connect(edge);
                         inputPort.Connect(edge);
-                        AddElement(edge);
+                        AddEdgeView(edge);
                     }
                 }
             }

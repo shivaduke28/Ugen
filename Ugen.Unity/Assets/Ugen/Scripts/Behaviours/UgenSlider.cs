@@ -1,22 +1,24 @@
 using R3;
+using Ugen.Attributes;
 using Ugen.Graph;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Ugen.Behaviours
 {
-    [RequireComponent(typeof(Slider))]
+    [RequireComponent(typeof(Slider)), UgenBehaviour]
     public sealed class UgenSlider : UgenBehaviour
     {
         [SerializeField] Slider slider;
 
-        UgenOutput<float> output;
+        [UgenOutput(0)]
+        UgenOutput<float> value;
 
         protected override void InitializePorts()
         {
             Debug.Log("initialize ports ugen slider");
-            output = new UgenOutput<float>("value", 0, slider.OnValueChangedAsObservable());
-            RegisterOutput(output);
+            value = new UgenOutput<float>("value", 0, slider.OnValueChangedAsObservable());
+            RegisterOutput(value);
         }
 
         void Reset()

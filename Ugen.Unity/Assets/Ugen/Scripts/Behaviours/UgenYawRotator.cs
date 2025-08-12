@@ -1,14 +1,16 @@
 using R3;
+using Ugen.Attributes;
 using Ugen.Graph;
 using UnityEngine;
 
 namespace Ugen.Behaviours
 {
+    [UgenBehaviour]
     public sealed class UgenYawRotator : UgenBehaviour
     {
         [SerializeField] float speedMultiplier = 30f;
 
-        UgenInput<float> speedInput;
+        [UgenInput(0, "speed")] UgenInput<float> speedInput;
         Transform targetTransform;
 
         protected override void InitializePorts()
@@ -22,7 +24,7 @@ namespace Ugen.Behaviours
             targetTransform = transform;
 
             Observable.EveryUpdate()
-                .WithLatestFrom(speedInput.Observable.Do(x => Debug.Log($"speed:{x}")), (_, s) => s)
+                .WithLatestFrom(speedInput.Observable, (_, s) => s)
                 .Subscribe(s =>
                 {
                     var rotationSpeed = s * speedMultiplier;
