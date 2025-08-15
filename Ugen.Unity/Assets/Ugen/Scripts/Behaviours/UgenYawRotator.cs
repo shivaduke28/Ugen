@@ -8,27 +8,27 @@ namespace Ugen.Behaviours
     [UgenBehaviour]
     public sealed class UgenYawRotator : UgenBehaviour
     {
-        [SerializeField] float speedMultiplier = 30f;
+        [SerializeField] float _speedMultiplier = 30f;
 
-        [UgenInput(0, "speed")] UgenInput<float> speedInput;
-        Transform targetTransform;
+        [UgenInput(0, "speed")] UgenInput<float> _speedInput;
+        Transform _targetTransform;
 
         protected override void InitializePorts()
         {
-            speedInput = new UgenInput<float>("speed", 0, 1f);
-            RegisterInput(speedInput);
+            _speedInput = new UgenInput<float>("speed", 0, 1f);
+            RegisterInput(_speedInput);
         }
 
         void Start()
         {
-            targetTransform = transform;
+            _targetTransform = transform;
 
             Observable.EveryUpdate()
-                .WithLatestFrom(speedInput.Observable, (_, s) => s)
+                .WithLatestFrom(_speedInput.Observable, (_, s) => s)
                 .Subscribe(s =>
                 {
-                    var rotationSpeed = s * speedMultiplier;
-                    targetTransform.Rotate(Vector3.up, rotationSpeed * Time.deltaTime);
+                    var rotationSpeed = s * _speedMultiplier;
+                    _targetTransform.Rotate(Vector3.up, rotationSpeed * Time.deltaTime);
                 })
                 .AddTo(this);
         }
