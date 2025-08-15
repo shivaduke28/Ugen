@@ -104,7 +104,7 @@ internal static class PortInfoExtractor
     /// </summary>
     internal static bool IsUgenInput(INamedTypeSymbol type)
     {
-        return type.Name == UgenInputTypeName &&
+        return type.Name.Contains("Input") &&
                type.ContainingNamespace.ToDisplayString() == UgenGraphNamespace &&
                type.IsGenericType;
     }
@@ -114,7 +114,7 @@ internal static class PortInfoExtractor
     /// </summary>
     internal static bool IsUgenOutput(INamedTypeSymbol type)
     {
-        return type.Name == UgenOutputTypeName &&
+        return type.Name.Contains("Output") &&
                type.ContainingNamespace.ToDisplayString() == UgenGraphNamespace &&
                type.IsGenericType;
     }

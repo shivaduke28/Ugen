@@ -19,7 +19,7 @@ namespace Ugen.Graph
 
         public void ConnectTo(IUgenInput input, CompositeDisposable disposables)
         {
-            if (input is UgenInput<T> typedInput)
+            if (input is IUgenInput<T> typedInput)
             {
                 Observable.Subscribe(v => typedInput.Send(v))
                     .AddTo(disposables);

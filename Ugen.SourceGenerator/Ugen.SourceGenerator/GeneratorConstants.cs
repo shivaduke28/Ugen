@@ -18,8 +18,8 @@ internal static class GeneratorConstants
     internal const string UgenSerializationNamespace = "Ugen.Serialization";
 
     // Type names
-    internal const string UgenInputTypeName = "UgenInput";
-    internal const string UgenOutputTypeName = "UgenOutput";
+    // internal const string UgenInputTypeName = "UgenInput";
+    // internal const string UgenOutputTypeName = "UgenOutput";
     internal const string PortTypeName = "PortData";
     internal const string UgenNodeDataTypeName = "UgenNodeData";
     internal const string UgenBehaviourNodeDataTypeName = "UgenBehaviourNodeData";

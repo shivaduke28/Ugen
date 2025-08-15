@@ -6,6 +6,10 @@ namespace Ugen.Graph
     {
         string Name { get; }
         Type ValueType { get; }
-        int Index { get; }
+    }
+
+    public interface IUgenInput<in T> : IUgenInput
+    {
+        void Send(T value);
     }
 }

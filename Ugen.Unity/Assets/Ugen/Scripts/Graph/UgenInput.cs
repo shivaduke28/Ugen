@@ -3,11 +3,28 @@ using R3;
 
 namespace Ugen.Graph
 {
-    public class UgenInput<T> : IUgenInput
+    public sealed class UgenInputSubject<T> : IUgenInput<T>
     {
         public string Name { get; }
         public Type ValueType => typeof(T);
-        public int Index { get; }
+        readonly Subject<T> _subject = new();
+        public Observable<T> Observable => _subject;
+
+        public void Send(T value)
+        {
+            _subject.OnNext(value);
+        }
+
+        public UgenInputSubject(string name)
+        {
+            Name = name;
+        }
+    }
+
+    public class UgenInputProperty<T> : IUgenInput<T>
+    {
+        public string Name { get; }
+        public Type ValueType => typeof(T);
         ReactiveProperty<T> Value { get; }
         public Observable<T> Observable => Value;
 
@@ -16,10 +33,9 @@ namespace Ugen.Graph
             Value.Value = value;
         }
 
-        public UgenInput(string name, int index, T defaultValue = default)
+        public UgenInputProperty(string name, T defaultValue = default)
         {
             Name = name;
-            Index = index;
             Value = new ReactiveProperty<T>(defaultValue);
         }
     }

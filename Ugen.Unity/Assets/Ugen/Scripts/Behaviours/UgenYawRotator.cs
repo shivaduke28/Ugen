@@ -10,12 +10,12 @@ namespace Ugen.Behaviours
     {
         [SerializeField] float _speedMultiplier = 30f;
 
-        [UgenInput(0, "speed")] UgenInput<float> _speedInput;
+        [UgenInput(0, "speed")] UgenInputProperty<float> _speedInput;
         Transform _targetTransform;
 
         protected override void InitializePorts()
         {
-            _speedInput = new UgenInput<float>("speed", 0, 1f);
+            _speedInput = new UgenInputProperty<float>("speed", 1f);
             RegisterInput(_speedInput);
         }
 
