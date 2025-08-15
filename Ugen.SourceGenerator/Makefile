@@ -8,7 +8,7 @@ DLL_NAME = $(PROJECT_NAME).dll
 
 # Paths
 BUILD_DIR = $(PROJECT_NAME)/bin/$(CONFIGURATION)/$(TARGET_FRAMEWORK)
-UNITY_DIR = ../Ugen.Unity/Assets/Ugen/SourceGenerator
+UNITY_DIR = ../Ugen.Unity/Assets/Ugen/Scripts/Plugins
 UNITY_DLL_PATH = $(UNITY_DIR)/$(DLL_NAME)
 
 # Default target
