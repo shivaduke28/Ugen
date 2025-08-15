@@ -6,13 +6,12 @@ using UnityEngine.UI;
 
 namespace Ugen.Behaviours
 {
-    [RequireComponent(typeof(Slider)), UgenBehaviour]
+    [RequireComponent(typeof(Slider)), UgenBehaviour,]
     public sealed class UgenSlider : UgenBehaviour
     {
         [SerializeField] Slider slider;
 
-        [UgenOutput(0)]
-        UgenOutput<float> value;
+        [UgenOutput(0)] UgenOutput<float> value;
 
         protected override void InitializePorts()
         {

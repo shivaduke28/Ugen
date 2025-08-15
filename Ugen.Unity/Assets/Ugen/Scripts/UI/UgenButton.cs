@@ -10,11 +10,11 @@ namespace Ugen.UI
         [UxmlAttribute]
         public string Text
         {
-            get => button.text;
-            set => button.text = value;
+            get => _button.text;
+            set => _button.text = value;
         }
 
-        readonly Button button = new();
+        readonly Button _button = new();
         const string UssClassName = "ugen-button";
         const string UssClassNameFocused = "ugen-button--focused";
         const string UssClassNameHighlighted = "ugen-button--highlighted";
@@ -28,16 +28,16 @@ namespace Ugen.UI
             EnableInClassList(UssClassNameFocused, false);
             EnableInClassList(UssClassNameHighlighted, false);
 
-            Add(button);
+            Add(_button);
         }
 
         public IDisposable Bind(UgenButtonState state)
         {
             return new CompositeDisposable(
-                Observable.FromEvent(h => button.clicked += h, h => button.clicked -= h).Subscribe(_ => state.OnClick()),
+                Observable.FromEvent(h => _button.clicked += h, h => _button.clicked -= h).Subscribe(_ => state.OnClick()),
                 state.IsFocused.Subscribe(x => EnableInClassList(UssClassNameFocused, x)),
                 state.IsHighlighted.Subscribe(x => EnableInClassList(UssClassNameHighlighted, x)),
-                state.Text.Subscribe(x => button.text = x));
+                state.Text.Subscribe(x => _button.text = x));
         }
     }
 }

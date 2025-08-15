@@ -16,7 +16,7 @@ namespace Ugen.Editor.GraphView
                 var ugenEdge = new UgenEdgeView
                 {
                     output = edge.output,
-                    input = edge.input
+                    input = edge.input,
                 };
 
                 graphView.RemoveElement(edge);

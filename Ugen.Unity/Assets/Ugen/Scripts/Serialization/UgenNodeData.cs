@@ -6,15 +6,15 @@ namespace Ugen.Serialization
     [Serializable]
     public abstract class UgenNodeData
     {
-        [SerializeField] string id;
-        [SerializeField] Vector2 position;
+        [SerializeField] string _id;
+        [SerializeField] Vector2 _position;
 
-        public string Id => id;
+        public string Id => _id;
 
         public Vector2 Position
         {
-            get => position;
-            set => position = value;
+            get => _position;
+            set => _position = value;
         }
 
         public abstract string Name { get; }
@@ -23,14 +23,14 @@ namespace Ugen.Serialization
 
         public UgenNodeData()
         {
-            id = Guid.NewGuid().ToString();
-            position = Vector2.zero;
+            _id = Guid.NewGuid().ToString();
+            _position = Vector2.zero;
         }
 
         protected UgenNodeData(string id, Vector2 position)
         {
-            this.id = id;
-            this.position = position;
+            _id = id;
+            _position = position;
         }
     }
 }

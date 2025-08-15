@@ -9,63 +9,60 @@ namespace Ugen.Editor.GraphView
 {
     public sealed class UgenBehaviourNodeView : UgenNodeView
     {
-        readonly UgenBehaviourNodeData behaviourNode;
-        readonly Button selectBehaviourButton;
-        readonly UgenGraphData currentGraph;
-        readonly BehaviourSearchProvider searchProvider;
+        readonly UgenBehaviourNodeData _behaviourNode;
+        readonly Button _selectBehaviourButton;
+        readonly UgenGraphData _currentGraph;
+        readonly BehaviourSearchProvider _searchProvider;
 
         public UgenBehaviourNodeView(UgenBehaviourNodeData node, UgenGraphData graph) : base(node)
         {
-            behaviourNode = node;
-            currentGraph = graph;
+            _behaviourNode = node;
+            _currentGraph = graph;
 
             // Remove the base title and create custom title label
             titleContainer.Clear();
 
             // Create a button for selecting behaviour
-            selectBehaviourButton = new Button(OpenBehaviourSearch)
+            _selectBehaviourButton = new Button(OpenBehaviourSearch)
             {
-                text = GetButtonText()
+                text = GetButtonText(),
             };
-            selectBehaviourButton.AddToClassList("behaviour-select-button");
-            selectBehaviourButton.style.flexGrow = 1;
-            selectBehaviourButton.style.unityTextAlign = TextAnchor.MiddleCenter;
+            _selectBehaviourButton.AddToClassList("behaviour-select-button");
+            _selectBehaviourButton.style.flexGrow = 1;
+            _selectBehaviourButton.style.unityTextAlign = TextAnchor.MiddleCenter;
 
-            titleContainer.Add(selectBehaviourButton);
+            titleContainer.Add(_selectBehaviourButton);
 
             // Initialize search provider
-            searchProvider = ScriptableObject.CreateInstance<BehaviourSearchProvider>();
+            _searchProvider = ScriptableObject.CreateInstance<BehaviourSearchProvider>();
 
             UpdateTitle();
         }
 
         void OpenBehaviourSearch()
         {
-            if (currentGraph == null) return;
+            if (_currentGraph == null) return;
 
             // Get the required behaviour type
             var requiredType = GetRequiredBehaviourType();
 
             // Initialize and open search window
-            searchProvider.Initialize(currentGraph, requiredType, OnBehaviourSelected);
+            _searchProvider.Initialize(_currentGraph, requiredType, OnBehaviourSelected);
 
             var mousePosition = Event.current?.mousePosition ?? Vector2.zero;
             var screenPoint = GUIUtility.GUIToScreenPoint(mousePosition);
 
-            SearchWindow.Open(new SearchWindowContext(screenPoint), searchProvider);
+            SearchWindow.Open(new SearchWindowContext(screenPoint), _searchProvider);
         }
 
         Type GetRequiredBehaviourType()
         {
-            var nodeType = behaviourNode.GetType();
+            var nodeType = _behaviourNode.GetType();
             var baseType = nodeType.BaseType;
 
             while (baseType != null)
             {
-                if (baseType.IsGenericType && baseType.GetGenericTypeDefinition() == typeof(UgenBehaviourNodeData<>))
-                {
-                    return baseType.GetGenericArguments()[0];
-                }
+                if (baseType.IsGenericType && baseType.GetGenericTypeDefinition() == typeof(UgenBehaviourNodeData<>)) return baseType.GetGenericArguments()[0];
                 baseType = baseType.BaseType;
             }
 
@@ -74,35 +71,32 @@ namespace Ugen.Editor.GraphView
 
         void OnBehaviourSelected(UgenBehaviour behaviour)
         {
-            behaviourNode.SetBehaviour(behaviour);
+            _behaviourNode.SetBehaviour(behaviour);
             UpdateTitle();
         }
 
         string GetButtonText()
         {
-            if (behaviourNode.Behaviour != null)
+            if (_behaviourNode.Behaviour != null)
             {
-                var behaviourName = behaviourNode.Behaviour.gameObject != null
-                    ? behaviourNode.Behaviour.gameObject.name
-                    : behaviourNode.Behaviour.name;
-                return $"{behaviourNode.Name}: {behaviourName}";
+                var behaviourName = _behaviourNode.Behaviour.gameObject != null
+                    ? _behaviourNode.Behaviour.gameObject.name
+                    : _behaviourNode.Behaviour.name;
+                return $"{_behaviourNode.Name}: {behaviourName}";
             }
-            return $"{behaviourNode.Name}: <None>";
+
+            return $"{_behaviourNode.Name}: <None>";
         }
 
         void UpdateTitle()
         {
-            selectBehaviourButton.text = GetButtonText();
+            _selectBehaviourButton.text = GetButtonText();
 
             // Also update the node's visual state
-            if (behaviourNode.Behaviour != null)
-            {
+            if (_behaviourNode.Behaviour != null)
                 RemoveFromClassList("no-behaviour");
-            }
             else
-            {
                 AddToClassList("no-behaviour");
-            }
         }
     }
 }

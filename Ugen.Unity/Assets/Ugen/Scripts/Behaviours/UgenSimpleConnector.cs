@@ -22,13 +22,9 @@ namespace Ugen.Behaviours
         void Start()
         {
             foreach (var connection in connections)
-            {
                 if (connection.source != null && connection.target != null)
-                {
                     connection.source.GetOutput(connection.outputIndex)
                         .ConnectTo(connection.target.GetInput(connection.inputIndex), disposable);
-                }
-            }
         }
     }
 }

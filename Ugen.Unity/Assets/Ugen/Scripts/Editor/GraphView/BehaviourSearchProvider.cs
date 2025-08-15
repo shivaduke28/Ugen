@@ -3,23 +3,21 @@ using System.Collections.Generic;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using Ugen.Behaviours;
-using Ugen.Graph;
-using Ugen.Graph.Nodes;
 using Ugen.Serialization;
 
 namespace Ugen.Editor.GraphView
 {
     public sealed class BehaviourSearchProvider : ScriptableObject, ISearchWindowProvider
     {
-        UgenGraphData graph;
-        Type requiredBehaviourType;
-        Action<UgenBehaviour> onBehaviourSelected;
+        UgenGraphData _graph;
+        Type _requiredBehaviourType;
+        Action<UgenBehaviour> _onBehaviourSelected;
 
         public void Initialize(UgenGraphData graph, Type requiredType, Action<UgenBehaviour> callback)
         {
-            this.graph = graph;
-            requiredBehaviourType = requiredType;
-            onBehaviourSelected = callback;
+            _graph = graph;
+            _requiredBehaviourType = requiredType;
+            _onBehaviourSelected = callback;
         }
 
         List<SearchTreeEntry> ISearchWindowProvider.CreateSearchTree(SearchWindowContext context)
@@ -31,27 +29,24 @@ namespace Ugen.Editor.GraphView
             entries.Add(new SearchTreeEntry(new GUIContent("None"))
             {
                 level = 1,
-                userData = null
+                userData = null,
             });
 
-            if (graph == null || graph.Behaviours == null)
+            if (_graph == null || _graph.Behaviours == null)
                 return entries;
 
             // Group behaviours by type
             var behavioursByType = new Dictionary<Type, List<UgenBehaviour>>();
 
-            foreach (var behaviour in graph.Behaviours)
+            foreach (var behaviour in _graph.Behaviours)
             {
                 if (behaviour == null) continue;
 
                 // Check if behaviour matches the required type
-                if (requiredBehaviourType == null || requiredBehaviourType.IsAssignableFrom(behaviour.GetType()))
+                if (_requiredBehaviourType == null || _requiredBehaviourType.IsAssignableFrom(behaviour.GetType()))
                 {
                     var type = behaviour.GetType();
-                    if (!behavioursByType.ContainsKey(type))
-                    {
-                        behavioursByType[type] = new List<UgenBehaviour>();
-                    }
+                    if (!behavioursByType.ContainsKey(type)) behavioursByType[type] = new List<UgenBehaviour>();
                     behavioursByType[type].Add(behaviour);
                 }
             }
@@ -62,7 +57,7 @@ namespace Ugen.Editor.GraphView
                 // Add type group
                 entries.Add(new SearchTreeGroupEntry(new GUIContent(kvp.Key.Name))
                 {
-                    level = 1
+                    level = 1,
                 });
 
                 // Add behaviours of this type
@@ -75,7 +70,7 @@ namespace Ugen.Editor.GraphView
                     entries.Add(new SearchTreeEntry(new GUIContent(displayName))
                     {
                         level = 2,
-                        userData = behaviour
+                        userData = behaviour,
                     });
                 }
             }
@@ -86,7 +81,7 @@ namespace Ugen.Editor.GraphView
         bool ISearchWindowProvider.OnSelectEntry(SearchTreeEntry searchTreeEntry, SearchWindowContext context)
         {
             var behaviour = searchTreeEntry.userData as UgenBehaviour;
-            onBehaviourSelected?.Invoke(behaviour);
+            _onBehaviourSelected?.Invoke(behaviour);
             return true;
         }
     }

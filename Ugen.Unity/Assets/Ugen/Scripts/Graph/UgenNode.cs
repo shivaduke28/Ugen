@@ -5,13 +5,13 @@ namespace Ugen.Graph
 {
     public abstract class UgenNode
     {
-        readonly List<IUgenInput> inputPorts = new();
-        readonly List<IUgenOutput> outputPorts = new();
+        readonly List<IUgenInput> _inputPorts = new();
+        readonly List<IUgenOutput> _outputPorts = new();
 
         public string NodeId { get; }
 
-        public IReadOnlyList<IUgenInput> InputPorts => inputPorts;
-        public IReadOnlyList<IUgenOutput> OutputPorts => outputPorts;
+        public IReadOnlyList<IUgenInput> InputPorts => _inputPorts;
+        public IReadOnlyList<IUgenOutput> OutputPorts => _outputPorts;
 
         protected UgenNode(string nodeId)
         {
@@ -21,13 +21,13 @@ namespace Ugen.Graph
         protected void AddInputPort(IUgenInput input)
         {
             Assert.IsNotNull(input);
-            inputPorts.Add(input);
+            _inputPorts.Add(input);
         }
 
         protected void AddOutputPort(IUgenOutput output)
         {
             Assert.IsNotNull(output);
-            outputPorts.Add(output);
+            _outputPorts.Add(output);
         }
     }
 }

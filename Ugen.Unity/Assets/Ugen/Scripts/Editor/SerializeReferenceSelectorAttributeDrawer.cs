@@ -26,21 +26,18 @@ namespace Ugen.Editor
     [CustomPropertyDrawer(typeof(SerializeReferenceSelectorAttribute))]
     public sealed class SerializeReferenceSelectorAttributeDrawer : PropertyDrawer
     {
-        readonly Dictionary<string, PropertyData> dataPerPath = new();
+        readonly Dictionary<string, PropertyData> _dataPerPath = new();
 
-        PropertyData data;
+        PropertyData _data;
 
-        int selectedIndex;
+        int _selectedIndex;
 
         void Init(SerializedProperty property)
         {
-            if (dataPerPath.TryGetValue(property.propertyPath, out data))
-            {
-                return;
-            }
+            if (_dataPerPath.TryGetValue(property.propertyPath, out _data)) return;
 
-            data = new PropertyData(property);
-            dataPerPath.Add(property.propertyPath, data);
+            _data = new PropertyData(property);
+            _dataPerPath.Add(property.propertyPath, _data);
         }
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
@@ -50,7 +47,7 @@ namespace Ugen.Editor
             Init(property);
 
             var fullTypeName = property.managedReferenceFullTypename.Split(' ').Last();
-            selectedIndex = Array.IndexOf(data.DerivedFullTypeNames, fullTypeName);
+            _selectedIndex = Array.IndexOf(_data.DerivedFullTypeNames, fullTypeName);
 
             using (var ccs = new EditorGUI.ChangeCheckScope())
             {
@@ -62,11 +59,11 @@ namespace Ugen.Editor
                 selectorPosition.width -= EditorGUIUtility.labelWidth;
                 selectorPosition.x += EditorGUIUtility.labelWidth;
                 selectorPosition.height = EditorGUIUtility.singleLineHeight;
-                var selectedTypeIndex = EditorGUI.Popup(selectorPosition, selectedIndex, data.DerivedTypeNames);
+                var selectedTypeIndex = EditorGUI.Popup(selectorPosition, _selectedIndex, _data.DerivedTypeNames);
                 if (ccs.changed)
                 {
-                    selectedIndex = selectedTypeIndex;
-                    var selectedType = data.DerivedTypes[selectedTypeIndex];
+                    _selectedIndex = selectedTypeIndex;
+                    var selectedType = _data.DerivedTypes[selectedTypeIndex];
                     property.managedReferenceValue =
                         selectedType == null ? null : Activator.CreateInstance(selectedType);
                 }
@@ -81,10 +78,7 @@ namespace Ugen.Editor
         {
             Init(property);
 
-            if (string.IsNullOrEmpty(property.managedReferenceFullTypename))
-            {
-                return EditorGUIUtility.singleLineHeight;
-            }
+            if (string.IsNullOrEmpty(property.managedReferenceFullTypename)) return EditorGUIUtility.singleLineHeight;
 
             return EditorGUI.GetPropertyHeight(property, true);
         }
@@ -93,7 +87,7 @@ namespace Ugen.Editor
         {
             internal PropertyData(SerializedProperty property)
             {
-                var managedReferenceFieldTypenameSplit = property.managedReferenceFieldTypename.Split(' ').ToArray();
+                var managedReferenceFieldTypenameSplit = property.managedReferenceFieldTypename.Split(' ');
                 var assemblyName = managedReferenceFieldTypenameSplit[0];
                 var fieldTypeName = managedReferenceFieldTypenameSplit[1];
                 var fieldType = GetAssembly(assemblyName).GetType(fieldTypeName);

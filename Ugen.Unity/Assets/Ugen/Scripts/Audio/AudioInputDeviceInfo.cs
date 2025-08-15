@@ -16,34 +16,16 @@ namespace Ugen.Audio
 
         public static readonly AudioInputDeviceInfo Empty = new("", "");
 
-        public bool Equals(AudioInputDeviceInfo other)
-        {
-            return Id == other.Id;
-        }
+        public bool Equals(AudioInputDeviceInfo other) => Id == other.Id;
 
-        public override bool Equals(object obj)
-        {
-            return obj is AudioInputDeviceInfo other && Equals(other);
-        }
+        public override bool Equals(object obj) => obj is AudioInputDeviceInfo other && Equals(other);
 
-        public override int GetHashCode()
-        {
-            return Id != null ? Id.GetHashCode() : 0;
-        }
+        public override int GetHashCode() => Id != null ? Id.GetHashCode() : 0;
 
-        public static bool operator ==(AudioInputDeviceInfo left, AudioInputDeviceInfo right)
-        {
-            return left.Equals(right);
-        }
+        public static bool operator ==(AudioInputDeviceInfo left, AudioInputDeviceInfo right) => left.Equals(right);
 
-        public static bool operator !=(AudioInputDeviceInfo left, AudioInputDeviceInfo right)
-        {
-            return !left.Equals(right);
-        }
+        public static bool operator !=(AudioInputDeviceInfo left, AudioInputDeviceInfo right) => !left.Equals(right);
 
-        public override string ToString()
-        {
-            return IsValid ? $"{Name} ({Id})" : "Empty";
-        }
+        public override string ToString() => IsValid ? $"{Name} ({Id})" : "Empty";
     }
 }

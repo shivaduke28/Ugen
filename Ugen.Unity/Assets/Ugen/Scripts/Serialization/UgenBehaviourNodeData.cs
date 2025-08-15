@@ -14,8 +14,8 @@ namespace Ugen.Serialization
     [Serializable]
     public abstract class UgenBehaviourNodeData<T> : UgenBehaviourNodeData where T : UgenBehaviour
     {
-        [SerializeField] T behaviour;
-        public override UgenBehaviour Behaviour => behaviour;
-        public override void SetBehaviour(UgenBehaviour behaviour) => this.behaviour = (T)behaviour;
+        [SerializeField] T _behaviour;
+        public override UgenBehaviour Behaviour => _behaviour;
+        public override void SetBehaviour(UgenBehaviour behaviour) => _behaviour = (T)behaviour;
     }
 }

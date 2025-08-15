@@ -45,20 +45,20 @@ internal static class SourceCodeBuilder
                      [Serializable]
                      public sealed class {{classInfo.ClassName}}{{NodeDataClassSuffix}} : {{UgenBehaviourNodeDataTypeName}}<{{classInfo.ClassName}}>
                      {
-                         {{PortTypeName}}[] inputPorts;
-                         {{PortTypeName}}[] outputPorts;
+                         {{PortTypeName}}[] _inputPorts;
+                         {{PortTypeName}}[] _outputPorts;
                          public override string Name => "{{classInfo.ClassName}}";
 
                          public {{classInfo.ClassName}}{{NodeDataClassSuffix}}()
                          {
                          }
 
-                         public override {{PortTypeName}}[] InputPorts => inputPorts ??= new {{PortTypeName}}[]
+                         public override {{PortTypeName}}[] InputPorts => _inputPorts ??= new {{PortTypeName}}[]
                          {
                  {{inputPortsCode}}
                          };
 
-                         public override {{PortTypeName}}[] OutputPorts => outputPorts ??= new {{PortTypeName}}[]
+                         public override {{PortTypeName}}[] OutputPorts => _outputPorts ??= new {{PortTypeName}}[]
                          {
                  {{outputPortsCode}}
                          };
@@ -84,8 +84,8 @@ internal static class SourceCodeBuilder
                      [Serializable]
                      public sealed class {{classInfo.ClassName}}{{DataClassSuffix}} : {{UgenNodeDataTypeName}}
                      {
-                         {{PortTypeName}}[] inputPorts;
-                         {{PortTypeName}}[] outputPorts;
+                         {{PortTypeName}}[] _inputPorts;
+                         {{PortTypeName}}[] _outputPorts;
 
                          public override string Name => "{{classInfo.ClassName}}";
 
@@ -93,12 +93,12 @@ internal static class SourceCodeBuilder
                          {
                          }
 
-                         public override {{PortTypeName}}[] InputPorts => inputPorts ??= new {{PortTypeName}}[]
+                         public override {{PortTypeName}}[] InputPorts => _inputPorts ??= new {{PortTypeName}}[]
                          {
                  {{inputPortsCode}}
                          };
 
-                         public override {{PortTypeName}}[] OutputPorts => outputPorts ??= new {{PortTypeName}}[]
+                         public override {{PortTypeName}}[] OutputPorts => _outputPorts ??= new {{PortTypeName}}[]
                          {
                  {{outputPortsCode}}
                          };

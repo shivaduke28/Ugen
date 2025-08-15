@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using R3;
 using Ugen.Graph;
@@ -8,21 +7,20 @@ namespace Ugen.Behaviours
 {
     public abstract class UgenBehaviour : MonoBehaviour
     {
-        readonly List<IUgenInput> inputs = new();
-        readonly List<IUgenOutput> outputs = new();
-        readonly CompositeDisposable disposables = new();
+        readonly List<IUgenInput> _inputs = new();
+        readonly List<IUgenOutput> _outputs = new();
 
-        public IReadOnlyList<IUgenInput> Inputs => inputs;
-        public IReadOnlyList<IUgenOutput> Outputs => outputs;
+        public IReadOnlyList<IUgenInput> Inputs => _inputs;
+        public IReadOnlyList<IUgenOutput> Outputs => _outputs;
 
         protected void RegisterInput(IUgenInput input)
         {
-            inputs.Add(input);
+            _inputs.Add(input);
         }
 
         protected void RegisterOutput(IUgenOutput output)
         {
-            outputs.Add(output);
+            _outputs.Add(output);
         }
 
         protected virtual void Awake()
@@ -32,30 +30,26 @@ namespace Ugen.Behaviours
 
         protected abstract void InitializePorts();
 
-        protected virtual void OnDestroy()
-        {
-            disposables.Dispose();
-        }
-
         public IUgenInput GetInput(int index)
         {
-            if (index < 0 || index >= inputs.Count)
+            if (index < 0 || index >= _inputs.Count)
             {
-                Debug.LogError($"Input index {index} out of range (0-{inputs.Count - 1}) on {GetType().Name}");
+                Debug.LogError($"Input index {index} out of range (0-{_inputs.Count - 1}) on {GetType().Name}");
                 return null;
             }
-            return inputs[index];
+
+            return _inputs[index];
         }
 
         public IUgenOutput GetOutput(int index)
         {
-            if (index < 0 || index >= outputs.Count)
+            if (index < 0 || index >= _outputs.Count)
             {
-                Debug.LogError($"Output index {index} out of range (0-{outputs.Count - 1}) on {GetType().Name}");
+                Debug.LogError($"Output index {index} out of range (0-{_outputs.Count - 1}) on {GetType().Name}");
                 return null;
             }
-            return outputs[index];
+
+            return _outputs[index];
         }
     }
-
 }

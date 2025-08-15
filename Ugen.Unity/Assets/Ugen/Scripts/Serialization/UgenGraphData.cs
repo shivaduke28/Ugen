@@ -8,21 +8,22 @@ namespace Ugen.Serialization
     [Serializable]
     public class UgenGraphData
     {
-        [SerializeField] UgenBehaviour[] behaviours;
-        [SerializeReference, SerializeReferenceSelector]
-        UgenNodeData[] nodes;
+        [SerializeField] UgenBehaviour[] _behaviours;
 
-        [SerializeField] EdgeData[] edges;
+        [SerializeReference, SerializeReferenceSelector,]
+        UgenNodeData[] _nodes;
 
-        public UgenBehaviour[] Behaviours => behaviours;
-        public UgenNodeData[] Nodes => nodes;
-        public EdgeData[] Edges => edges;
+        [SerializeField] EdgeData[] _edges;
 
-        public UgenGraphData(UgenBehaviour[] behaviours,  UgenNodeData[] nodes, EdgeData[] edges)
+        public UgenBehaviour[] Behaviours => _behaviours;
+        public UgenNodeData[] Nodes => _nodes;
+        public EdgeData[] Edges => _edges;
+
+        public UgenGraphData(UgenBehaviour[] behaviours, UgenNodeData[] nodes, EdgeData[] edges)
         {
-            this.behaviours = behaviours;
-            this.nodes = nodes;
-            this.edges = edges;
+            _behaviours = behaviours;
+            _nodes = nodes;
+            _edges = edges;
         }
     }
 }

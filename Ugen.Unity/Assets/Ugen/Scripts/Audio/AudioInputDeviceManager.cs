@@ -77,10 +77,7 @@ namespace Ugen.Audio
             try
             {
                 var descriptor = AudioSystem.GetInputDevice(lastDeviceId);
-                if (descriptor.IsValid)
-                {
-                    SwitchDevice(new AudioInputDeviceInfo(descriptor.Name, descriptor.ID));
-                }
+                if (descriptor.IsValid) SwitchDevice(new AudioInputDeviceInfo(descriptor.Name, descriptor.ID));
             }
             catch
             {

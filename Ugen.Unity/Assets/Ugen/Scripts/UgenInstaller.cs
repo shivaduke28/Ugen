@@ -53,23 +53,14 @@ namespace Ugen
             }
 
             // Initialize all registered initializables
-            foreach (var initializable in initializables)
-            {
-                initializable.Initialize();
-            }
+            foreach (var initializable in initializables) initializable.Initialize();
         }
 
         T Register<T>(T instance)
         {
-            if (instance is IDisposable disposable)
-            {
-                disposables.Add(disposable);
-            }
+            if (instance is IDisposable disposable) disposables.Add(disposable);
 
-            if (instance is IInitializable initializable)
-            {
-                initializables.Add(initializable);
-            }
+            if (instance is IInitializable initializable) initializables.Add(initializable);
 
             return instance;
         }
@@ -77,10 +68,7 @@ namespace Ugen
         void OnDestroy()
         {
             // Dispose all registered disposables
-            foreach (var disposable in disposables)
-            {
-                disposable?.Dispose();
-            }
+            foreach (var disposable in disposables) disposable?.Dispose();
 
             disposables.Clear();
         }

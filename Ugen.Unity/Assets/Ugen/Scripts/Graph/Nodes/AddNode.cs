@@ -7,13 +7,10 @@ namespace Ugen.Graph.Nodes
     [UgenNode]
     public sealed class AddNode : UgenNode, IInitializable, IDisposable
     {
-        [UgenInput(0)]
-        readonly UgenInput<float> a = new("a", 0, 0f);
-        [UgenInput(1)]
-        readonly UgenInput<float> b = new("b", 1, 0f);
+        [UgenInput(0)] readonly UgenInput<float> a = new("a", 0, 0f);
+        [UgenInput(1)] readonly UgenInput<float> b = new("b", 1, 0f);
         readonly Subject<float> result = new();
-        [UgenOutput(0)]
-        readonly UgenOutput<float> value;
+        [UgenOutput(0)] readonly UgenOutput<float> value;
         IDisposable disposable;
 
         public AddNode(string nodeId) : base(nodeId)

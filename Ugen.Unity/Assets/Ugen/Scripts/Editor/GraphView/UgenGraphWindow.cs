@@ -8,8 +8,8 @@ namespace Ugen.Editor.GraphView
 {
     public class UgenGraphWindow : EditorWindow
     {
-        UgenGraphView graphView;
-        UgenManager targetManager;
+        UgenGraphView _graphView;
+        UgenManager _targetManager;
 
         public static void OpenWithManager(UgenManager manager)
         {
@@ -34,40 +34,34 @@ namespace Ugen.Editor.GraphView
         {
             var toolbar = new Toolbar();
 
-            var saveButton = new Button(SaveGraph) { text = "Save" };
+            var saveButton = new Button(SaveGraph) { text = "Save", };
             toolbar.Add(saveButton);
 
-            var loadButton = new Button(LoadGraph) { text = "Load" };
+            var loadButton = new Button(LoadGraph) { text = "Load", };
             toolbar.Add(loadButton);
 
             toolbar.Add(new ToolbarSpacer());
 
             var clearButton = new Button(() =>
             {
-                if (EditorUtility.DisplayDialog("Clear Graph", "Clear all nodes and connections?", "Clear", "Cancel"))
-                {
-                    graphView.ClearGraph();
-                }
-            }) { text = "Clear" };
+                if (EditorUtility.DisplayDialog("Clear Graph", "Clear all nodes and connections?", "Clear", "Cancel")) _graphView.ClearGraph();
+            }) { text = "Clear", };
             toolbar.Add(clearButton);
 
-            toolbar.Add(new ToolbarSpacer() { style = { flexGrow = 1 } });
+            toolbar.Add(new ToolbarSpacer { style = { flexGrow = 1, }, });
 
             var managerField = new ObjectField("Manager")
             {
                 objectType = typeof(UgenManager),
-                value = targetManager
+                value = _targetManager,
             };
-            managerField.RegisterValueChangedCallback(evt => { targetManager = evt.newValue as UgenManager; });
+            managerField.RegisterValueChangedCallback(evt => { _targetManager = evt.newValue as UgenManager; });
             toolbar.Add(managerField);
 
             var loadManagerButton = new Button(() =>
             {
-                if (targetManager != null)
-                {
-                    LoadManager(targetManager);
-                }
-            }) { text = "Load Manager" };
+                if (_targetManager != null) LoadManager(_targetManager);
+            }) { text = "Load Manager", };
             toolbar.Add(loadManagerButton);
 
             parent.Add(toolbar);
@@ -75,39 +69,39 @@ namespace Ugen.Editor.GraphView
 
         void CreateGraphView(VisualElement parent)
         {
-            graphView = new UgenGraphView();
-            graphView.style.flexGrow = 1;
-            parent.Add(graphView);
+            _graphView = new UgenGraphView();
+            _graphView.style.flexGrow = 1;
+            parent.Add(_graphView);
         }
 
         void SaveGraph()
         {
-            if (targetManager == null)
+            if (_targetManager == null)
             {
                 EditorUtility.DisplayDialog("No Manager", "Please select a UgenManager to save to.", "OK");
                 return;
             }
 
-            targetManager.SaveGraph(graphView.ExportToGraph());
-            EditorUtility.SetDirty(targetManager);
+            _targetManager.SaveGraph(_graphView.ExportToGraph());
+            EditorUtility.SetDirty(_targetManager);
             Debug.Log("Graph saved to manager");
         }
 
         void LoadGraph()
         {
-            if (targetManager == null)
+            if (_targetManager == null)
             {
                 EditorUtility.DisplayDialog("No Manager", "Please select a UgenManager to load from.", "OK");
                 return;
             }
 
-            LoadManager(targetManager);
+            LoadManager(_targetManager);
         }
 
         void LoadManager(UgenManager manager)
         {
-            targetManager = manager;
-            graphView.LoadFromGraph(manager.GraphData);
+            _targetManager = manager;
+            _graphView.LoadFromGraph(manager.GraphData);
         }
     }
 }

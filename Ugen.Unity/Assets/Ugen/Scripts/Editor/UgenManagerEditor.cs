@@ -23,24 +23,19 @@ namespace Ugen.Editor
                 EditorUtility.SetDirty(manager);
             }
 
-            if (GUILayout.Button("Open Graph Editor"))
-            {
-                GraphView.UgenGraphWindow.OpenWithManager(manager);
-            }
+            if (GUILayout.Button("Open Graph Editor")) GraphView.UgenGraphWindow.OpenWithManager(manager);
 
             EditorGUILayout.Space();
 
             if (GUILayout.Button("Clear Graph"))
-            {
                 if (EditorUtility.DisplayDialog("Clear Graph",
-                    "Are you sure you want to clear all nodes and connections?",
-                    "Clear", "Cancel"))
+                        "Are you sure you want to clear all nodes and connections?",
+                        "Clear", "Cancel"))
                 {
                     Undo.RecordObject(manager, "Clear Graph");
                     manager.ClearGraph();
                     EditorUtility.SetDirty(manager);
                 }
-            }
         }
     }
 }

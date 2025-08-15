@@ -13,12 +13,12 @@ namespace Ugen.Editor.GraphView
         public string NodeId => Node.Id;
         public Vector2 Position => new(style.left.value.value, style.top.value.value);
 
-        readonly List<Port> inputPorts = new();
-        readonly List<Port> outputPorts = new();
+        readonly List<Port> _inputPorts = new();
+        readonly List<Port> _outputPorts = new();
 
         public UgenNodeView(UgenNodeData node)
         {
-            this.Node = node;
+            Node = node;
             title = node.Name;
 
             CreatePorts(node);
@@ -34,7 +34,7 @@ namespace Ugen.Editor.GraphView
             {
                 var inputPort = CreateInputPort(port);
                 inputContainer.Add(inputPort);
-                inputPorts.Add(inputPort);
+                _inputPorts.Add(inputPort);
             }
 
             // Create output ports
@@ -42,7 +42,7 @@ namespace Ugen.Editor.GraphView
             {
                 var outputPort = CreateOutputPort(port);
                 outputContainer.Add(outputPort);
-                outputPorts.Add(outputPort);
+                _outputPorts.Add(outputPort);
             }
         }
 
@@ -71,14 +71,8 @@ namespace Ugen.Editor.GraphView
         }
 
 
-        public Port GetInputPort(int index)
-        {
-            return index >= 0 && index < inputPorts.Count ? inputPorts[index] : null;
-        }
+        public Port GetInputPort(int index) => index >= 0 && index < _inputPorts.Count ? _inputPorts[index] : null;
 
-        public Port GetOutputPort(int index)
-        {
-            return index >= 0 && index < outputPorts.Count ? outputPorts[index] : null;
-        }
+        public Port GetOutputPort(int index) => index >= 0 && index < _outputPorts.Count ? _outputPorts[index] : null;
     }
 }

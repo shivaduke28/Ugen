@@ -57,7 +57,7 @@ namespace Ugen.UI.AudioInputController
 
             if (devices.Count == 0)
             {
-                DeviceNames.Value = new List<string> { "No devices found" };
+                DeviceNames.Value = new List<string> { "No devices found", };
                 IsDropdownEnabled.Value = false;
             }
             else
@@ -70,10 +70,7 @@ namespace Ugen.UI.AudioInputController
                 if (currentDevice.IsValid)
                 {
                     var index = devices.FindIndex(d => d.Id == currentDevice.Id);
-                    if (index >= 0)
-                    {
-                        SelectedDeviceIndex.Value = index;
-                    }
+                    if (index >= 0) SelectedDeviceIndex.Value = index;
                 }
             }
         }
@@ -97,10 +94,7 @@ namespace Ugen.UI.AudioInputController
             if (index < devices.Count)
             {
                 var selectedDevice = devices[index];
-                if (selectedDevice.IsValid)
-                {
-                    deviceManager.SwitchDevice(selectedDevice);
-                }
+                if (selectedDevice.IsValid) deviceManager.SwitchDevice(selectedDevice);
             }
         }
 
@@ -115,10 +109,7 @@ namespace Ugen.UI.AudioInputController
                 // Update selected index in dropdown
                 var devices = deviceManager.GetInputDevices().ToList();
                 var index = devices.FindIndex(d => d.Id == device.Id);
-                if (index >= 0 && index != SelectedDeviceIndex.CurrentValue)
-                {
-                    SelectedDeviceIndex.Value = index;
-                }
+                if (index >= 0 && index != SelectedDeviceIndex.CurrentValue) SelectedDeviceIndex.Value = index;
             }
             else
             {

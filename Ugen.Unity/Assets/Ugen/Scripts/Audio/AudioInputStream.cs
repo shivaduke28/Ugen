@@ -21,7 +21,7 @@ namespace Ugen.Audio
         public AudioInputDeviceInfo DeviceInfo => audioInputDeviceInfo;
         public int Channel => channel;
 
-        public bool IsValid => stream is { IsValid: true };
+        public bool IsValid => stream is { IsValid: true, };
 
         // Level properties
         public float Level => levelTracker.normalizedLevel;
@@ -57,14 +57,14 @@ namespace Ugen.Audio
             AudioLevelTracker levelTracker, AudioLevelTracker lowTracker,
             AudioLevelTracker midTracker, AudioLevelTracker highTracker)
         {
-            this.audioInputDeviceInfo = deviceInfo;
-            this.channel = channelIndex;
+            audioInputDeviceInfo = deviceInfo;
+            channel = channelIndex;
             this.gameObject = gameObject;
             this.levelTracker = levelTracker;
             this.lowTracker = lowTracker;
             this.midTracker = midTracker;
             this.highTracker = highTracker;
-            this.stream = AudioSystem.GetInputStream(deviceInfo.Id);
+            stream = AudioSystem.GetInputStream(deviceInfo.Id);
         }
 
         public static AudioInputStream Create(AudioInputDeviceInfo deviceInfo, int channel, Transform parent)
@@ -104,10 +104,7 @@ namespace Ugen.Audio
 
         public void Dispose()
         {
-            if (gameObject != null)
-            {
-                UnityEngine.Object.Destroy(gameObject);
-            }
+            if (gameObject != null) UnityEngine.Object.Destroy(gameObject);
         }
     }
 }
