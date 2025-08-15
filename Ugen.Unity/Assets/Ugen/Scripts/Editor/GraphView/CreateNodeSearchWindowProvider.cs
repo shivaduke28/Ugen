@@ -24,7 +24,8 @@ namespace Ugen.Editor.GraphView
             foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
             foreach (var type in assembly.GetTypes())
             {
-                if (type.IsClass && !type.IsAbstract && type.IsSubclassOf(typeof(UgenNodeData)))
+                if (type.IsClass && !type.IsAbstract &&
+                    type.IsSubclassOf(typeof(UgenNodeData)))
                     entries.Add(new SearchTreeEntry(new GUIContent(type.Name)) { level = 1, userData = type, });
             }
 
@@ -41,6 +42,10 @@ namespace Ugen.Editor.GraphView
                 if (node is UgenBehaviourNodeData behaviourNode)
                 {
                     nodeView = new UgenBehaviourNodeView(behaviourNode, _graph);
+                }
+                else if (node is UgenUIElementNodeData uiElementNode)
+                {
+                    nodeView = new UgenUIElementNodeView(uiElementNode, _graphView.UIElements);
                 }
                 else
                 {

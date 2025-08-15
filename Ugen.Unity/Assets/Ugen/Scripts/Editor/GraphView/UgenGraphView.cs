@@ -1,10 +1,11 @@
 using System.Collections.Generic;
+using Ugen.Behaviours;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
-using Ugen.Graph;
 using Ugen.Serialization;
+using Ugen.UI.Nodes;
 using UnityEngine.Assertions;
 
 namespace Ugen.Editor.GraphView
@@ -13,6 +14,11 @@ namespace Ugen.Editor.GraphView
     {
         readonly Dictionary<string, UgenNodeView> _nodeViews = new();
         readonly Dictionary<string, UgenEdgeView> _edgeViews = new();
+        readonly List<UgenBehaviour> _behaviours = new();
+        readonly List<UgenUIElement> _uiElements = new();
+
+        public List<UgenBehaviour> Behaviours => _behaviours;
+        public List<UgenUIElement> UIElements => _uiElements;
         UgenGraphData _currentGraph;
 
         public UgenGraphView()
@@ -44,13 +50,13 @@ namespace Ugen.Editor.GraphView
 
         UgenNodeView CreateNodeView(UgenNodeData node)
         {
-            UgenNodeView nodeView;
-
-            // Create specialized view for UgenBehaviourNode
-            if (node is UgenBehaviourNodeData behaviourNode)
-                nodeView = new UgenBehaviourNodeView(behaviourNode, _currentGraph);
-            else
-                nodeView = new UgenNodeView(node);
+            UgenNodeView nodeView = node switch
+            {
+                // Create specialized view for UgenBehaviourNode
+                UgenBehaviourNodeData behaviourNode => new UgenBehaviourNodeView(behaviourNode, _currentGraph),
+                UgenUIElementNodeData uiElementNode => new UgenUIElementNodeView(uiElementNode, _uiElements),
+                _ => new UgenNodeView(node)
+            };
 
             nodeView.SetPosition(new Rect(node.Position, Vector2.zero));
 
@@ -133,7 +139,7 @@ namespace Ugen.Editor.GraphView
                 }
             }
 
-            return new UgenGraphData(_currentGraph.Behaviours, nodeDatas.ToArray(), edgeDatas.ToArray());
+            return new UgenGraphData(_currentGraph.Behaviours, _currentGraph.VisualTreeAsset, nodeDatas.ToArray(), edgeDatas.ToArray());
         }
 
         public void LoadFromGraph(UgenGraphData graph)
@@ -141,6 +147,14 @@ namespace Ugen.Editor.GraphView
             Assert.IsNotNull(graph);
             ClearGraph();
             _currentGraph = graph;
+
+            _behaviours.Clear();
+            _uiElements.Clear();
+
+            _behaviours.AddRange(graph.Behaviours);
+            var ve = new VisualElement();
+            graph.VisualTreeAsset.CloneTree(ve);
+            _uiElements.AddRange(ve.Query<UgenUIElement>().ToList());
 
             // Create node views
             foreach (var node in graph.Nodes) CreateNodeView(node);

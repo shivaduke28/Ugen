@@ -7,15 +7,17 @@ namespace Ugen.Serialization
     [Serializable]
     public abstract class UgenUIElementNodeData : UgenNodeData
     {
-        public abstract UgenUIElement UIElement { get; }
+        [SerializeField] protected string _uiElementName;
+        public string UIElementName => _uiElementName;
         public abstract void SetUIElement(UgenUIElement uiElement);
     }
 
     [Serializable]
     public abstract class UgenUIElementNodeData<T> : UgenUIElementNodeData where T : UgenUIElement
     {
-        [SerializeField] T _uiElement;
-        public override UgenUIElement UIElement => _uiElement;
-        public override void SetUIElement(UgenUIElement uiElement) => _uiElement = (T)uiElement;
+        public override void SetUIElement(UgenUIElement uiElement)
+        {
+            _uiElementName = uiElement?.name;
+        }
     }
 }

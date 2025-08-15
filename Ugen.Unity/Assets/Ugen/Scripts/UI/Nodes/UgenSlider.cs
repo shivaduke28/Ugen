@@ -1,6 +1,5 @@
 using Ugen.Attributes;
 using Ugen.Graph;
-using Ugen.UI.Nodes;
 using UnityEngine.UIElements;
 
 namespace Ugen.UI.Nodes
@@ -38,12 +37,12 @@ namespace Ugen.UI.Nodes
 
         readonly Slider _slider = new();
 
-        [UgenOutput(0)] readonly UgenOutput<float> value;
+        [UgenOutput(0)] readonly UgenOutput<float> _value;
 
         public UgenSlider()
         {
-            value = new UgenOutput<float>("value", 0, _slider.OnValueChangeAsObservable());
-            RegisterOutput(value);
+            _value = new UgenOutput<float>("value", 0, _slider.OnValueChangeAsObservable());
+            RegisterOutput(_value);
             Add(_slider);
         }
     }

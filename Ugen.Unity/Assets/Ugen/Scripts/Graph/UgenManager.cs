@@ -5,7 +5,9 @@ using UnityEngine;
 using Ugen.Behaviours;
 using Ugen.Graph.Nodes;
 using Ugen.Serialization;
+using Ugen.UI.Nodes;
 using UnityEngine.Assertions;
+using UnityEngine.UIElements;
 
 namespace Ugen.Graph
 {
@@ -13,6 +15,7 @@ namespace Ugen.Graph
     {
         [SerializeField] UgenGraphData _graphData;
         [SerializeField] bool _autoExecuteOnStart = true;
+        [SerializeField] UIDocument _uiDocument;
 
         readonly CompositeDisposable graphDisposable = new();
         public UgenGraphData GraphData => _graphData;
@@ -35,7 +38,17 @@ namespace Ugen.Graph
                         break;
                     case UgenBehaviourNodeData behaviourNodeData:
                         if (behaviourNodeData.Behaviour is { } behaviour) node = new UgenBehaviourNode(nodeData.Id, behaviour);
-
+                        break;
+                    case UgenUIElementNodeData uiElementNodeData:
+                        var uiElementName = uiElementNodeData.UIElementName;
+                        var uiElement = _uiDocument.rootVisualElement.Q<UgenUIElement>(uiElementName);
+                        if (uiElement != null)
+                        {
+                            node = new UgenUIElementNode(nodeData.Id, uiElement);
+                        }
+                        break;
+                    default:
+                        Debug.LogError($"Unknown node type: {nodeData.GetType().Name}");
                         break;
                 }
 
@@ -57,13 +70,13 @@ namespace Ugen.Graph
         public void CollectBehavioursFromScene()
         {
             var behaviours = FindObjectsByType<UgenBehaviour>(FindObjectsSortMode.None);
-            _graphData = new UgenGraphData(behaviours, _graphData.Nodes, _graphData.Edges);
+            _graphData = new UgenGraphData(behaviours, _graphData.VisualTreeAsset, _graphData.Nodes, _graphData.Edges);
         }
 
         public void ClearGraph()
         {
             CollectBehavioursFromScene();
-            _graphData = new UgenGraphData(_graphData.Behaviours, Array.Empty<UgenNodeData>(), Array.Empty<EdgeData>());
+            _graphData = new UgenGraphData(_graphData.Behaviours, _graphData.VisualTreeAsset, Array.Empty<UgenNodeData>(), Array.Empty<EdgeData>());
         }
 
         public void SaveGraph(UgenGraphData newGraphData)
