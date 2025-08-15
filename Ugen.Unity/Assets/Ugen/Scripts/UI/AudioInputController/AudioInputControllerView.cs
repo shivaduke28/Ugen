@@ -32,7 +32,7 @@ namespace Ugen.UI.AudioInputController
                 viewModel.IsDropdownEnabled.Subscribe(enabled => _deviceDropdown.SetEnabled(enabled)),
 
                 // Bind dropdown selection changes back to ViewModel
-                _deviceDropdown.OnValueChangeAsObservable()
+                _deviceDropdown.OnValueChangeEventAsObservable()
                     .Subscribe(evt =>
                     {
                         if (!string.IsNullOrEmpty(evt.newValue) && evt.newValue != "No devices found") viewModel.SelectedDeviceIndex.Value = _deviceDropdown.index;

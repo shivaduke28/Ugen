@@ -14,12 +14,25 @@ namespace Ugen.UI
             );
         }
 
-        public static Observable<ChangeEvent<T>> OnValueChangeAsObservable<T>(this INotifyValueChanged<T> source)
+        public static Observable<ChangeEvent<T>> OnValueChangeEventAsObservable<T>(this INotifyValueChanged<T> source)
         {
             return Observable.FromEvent<EventCallback<ChangeEvent<T>>, ChangeEvent<T>>(
                 h => new EventCallback<ChangeEvent<T>>(h),
                 h => source.RegisterValueChangedCallback(h),
                 h => source.UnregisterValueChangedCallback(h));
+        }
+
+        public static Observable<T> OnValueChangeAsObservable<T>(this INotifyValueChanged<T> source)
+        {
+            return Observable.FromEvent<EventCallback<ChangeEvent<T>>, T>(
+                h => x => h(x.newValue),
+                h => source.RegisterValueChangedCallback(h),
+                h => source.UnregisterValueChangedCallback(h));
+        }
+
+        public static Observable<Unit> OnClickAsObservable(this Button button)
+        {
+            return Observable.FromEvent(h => button.clicked += h, h => button.clicked -= h);
         }
     }
 }
