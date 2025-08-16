@@ -11,7 +11,8 @@ namespace Ugen.Behaviours
     {
         [SerializeField] VisualEffect _visualEffect;
 
-        [UgenInput(0, "spawn")] readonly UgenInputSubject<Unit> _spawnInput = new();
+        [SerializeField, UgenInput(0, "spawn")]
+        SerializableUgenInputSubject<Unit> _spawnInput = new();
 
         protected override void InitializePorts()
         {
