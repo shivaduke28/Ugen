@@ -21,7 +21,7 @@ namespace Ugen.UI.Nodes
 
         public UgenButton()
         {
-            _clicked = new UgenOutput<Unit>("clicked", 0, _button.OnClickAsObservable());
+            _clicked = new UgenOutput<Unit>("clicked", _button.OnClickAsObservable());
             RegisterOutput(_clicked);
             Add(_button);
         }

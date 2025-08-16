@@ -17,7 +17,7 @@ namespace Ugen.Graph
         [SerializeField] bool _autoExecuteOnStart = true;
         [SerializeField] UIDocument _uiDocument;
 
-        readonly CompositeDisposable graphDisposable = new();
+        readonly CompositeDisposable _graphDisposable = new();
         public UgenGraphData GraphData => _graphData;
 
         void Start()
@@ -46,6 +46,10 @@ namespace Ugen.Graph
                         {
                             node = new UgenUIElementNode(nodeData.Id, uiElement);
                         }
+                        else
+                        {
+                            Debug.LogError($"UI element not found: {uiElementName}");
+                        }
                         break;
                     default:
                         Debug.LogError($"Unknown node type: {nodeData.GetType().Name}");
@@ -54,14 +58,14 @@ namespace Ugen.Graph
 
                 if (node is IInitializable initializable) initializable.Initialize();
 
-                if (node is IDisposable dis) graphDisposable.Add(dis);
+                if (node is IDisposable dis) _graphDisposable.Add(dis);
 
                 if (node != null) nodes[node.NodeId] = node;
             }
 
             foreach (var edge in _graphData.Edges)
                 nodes[edge.OutputNodeId].OutputPorts[edge.OutputPortIndex].ConnectTo(
-                    nodes[edge.InputNodeId].InputPorts[edge.InputPortIndex], graphDisposable);
+                    nodes[edge.InputNodeId].InputPorts[edge.InputPortIndex], _graphDisposable);
 
             Debug.Log($"Graph executed: {_graphData.Nodes.Length} nodes, {_graphData.Edges.Length} edges");
         }

@@ -41,7 +41,7 @@ namespace Ugen.UI.Nodes
 
         public UgenSlider()
         {
-            _value = new UgenOutput<float>("value", 0, _slider.OnValueChangeAsObservable());
+            _value = new UgenOutput<float>("value", _slider.OnValueChangeAsObservable());
             RegisterOutput(_value);
             Add(_slider);
         }

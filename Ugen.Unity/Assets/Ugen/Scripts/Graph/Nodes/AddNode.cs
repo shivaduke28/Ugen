@@ -7,29 +7,27 @@ namespace Ugen.Graph.Nodes
     [UgenNode]
     public sealed class AddNode : UgenNode, IInitializable, IDisposable
     {
-        [UgenInput(0)] readonly UgenInputProperty<float> a = new("a", 0f);
-        [UgenInput(1)] readonly UgenInputProperty<float> b = new("b", 0f);
-        readonly Subject<float> result = new();
-        [UgenOutput(0)] readonly UgenOutput<float> value;
-        IDisposable disposable;
+        [UgenInput(0)] readonly UgenInputProperty<float> _a = new("a");
+        [UgenInput(1)] readonly UgenInputProperty<float> _b = new("b");
+        [UgenOutput(0, "result")] readonly UgenOutputSubject<float> _result = new("result");
+        IDisposable _disposable;
 
         public AddNode(string nodeId) : base(nodeId)
         {
-            value = new UgenOutput<float>("result", 0, result);
-            AddInputPort(a);
-            AddInputPort(b);
-            AddOutputPort(value);
+            AddInputPort(_a);
+            AddInputPort(_b);
+            AddOutputPort(_result);
         }
 
-        public void Initialize()
+        void IInitializable.Initialize()
         {
-            disposable = a.Observable.CombineLatest(b.Observable, (x, y) => x + y)
-                .Subscribe(x => result.OnNext(x));
+            _disposable = _a.Observable.CombineLatest(_b.Observable, (x, y) => x + y)
+                .Subscribe(x => _result.OnNext(x));
         }
 
-        public void Dispose()
+        void IDisposable.Dispose()
         {
-            disposable?.Dispose();
+            _disposable?.Dispose();
         }
     }
 }

@@ -20,11 +20,7 @@ namespace Ugen.Behaviours
 
         void Start()
         {
-            _spawnInput.Observable.Subscribe(_ =>
-            {
-                Debug.Log("Spawning VFX");
-                _visualEffect.SendEvent("OnPlay");
-            }).AddTo(this);
+            _spawnInput.Observable.Subscribe(_ => _visualEffect.SendEvent("OnPlay")).AddTo(this);
         }
     }
 }
