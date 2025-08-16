@@ -10,13 +10,14 @@ namespace Ugen.Behaviours
     {
         [SerializeField] float _speedMultiplier = 30f;
 
-        [UgenInput(0, "speed")] UgenInputProperty<float> _speedInput;
+        [SerializeField, UgenInput(0, "speed")]
+        SerializableUgenInputProperty<float> _speed = new(1f);
+
         Transform _targetTransform;
 
         protected override void InitializePorts()
         {
-            _speedInput = new UgenInputProperty<float>("speed", 1f);
-            RegisterInput(_speedInput);
+            RegisterInput(_speed);
         }
 
         void Start()
@@ -24,7 +25,7 @@ namespace Ugen.Behaviours
             _targetTransform = transform;
 
             Observable.EveryUpdate()
-                .WithLatestFrom(_speedInput.Observable, (_, s) => s)
+                .WithLatestFrom(_speed.Observable, (_, s) => s)
                 .Subscribe(s =>
                 {
                     var rotationSpeed = s * _speedMultiplier;

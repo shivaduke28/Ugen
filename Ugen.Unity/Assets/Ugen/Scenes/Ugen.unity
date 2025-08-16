@@ -634,6 +634,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _speedMultiplier: 30
+  _speedInput:
+    _name: speed
+    _value:
+      value: 1
 --- !u!65 &916035211
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1024,6 +1028,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _speedMultiplier: 30
+  _speedInput:
+    _name: speed
+    _value:
+      value: 1
 --- !u!1 &1823688464
 GameObject:
   m_ObjectHideFlags: 0
