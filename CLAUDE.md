@@ -43,6 +43,19 @@ Ugen is a Unity project built with Unity 6 (6000.0.29f1) that provides a reactiv
 - Run tests through Unity Test Runner: Window > General > Test Runner
 - Use JetBrains Rider's run configurations for debugging
 
+### Code Formatting with dotnet format
+To format the code in this project, use the following command:
+```bash
+# Format the entire Ugen project
+dotnet format Ugen.csproj
+
+# Format only files in Ugen/Scripts directory
+dotnet format Ugen.csproj --include Assets/Ugen/Scripts/**/*.cs
+
+# Run with verbose output to see what's being changed
+dotnet format Ugen.csproj --verbosity diagnostic
+```
+
 ## Project Structure
 
 ```
