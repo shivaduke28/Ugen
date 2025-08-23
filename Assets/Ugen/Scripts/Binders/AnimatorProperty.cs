@@ -8,9 +8,8 @@ namespace Ugen.Binders
     [Serializable]
     public abstract class AnimatorProperty : ISerializationCallbackReceiver
     {
-        int _id = -1;
         [SerializeField] string _property;
-        public int Id => _id;
+        public int Id { get; private set; } = -1;
 
         public void OnBeforeSerialize()
         {
@@ -18,7 +17,7 @@ namespace Ugen.Binders
 
         public void OnAfterDeserialize()
         {
-            _id = Animator.StringToHash(_property);
+            Id = Animator.StringToHash(_property);
         }
     }
 
