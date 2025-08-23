@@ -8,43 +8,50 @@ namespace Ugen.Editor
     [CustomPropertyDrawer(typeof(UgenInputSelectorAttribute))]
     public sealed class UgenInputSelectorPropertyDrawer : PropertyDrawer
     {
+        const float ButtonHeight = 20f;
+        const float Spacing = 2f;
+
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             EditorGUI.BeginProperty(position, label, property);
 
+            // ラベルを表示
             position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
 
-            var currentInput = property.objectReferenceValue as UgenInput;
+            // インデントレベルを保存して一時的にリセット
+            var indent = EditorGUI.indentLevel;
+            EditorGUI.indentLevel = 0;
 
-            var displayText = "None";
-            if (currentInput != null)
+            // 通常のObjectFieldを表示（ドラッグ&ドロップ対応）
+            var objectFieldRect = new Rect(position.x, position.y, position.width, EditorGUIUtility.singleLineHeight);
+
+            EditorGUI.BeginChangeCheck();
+            var newValue = EditorGUI.ObjectField(objectFieldRect, property.objectReferenceValue, typeof(UgenInput), true);
+            if (EditorGUI.EndChangeCheck())
             {
-                var componentTypeName = currentInput.GetType().Name;
-                displayText = $"{currentInput.gameObject.name} ({componentTypeName})";
+                property.objectReferenceValue = newValue;
             }
 
-            // 全体をボタンとして表示
-            var buttonStyle = new GUIStyle(GUI.skin.button)
-            {
-                alignment = TextAnchor.MiddleLeft,
-                padding = new RectOffset(8, 8, 2, 2)
-            };
+            // 選択ボタンを表示
+            var buttonRect = new Rect(position.x, position.y + EditorGUIUtility.singleLineHeight + Spacing,
+                position.width, ButtonHeight);
 
-            if (GUI.Button(position, displayText, buttonStyle))
+            if (GUI.Button(buttonRect, "Select"))
             {
-                UgenInputSelectionWindow.ShowWindow((selectedInput) =>
+                UgenInputSelectionWindow.ShowWindow(selectedInput =>
                 {
                     property.objectReferenceValue = selectedInput;
                     property.serializedObject.ApplyModifiedProperties();
                 });
             }
 
+            EditorGUI.indentLevel = indent;
             EditorGUI.EndProperty();
         }
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            return EditorGUIUtility.singleLineHeight;
+            return EditorGUIUtility.singleLineHeight + Spacing + EditorGUIUtility.singleLineHeight;
         }
     }
 }
