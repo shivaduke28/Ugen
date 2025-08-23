@@ -1,4 +1,5 @@
 using R3;
+using Ugen.Bindings;
 using UnityEngine;
 
 namespace Ugen.Inputs.Primitives
@@ -6,17 +7,16 @@ namespace Ugen.Inputs.Primitives
     [AddComponentMenu("Ugen/Ugen Vector3 Input")]
     public sealed class Vector3Input : UgenInput<Vector3>
     {
-        [SerializeField] UgenInput<float> _x;
-        [SerializeField] UgenInput<float> _y;
-        [SerializeField] UgenInput<float> _z;
+        [SerializeField] FloatBinding _x;
+        [SerializeField] FloatBinding _y;
+        [SerializeField] FloatBinding _z;
 
         public override Observable<Vector3> AsObservable()
         {
-            if (_x == null || _y == null || _z == null)
-            {
-                return Observable.Never<Vector3>();
-            }
-            return _x.AsObservable().CombineLatest(_y.AsObservable(), _z.AsObservable(), (x, y, z) => new Vector3(x, y, z));
+            var x = _x != null ? _x.AsObservable() : Observable.Return(0f);
+            var y = _y != null ? _y.AsObservable() : Observable.Return(0f);
+            var z = _z != null ? _z.AsObservable() : Observable.Return(0f);
+            return x.CombineLatest(y, z, (x1, y1, z1) => new Vector3(x1, y1, z1));
         }
     }
 }

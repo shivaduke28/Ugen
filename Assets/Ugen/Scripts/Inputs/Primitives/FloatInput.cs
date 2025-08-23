@@ -1,4 +1,5 @@
 using R3;
+using Ugen.Bindings;
 using UnityEngine;
 
 namespace Ugen.Inputs.Primitives
@@ -7,7 +8,7 @@ namespace Ugen.Inputs.Primitives
     public sealed class FloatInput : UgenInput<float>
     {
         [SerializeField] SerializableReactiveProperty<float> _value = new();
-        [SerializeField] UgenInput<float> _input;
+        [SerializeField] FloatBinding _input;
 
         void Start()
         {

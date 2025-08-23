@@ -1,4 +1,5 @@
 using R3;
+using Ugen.Bindings;
 using UnityEngine;
 
 namespace Ugen.Inputs
@@ -9,7 +10,7 @@ namespace Ugen.Inputs
         [SerializeField] float _min = 0f;
         [SerializeField] float _max = 1f;
 
-        [SerializeField] UgenInput<Unit> _update;
+        [SerializeField] UnitBinding _update;
 
         public override Observable<float> AsObservable()
         {
