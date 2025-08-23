@@ -1,6 +1,5 @@
 using R3;
 using Ugen.Bindings;
-using Ugen.Inputs;
 using UnityEngine;
 
 namespace Ugen.Binders

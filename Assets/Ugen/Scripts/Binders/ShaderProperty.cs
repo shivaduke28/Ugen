@@ -1,6 +1,5 @@
 using System;
 using Ugen.Bindings;
-using UnityEngine;
 using UnityEngine.VFX.Utility;
 
 namespace Ugen.Binders
