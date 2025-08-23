@@ -1,5 +1,5 @@
 using System;
-using Ugen.Bindings;
+using Ugen.Inputs.Bindings;
 using UnityEngine;
 
 namespace Ugen.Binders

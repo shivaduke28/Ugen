@@ -1,5 +1,5 @@
 using R3;
-using Ugen.Bindings;
+using Ugen.Inputs.Bindings;
 using Unity.Cinemachine;
 using UnityEngine;
 

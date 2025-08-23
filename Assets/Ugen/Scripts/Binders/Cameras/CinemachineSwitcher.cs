@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using R3;
-using Ugen.Bindings;
+using Ugen.Inputs.Bindings;
 using UnityEngine;
 
 namespace Ugen.Binders
