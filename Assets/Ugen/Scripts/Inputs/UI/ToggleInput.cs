@@ -5,7 +5,8 @@ using UnityEngine.UI;
 namespace Ugen.Inputs.UI
 {
     [RequireComponent(typeof(Toggle))]
-    public sealed class UgenToggleInput : UgenInput<bool>
+    [AddComponentMenu("Ugen/Ugen Toggle Input")]
+    public sealed class ToggleInput : UgenInput<bool>
     {
         [SerializeField] Toggle _toggle;
 

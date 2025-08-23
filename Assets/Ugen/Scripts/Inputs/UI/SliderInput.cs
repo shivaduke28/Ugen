@@ -5,7 +5,8 @@ using UnityEngine.UI;
 namespace Ugen.Inputs.UI
 {
     [RequireComponent(typeof(Slider))]
-    public sealed class UgenSliderInput : UgenInput<float>
+    [AddComponentMenu("Ugen/Ugen Slider Input")]
+    public sealed class SliderInput : UgenInput<float>
     {
         [SerializeField] Slider _slider;
         public override Observable<float> AsObservable() => _slider.OnValueChangedAsObservable();
