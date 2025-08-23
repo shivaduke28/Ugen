@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Ugen.Inputs
 {
     [AddComponentMenu("Ugen/Ugen Vector2 Input")]
-    public class Vector2Input : UgenInput<Vector2>
+    public sealed class Vector2Input : UgenInput<Vector2>
     {
         [SerializeField] UgenInput<float> _x;
         [SerializeField] UgenInput<float> _y;

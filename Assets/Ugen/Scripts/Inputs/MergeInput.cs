@@ -38,4 +38,14 @@ namespace Ugen.Inputs
     public class Vector3MergeInput : MergeInput<Vector3>
     {
     }
+
+    [Serializable]
+    public class Vector4MergeInput : MergeInput<Vector4>
+    {
+    }
+
+    [Serializable]
+    public class ColorMergeInput : MergeInput<Color>
+    {
+    }
 }
