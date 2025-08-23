@@ -6,13 +6,14 @@ using UnityEngine;
 namespace Ugen.Binders
 {
     [RequireComponent(typeof(Renderer))]
-    public sealed class UgenRendererBinder : MonoBehaviour
+    [AddComponentMenu("Ugen/Ugen Renderer Binder")]
+    public sealed class RendererBinder : MonoBehaviour
     {
         [SerializeField] Renderer _renderer;
         [SerializeField] int _materialIndex;
 
         [SerializeReference, SerializeReferenceSelector]
-        List<UgenExposedProperty> _properties = new();
+        List<ShaderProperty> _properties = new();
 
         Material Material => _renderer.materials[_materialIndex];
 
@@ -29,47 +30,47 @@ namespace Ugen.Binders
             }
         }
 
-        void Bind(UgenExposedProperty property)
+        void Bind(ShaderProperty property)
         {
             switch (property)
             {
                 case FloatProperty floatProperty:
-                    floatProperty.InputList.Observable()
+                    floatProperty.Input.Observable()
                         .Subscribe(x => Material.SetFloat(property.Property, x))
                         .AddTo(this);
                     break;
                 case IntProperty intProperty:
-                    intProperty.InputList.Observable()
+                    intProperty.Input.Observable()
                         .Subscribe(x => Material.SetInt(property.Property, x))
                         .AddTo(this);
                     break;
                 case BoolProperty boolProperty:
-                    boolProperty.InputList.Observable()
+                    boolProperty.Input.Observable()
                         .Subscribe(x => Material.SetInt(property.Property, x ? 1 : 0))
                         .AddTo(this);
                     break;
                 case UintProperty uintProperty:
-                    uintProperty.InputList.Observable()
+                    uintProperty.Input.Observable()
                         .Subscribe(x => Material.SetInt(property.Property, (int)x))
                         .AddTo(this);
                     break;
                 case Vector2Property vector2Property:
-                    vector2Property.InputList.Observable()
+                    vector2Property.Input.Observable()
                         .Subscribe(x => Material.SetVector(property.Property, x))
                         .AddTo(this);
                     break;
                 case Vector3Property vector3Property:
-                    vector3Property.InputList.Observable()
+                    vector3Property.Input.Observable()
                         .Subscribe(x => Material.SetVector(property.Property, x))
                         .AddTo(this);
                     break;
                 case Vector4Property vector4Property:
-                    vector4Property.InputList.Observable()
+                    vector4Property.Input.Observable()
                         .Subscribe(x => Material.SetVector(property.Property, x))
                         .AddTo(this);
                     break;
                 case ColorProperty colorProperty:
-                    colorProperty.InputList.Observable()
+                    colorProperty.Input.Observable()
                         .Subscribe(x => Material.SetColor(property.Property, x))
                         .AddTo(this);
                     break;

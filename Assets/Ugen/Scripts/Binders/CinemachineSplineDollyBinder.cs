@@ -6,10 +6,11 @@ using UnityEngine;
 namespace Ugen.Binders
 {
     [RequireComponent(typeof(CinemachineSplineDolly))]
-    public class UgenCinemachineSplineDollyBinder : MonoBehaviour
+    [AddComponentMenu("Ugen/Ugen Cinemachine Spline Dolly Binder")]
+    public class CinemachineSplineDollyBinder : MonoBehaviour
     {
         [SerializeField] CinemachineSplineDolly _splineDolly;
-        [SerializeField] UgenInputList<float> _speed = new();
+        [SerializeField] UgenInput<float> _speed;
 
         void Start()
         {

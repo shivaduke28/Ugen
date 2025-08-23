@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using R3;
 using Ugen.Inputs;
 using UnityEngine;
@@ -6,10 +5,11 @@ using UnityEngine;
 namespace Ugen.Binders
 {
     [RequireComponent(typeof(Light))]
-    public sealed class UgenLightBinder : MonoBehaviour
+    [AddComponentMenu("Ugen/Ugen Light Binder")]
+    public sealed class LightBinder : MonoBehaviour
     {
         [SerializeField] Light _light;
-        [SerializeField] UgenInputList<float> _intensity = new();
+        [SerializeField] UgenInput<float> _intensity;
 
         void Reset()
         {
@@ -18,7 +18,7 @@ namespace Ugen.Binders
 
         void Start()
         {
-            _intensity.Observable().Subscribe(x => _light.intensity = x).AddTo(this);
+            _intensity?.Observable().Subscribe(x => _light.intensity = x).AddTo(this);
         }
     }
 }

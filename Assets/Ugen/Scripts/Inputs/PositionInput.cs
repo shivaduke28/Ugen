@@ -3,7 +3,8 @@ using UnityEngine;
 
 namespace Ugen.Inputs
 {
-    public sealed class UgenPositionInput : UgenInput<Vector3>
+    [AddComponentMenu("Ugen/Ugen Position Input")]
+    public sealed class PositionInput : UgenInput<Vector3>
     {
         public override Observable<Vector3> Observable()
         {
