@@ -18,7 +18,7 @@ namespace Ugen.Binders
 
         void Start()
         {
-            _intensity?.Observable().Subscribe(x => _light.intensity = x).AddTo(this);
+            _intensity?.AsObservable().Subscribe(x => _light.intensity = x).AddTo(this);
         }
     }
 }

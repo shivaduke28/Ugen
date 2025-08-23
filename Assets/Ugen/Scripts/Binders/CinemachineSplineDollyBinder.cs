@@ -14,7 +14,7 @@ namespace Ugen.Binders
 
         void Start()
         {
-            _speed.Observable()
+            _speed.AsObservable()
                 .Subscribe(UpdateSpeed)
                 .AddTo(this);
         }

@@ -11,13 +11,14 @@ namespace Ugen.Inputs
         [SerializeField] UgenInput<float> _z;
         [SerializeField] UgenInput<float> _w;
 
-        public override Observable<Vector4> Observable()
+        public override Observable<Vector4> AsObservable()
         {
             if (_x == null || _y == null || _z == null || _w == null)
             {
-                return R3.Observable.Never<Vector4>();
+                return Observable.Never<Vector4>();
             }
-            return _x.Observable().CombineLatest(_y.Observable(), _z.Observable(), _w.Observable(),
+
+            return _x.AsObservable().CombineLatest(_y.AsObservable(), _z.AsObservable(), _w.AsObservable(),
                 (x, y, z, w) => new Vector4(x, y, z, w));
         }
     }

@@ -11,13 +11,13 @@ namespace Ugen.Inputs
         [SerializeField] UgenInput<float> _b;
         [SerializeField] UgenInput<float> _a;
 
-        public override Observable<Color> Observable()
+        public override Observable<Color> AsObservable()
         {
             if (_r == null || _g == null || _b == null || _a == null)
             {
-                return R3.Observable.Never<Color>();
+                return Observable.Never<Color>();
             }
-            return _r.Observable().CombineLatest(_g.Observable(), _b.Observable(), _a.Observable(),
+            return _r.AsObservable().CombineLatest(_g.AsObservable(), _b.AsObservable(), _a.AsObservable(),
                 (r, g, b, a) => new Color(r, g, b, a));
         }
     }

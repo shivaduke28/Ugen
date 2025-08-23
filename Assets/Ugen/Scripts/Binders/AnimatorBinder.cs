@@ -27,22 +27,22 @@ namespace Ugen.Binders
             switch (property)
             {
                 case FloatAnimatorProperty floatProperty:
-                    floatProperty.Input.Observable()
+                    floatProperty.Input.AsObservable()
                         .Subscribe(x => _animator.SetFloat(property.Id, x))
                         .AddTo(this);
                     break;
                 case IntAnimatorProperty intProperty:
-                    intProperty.Input.Observable()
+                    intProperty.Input.AsObservable()
                         .Subscribe(x => _animator.SetInteger(property.Id, x))
                         .AddTo(this);
                     break;
                 case BoolAnimatorProperty boolProperty:
-                    boolProperty.Input.Observable()
+                    boolProperty.Input.AsObservable()
                         .Subscribe(x => _animator.SetBool(property.Id, x))
                         .AddTo(this);
                     break;
                 case TriggerAnimatorProperty triggerProperty:
-                    triggerProperty.Input.Observable()
+                    triggerProperty.Input.AsObservable()
                         .Subscribe(_ => _animator.SetTrigger(property.Id))
                         .AddTo(this);
                     break;

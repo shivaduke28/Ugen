@@ -35,42 +35,42 @@ namespace Ugen.Binders
             switch (property)
             {
                 case FloatProperty floatProperty:
-                    floatProperty.Input.Observable()
+                    floatProperty.Input.AsObservable()
                         .Subscribe(x => Material.SetFloat(property.Property, x))
                         .AddTo(this);
                     break;
                 case IntProperty intProperty:
-                    intProperty.Input.Observable()
+                    intProperty.Input.AsObservable()
                         .Subscribe(x => Material.SetInt(property.Property, x))
                         .AddTo(this);
                     break;
                 case BoolProperty boolProperty:
-                    boolProperty.Input.Observable()
+                    boolProperty.Input.AsObservable()
                         .Subscribe(x => Material.SetInt(property.Property, x ? 1 : 0))
                         .AddTo(this);
                     break;
                 case UintProperty uintProperty:
-                    uintProperty.Input.Observable()
+                    uintProperty.Input.AsObservable()
                         .Subscribe(x => Material.SetInt(property.Property, (int)x))
                         .AddTo(this);
                     break;
                 case Vector2Property vector2Property:
-                    vector2Property.Input.Observable()
+                    vector2Property.Input.AsObservable()
                         .Subscribe(x => Material.SetVector(property.Property, x))
                         .AddTo(this);
                     break;
                 case Vector3Property vector3Property:
-                    vector3Property.Input.Observable()
+                    vector3Property.Input.AsObservable()
                         .Subscribe(x => Material.SetVector(property.Property, x))
                         .AddTo(this);
                     break;
                 case Vector4Property vector4Property:
-                    vector4Property.Input.Observable()
+                    vector4Property.Input.AsObservable()
                         .Subscribe(x => Material.SetVector(property.Property, x))
                         .AddTo(this);
                     break;
                 case ColorProperty colorProperty:
-                    colorProperty.Input.Observable()
+                    colorProperty.Input.AsObservable()
                         .Subscribe(x => Material.SetColor(property.Property, x))
                         .AddTo(this);
                     break;

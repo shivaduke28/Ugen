@@ -11,7 +11,7 @@ namespace Ugen.Binders
 
         void Start()
         {
-            _active.Observable().Subscribe(x => gameObject.SetActive(x))
+            _active.AsObservable().Subscribe(x => gameObject.SetActive(x))
                 .AddTo(this);
         }
     }

@@ -8,7 +8,7 @@ namespace Ugen.Inputs.UI
     public sealed class UgenSliderInput : UgenInput<float>
     {
         [SerializeField] Slider _slider;
-        public override Observable<float> Observable() => _slider.OnValueChangedAsObservable();
+        public override Observable<float> AsObservable() => _slider.OnValueChangedAsObservable();
 
         void Reset()
         {

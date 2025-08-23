@@ -13,13 +13,13 @@ namespace Ugen.Binders
 
         void Start()
         {
-            _position?.Observable()
+            _position?.AsObservable()
                 .Subscribe(x => transform.localPosition = x)
                 .AddTo(this);
-            _rotation?.Observable()
+            _rotation?.AsObservable()
                 .Subscribe(x => transform.localRotation = Quaternion.Euler(x))
                 .AddTo(this);
-            _scale?.Observable()
+            _scale?.AsObservable()
                 .Subscribe(x => transform.localScale = x)
                 .AddTo(this);
         }

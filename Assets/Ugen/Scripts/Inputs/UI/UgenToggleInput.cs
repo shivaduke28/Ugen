@@ -14,6 +14,6 @@ namespace Ugen.Inputs.UI
             _toggle = GetComponent<Toggle>();
         }
 
-        public override Observable<bool> Observable() => _toggle.OnValueChangedAsObservable();
+        public override Observable<bool> AsObservable() => _toggle.OnValueChangedAsObservable();
     }
 }

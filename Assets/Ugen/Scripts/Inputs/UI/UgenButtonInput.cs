@@ -14,6 +14,6 @@ namespace Ugen.Inputs.UI
             _button = GetComponent<Button>();
         }
 
-        public override Observable<Unit> Observable() => _button.OnClickAsObservable();
+        public override Observable<Unit> AsObservable() => _button.OnClickAsObservable();
     }
 }

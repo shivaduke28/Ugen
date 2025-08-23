@@ -11,7 +11,7 @@ namespace Ugen.Inputs
     {
         [SerializeField] List<UgenInput<T>> _inputs = new();
 
-        public override Observable<T> Observable() => _inputs.Select(x => x.Observable()).Merge();
+        public override Observable<T> AsObservable() => _inputs.Select(x => x.AsObservable()).Merge();
     }
 
     [Serializable]
