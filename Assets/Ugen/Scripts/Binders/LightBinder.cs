@@ -1,4 +1,5 @@
 using R3;
+using Ugen.Bindings;
 using Ugen.Inputs;
 using UnityEngine;
 
@@ -9,7 +10,7 @@ namespace Ugen.Binders
     public sealed class LightBinder : MonoBehaviour
     {
         [SerializeField] Light _light;
-        [SerializeField] UgenInput<float> _intensity;
+        [SerializeField] FloatBinding _intensity;
 
         void Reset()
         {

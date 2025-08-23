@@ -1,5 +1,5 @@
 using R3;
-using Ugen.Inputs;
+using Ugen.Bindings;
 using UnityEngine;
 
 namespace Ugen.Binders
@@ -7,9 +7,9 @@ namespace Ugen.Binders
     [AddComponentMenu("Ugen/Ugen Transform Binder")]
     public sealed class TransformBinder : MonoBehaviour
     {
-        [SerializeField] UgenInput<Vector3> _position;
-        [SerializeField] UgenInput<Vector3> _rotation;
-        [SerializeField] UgenInput<Vector3> _scale;
+        [SerializeField] Vector3Binding _position;
+        [SerializeField] Vector3Binding _rotation;
+        [SerializeField] Vector3Binding _scale;
 
         void Start()
         {

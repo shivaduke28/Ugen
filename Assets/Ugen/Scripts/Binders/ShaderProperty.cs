@@ -1,5 +1,5 @@
 using System;
-using Ugen.Inputs;
+using Ugen.Bindings;
 using UnityEngine;
 using UnityEngine.VFX.Utility;
 
@@ -12,48 +12,50 @@ namespace Ugen.Binders
     }
 
     [Serializable]
-    public abstract class ShaderProperty<T> : ShaderProperty
+    public sealed class FloatProperty : ShaderProperty
     {
-        public UgenInput<T> Input;
+        public FloatBinding Binding;
     }
 
     [Serializable]
-    public sealed class FloatProperty : ShaderProperty<float>
+    public sealed class IntProperty : ShaderProperty
     {
+        public IntBinding Binding;
     }
 
     [Serializable]
-    public sealed class IntProperty : ShaderProperty<int>
+    public sealed class BoolProperty : ShaderProperty
     {
+        public BoolBinding Binding;
     }
 
     [Serializable]
-    public sealed class BoolProperty : ShaderProperty<bool>
+    public sealed class UintProperty : ShaderProperty
     {
+        public UintBinding Binding;
     }
 
     [Serializable]
-    public sealed class UintProperty : ShaderProperty<uint>
+    public sealed class Vector2Property : ShaderProperty
     {
+        public Vector2Binding Binding;
     }
 
     [Serializable]
-    public sealed class Vector2Property : ShaderProperty<Vector2>
+    public sealed class Vector3Property : ShaderProperty
     {
+        public Vector3Binding Binding;
     }
 
     [Serializable]
-    public sealed class Vector3Property : ShaderProperty<Vector3>
+    public sealed class Vector4Property : ShaderProperty
     {
+        public Vector4Binding Binding;
     }
 
     [Serializable]
-    public sealed class Vector4Property : ShaderProperty<Vector4>
+    public sealed class ColorProperty : ShaderProperty
     {
-    }
-
-    [Serializable]
-    public sealed class ColorProperty : ShaderProperty<Color>
-    {
+        public ColorBinding Binding;
     }
 }

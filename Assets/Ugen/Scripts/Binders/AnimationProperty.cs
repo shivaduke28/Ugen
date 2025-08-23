@@ -1,12 +1,13 @@
 using System;
 using R3;
+using Ugen.Bindings;
 using Ugen.Inputs;
 using UnityEngine;
 
 namespace Ugen.Binders
 {
     [Serializable]
-    public abstract class AnimatorProperty : ISerializationCallbackReceiver
+    public abstract class AnimationProperty : ISerializationCallbackReceiver
     {
         [SerializeField] string _property;
         public int Id { get; private set; } = -1;
@@ -22,28 +23,26 @@ namespace Ugen.Binders
     }
 
     [Serializable]
-    public abstract class AnimatorProperty<T> : AnimatorProperty
+    public sealed class FloatAnimationProperty : AnimationProperty
     {
-        public UgenInput<T> Input;
+        public FloatBinding Binding;
     }
 
     [Serializable]
-    public sealed class FloatAnimatorProperty : AnimatorProperty<float>
+    public sealed class IntAnimationProperty : AnimationProperty
     {
+        public IntBinding Binding;
     }
 
     [Serializable]
-    public sealed class IntAnimatorProperty : AnimatorProperty<int>
+    public sealed class BoolAnimationProperty : AnimationProperty
     {
+        public BoolBinding Binding;
     }
 
     [Serializable]
-    public sealed class BoolAnimatorProperty : AnimatorProperty<bool>
+    public sealed class TriggerAnimationProperty : AnimationProperty
     {
-    }
-
-    [Serializable]
-    public sealed class TriggerAnimatorProperty : AnimatorProperty<Unit>
-    {
+        public UgenInput<Unit> Input;
     }
 }

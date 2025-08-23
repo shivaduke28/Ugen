@@ -1,5 +1,5 @@
 using R3;
-using Ugen.Inputs;
+using Ugen.Bindings;
 using Unity.Cinemachine;
 using UnityEngine;
 
@@ -10,7 +10,7 @@ namespace Ugen.Binders
     public class CinemachineSplineDollyBinder : MonoBehaviour
     {
         [SerializeField] CinemachineSplineDolly _splineDolly;
-        [SerializeField] UgenInput<float> _speed;
+        [SerializeField] FloatBinding _speed;
 
         void Start()
         {

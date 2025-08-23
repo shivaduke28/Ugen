@@ -12,7 +12,7 @@ namespace Ugen.Binders
         [SerializeField] Animator _animator;
 
         [SerializeReference, SerializeReferenceSelector]
-        List<AnimatorProperty> _properties = new();
+        List<AnimationProperty> _properties = new();
 
         void Start()
         {
@@ -22,26 +22,26 @@ namespace Ugen.Binders
             }
         }
 
-        void Bind(AnimatorProperty property)
+        void Bind(AnimationProperty property)
         {
             switch (property)
             {
-                case FloatAnimatorProperty floatProperty:
-                    floatProperty.Input.AsObservable()
+                case FloatAnimationProperty floatProperty:
+                    floatProperty.Binding.AsObservable()
                         .Subscribe(x => _animator.SetFloat(property.Id, x))
                         .AddTo(this);
                     break;
-                case IntAnimatorProperty intProperty:
-                    intProperty.Input.AsObservable()
+                case IntAnimationProperty intProperty:
+                    intProperty.Binding.AsObservable()
                         .Subscribe(x => _animator.SetInteger(property.Id, x))
                         .AddTo(this);
                     break;
-                case BoolAnimatorProperty boolProperty:
-                    boolProperty.Input.AsObservable()
+                case BoolAnimationProperty boolProperty:
+                    boolProperty.Binding.AsObservable()
                         .Subscribe(x => _animator.SetBool(property.Id, x))
                         .AddTo(this);
                     break;
-                case TriggerAnimatorProperty triggerProperty:
+                case TriggerAnimationProperty triggerProperty:
                     triggerProperty.Input.AsObservable()
                         .Subscribe(_ => _animator.SetTrigger(property.Id))
                         .AddTo(this);

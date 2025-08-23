@@ -1,5 +1,5 @@
 using R3;
-using Ugen.Inputs;
+using Ugen.Bindings;
 using UnityEngine;
 
 namespace Ugen.Binders
@@ -7,7 +7,7 @@ namespace Ugen.Binders
     [AddComponentMenu("Ugen/Ugen GameObject Binder")]
     public sealed class GameObjectBinder : MonoBehaviour
     {
-        [SerializeField] UgenInput<bool> _active;
+        [SerializeField] BoolBinding _active;
 
         void Start()
         {
