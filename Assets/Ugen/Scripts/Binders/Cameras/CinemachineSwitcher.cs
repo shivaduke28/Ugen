@@ -9,7 +9,7 @@ namespace Ugen.Binders
     [AddComponentMenu("Ugen/Ugen Cinemachine Switcher")]
     public sealed class CinemachineSwitcher : MonoBehaviour
     {
-        [SerializeField] List<CinemachinePriorityBinder> _binders = new();
+        [SerializeField] List<CinemachineCameraBinder> _binders = new();
         [SerializeField] UnitBinding _step;
         int _index;
 

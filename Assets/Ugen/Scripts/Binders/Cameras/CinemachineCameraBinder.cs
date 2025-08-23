@@ -6,15 +6,25 @@ using UnityEngine;
 namespace Ugen.Binders
 {
     [RequireComponent(typeof(CinemachineCamera))]
-    [AddComponentMenu("Ugen/Ugen Cinemachine Switch Binder")]
-    public sealed class CinemachinePriorityBinder : MonoBehaviour
+    [AddComponentMenu("Ugen/Ugen Cinemachine Camera Binder")]
+    public sealed class CinemachineCameraBinder : MonoBehaviour
     {
         [SerializeField] CinemachineCamera _camera;
-        [SerializeField] UnitBinding _binding;
+        [SerializeField] FloatBinding _fov;
+        [SerializeField] FloatBinding _dutch;
+        [SerializeField] UnitBinding _switch;
         [SerializeField] int _activePriority = 1;
         [SerializeField] int _inactivePriority = 0;
 
-        public Observable<Unit> OnSwitchRequested() => _binding.AsObservable();
+        public Observable<Unit> OnSwitchRequested() => _switch.AsObservable();
+
+        void Start()
+        {
+            _fov.AsObservable()
+                .Subscribe(x => _camera.Lens.FieldOfView = x)
+                .AddTo(this);
+            _dutch.AsObservable().Subscribe(x => _camera.Lens.Dutch = x).AddTo(this);
+        }
 
         public void Switch(bool active)
         {
