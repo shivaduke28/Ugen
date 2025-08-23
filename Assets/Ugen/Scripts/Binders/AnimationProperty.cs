@@ -43,6 +43,6 @@ namespace Ugen.Binders
     [Serializable]
     public sealed class TriggerAnimationProperty : AnimationProperty
     {
-        public UgenInput<Unit> Input;
+        public UnitBinding Binding;
     }
 }

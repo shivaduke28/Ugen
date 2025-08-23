@@ -42,7 +42,7 @@ namespace Ugen.Binders
                         .AddTo(this);
                     break;
                 case TriggerAnimationProperty triggerProperty:
-                    triggerProperty.Input.AsObservable()
+                    triggerProperty.Binding.AsObservable()
                         .Subscribe(_ => _animator.SetTrigger(property.Id))
                         .AddTo(this);
                     break;
