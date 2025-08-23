@@ -1,7 +1,7 @@
 using R3;
 using UnityEngine;
 
-namespace Ugen.Inputs
+namespace Ugen.Inputs.Primitives
 {
     [AddComponentMenu("Ugen/Ugen Float Input")]
     public sealed class FloatInput : UgenInput<float>

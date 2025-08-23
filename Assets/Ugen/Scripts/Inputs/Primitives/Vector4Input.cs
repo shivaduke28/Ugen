@@ -1,7 +1,7 @@
 using R3;
 using UnityEngine;
 
-namespace Ugen.Inputs
+namespace Ugen.Inputs.Primitives
 {
     [AddComponentMenu("Ugen/Ugen Vector4 Input")]
     public sealed class Vector4Input : UgenInput<Vector4>

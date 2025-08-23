@@ -3,7 +3,11 @@ using UnityEngine;
 
 namespace Ugen.Inputs
 {
-    public abstract class UgenInput<T> : MonoBehaviour
+    public abstract class UgenInput : MonoBehaviour
+    {
+    }
+
+    public abstract class UgenInput<T> : UgenInput
     {
         public abstract Observable<T> AsObservable();
     }
