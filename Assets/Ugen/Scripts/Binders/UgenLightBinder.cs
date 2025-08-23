@@ -9,7 +9,7 @@ namespace Ugen.Binders
     public sealed class UgenLightBinder : MonoBehaviour
     {
         [SerializeField] Light _light;
-        [SerializeField] List<UgenInput<float>> _intensityProperties = new();
+        [SerializeField] UgenInputList<float> _intensity = new();
 
         void Reset()
         {
@@ -18,10 +18,7 @@ namespace Ugen.Binders
 
         void Start()
         {
-            foreach (var property in _intensityProperties)
-            {
-                property.Observable().Subscribe(x => _light.intensity = x).AddTo(this);
-            }
+            _intensity.Observable().Subscribe(x => _light.intensity = x).AddTo(this);
         }
     }
 }

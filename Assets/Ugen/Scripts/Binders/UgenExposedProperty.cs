@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Ugen.Inputs;
 using UnityEngine;
 using UnityEngine.VFX.Utility;
@@ -15,7 +14,7 @@ namespace Ugen.Binders
     [Serializable]
     public abstract class UgenExposedProperty<T> : UgenExposedProperty
     {
-        public List<UgenInput<T>> Inputs;
+        public UgenInputList<T> InputList;
     }
 
     [Serializable]
