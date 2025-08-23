@@ -1,0 +1,23 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <ui:VisualElement name="root" style="flex-grow: 1; padding: 10px;">
+        <!-- Header -->
+        <ui:Label text="Select UgenInput" name="header-label" style="font-size: 14px; -unity-font-style: bold; margin-bottom: 10px;" />
+
+        <!-- Refresh Button -->
+        <ui:Button text="Refresh List" name="refresh-button" style="margin-bottom: 10px; height: 25px;" />
+
+        <!-- Search Field -->
+        <uie:ToolbarSearchField name="search-field" style="margin-bottom: 10px;" />
+
+        <!-- Main Content Area -->
+        <ui:ScrollView name="scroll-view" style="flex-grow: 1;">
+            <!-- None Button -->
+            <ui:Button text="None - Clear Selection" name="none-button" class="selection-button" style="height: 30px; margin-bottom: 5px;" />
+
+            <!-- List Container -->
+            <ui:VisualElement name="list-container" style="flex-grow: 1;">
+                <!-- Dynamic content will be added here -->
+            </ui:VisualElement>
+        </ui:ScrollView>
+    </ui:VisualElement>
+</ui:UXML>

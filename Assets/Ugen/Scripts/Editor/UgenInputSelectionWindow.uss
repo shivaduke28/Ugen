@@ -1,0 +1,76 @@
+/* Base styles */
+.selection-button {
+    margin-bottom: 3px;
+    padding: 5px 10px;
+    border-radius: 3px;
+    -unity-text-align: middle-left;
+    height: 30px;
+}
+
+.selection-button:hover {
+    background-color: rgba(100, 100, 100, 0.2);
+}
+
+.selection-button:active {
+    background-color: rgba(100, 100, 100, 0.4);
+}
+
+/* Column styles for aligned layout */
+.column-gameobject {
+    flex-basis: 40%;
+    flex-shrink: 0;
+    -unity-text-align: middle-left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.column-component {
+    flex-basis: 35%;
+    flex-shrink: 0;
+    -unity-text-align: middle-left;
+    margin-left: 5px;
+}
+
+.column-type {
+    flex-basis: 25%;
+    flex-shrink: 0;
+    -unity-text-align: middle-center;
+    margin-left: 5px;
+    padding: 2px 8px;
+    border-radius: 3px;
+}
+
+/* Type-specific color classes (for type label only) */
+.type-bool {
+    background-color: rgba(204, 77, 77, 0.4);
+}
+
+.type-int {
+    background-color: rgba(77, 153, 204, 0.4);
+}
+
+.type-float {
+    background-color: rgba(77, 204, 77, 0.4);
+}
+
+.type-vector {
+    background-color: rgba(204, 153, 77, 0.4);
+}
+
+.type-color {
+    background-color: rgba(204, 77, 204, 0.4);
+}
+
+.type-unknown {
+    background-color: rgba(128, 128, 128, 0.4);
+}
+
+/* Info box */
+.info-box {
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    background-color: rgba(100, 100, 100, 0.1);
+    border-left-width: 3px;
+    border-left-color: rgba(100, 150, 200, 0.8);
+}
