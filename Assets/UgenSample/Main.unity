@@ -4393,7 +4393,7 @@ MonoBehaviour:
         Property:
           m_Name: _Color
         Binding:
-          _input: {fileID: 0}
+          _input: {fileID: 335235925}
 --- !u!114 &1570408022
 MonoBehaviour:
   m_ObjectHideFlags: 0
