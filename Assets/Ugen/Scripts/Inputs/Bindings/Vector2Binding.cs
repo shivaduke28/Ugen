@@ -1,5 +1,6 @@
 using System;
 using R3;
+using Ugen.Attributes;
 using Ugen.Inputs;
 using UnityEngine;
 
@@ -8,7 +9,7 @@ namespace Ugen.Bindings
     [Serializable]
     public sealed class Vector2Binding
     {
-        [SerializeField] UgenInput _input;
+        [SerializeField, UgenInputSelector] UgenInput _input;
 
         public Observable<Vector2> AsObservable()
         {

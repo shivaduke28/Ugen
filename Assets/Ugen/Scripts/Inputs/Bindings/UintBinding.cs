@@ -1,5 +1,6 @@
 using System;
 using R3;
+using Ugen.Attributes;
 using Ugen.Inputs;
 using UnityEngine;
 
@@ -8,7 +9,7 @@ namespace Ugen.Bindings
     [Serializable]
     public sealed class UintBinding
     {
-        [SerializeField] UgenInput _input;
+        [SerializeField, UgenInputSelector] UgenInput _input;
 
         public Observable<uint> AsObservable()
         {
@@ -22,7 +23,7 @@ namespace Ugen.Bindings
                 UgenInput<Vector2> input => input.AsObservable().Select(x => (uint)x.x),
                 UgenInput<Vector3> input => input.AsObservable().Select(x => (uint)x.x),
                 UgenInput<Vector4> input => input.AsObservable().Select(x => (uint)x.x),
-                UgenInput<Color> input => input.AsObservable().Select(x => (uint)(x.r * 255)),
+                UgenInput<Color> input => input.AsObservable().Select(x => (uint)x.r),
                 _ => Observable.Never<uint>()
             };
         }
