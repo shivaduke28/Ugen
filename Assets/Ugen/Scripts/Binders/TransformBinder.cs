@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Ugen.Binders
 {
     [AddComponentMenu("Ugen/Ugen Transform Binder")]
-    public sealed class TransformBinder : MonoBehaviour
+    public sealed class TransformBinder : UgenBinder
     {
         [SerializeField] Vector3Binding _position;
         [SerializeField] Vector3Binding _rotation;

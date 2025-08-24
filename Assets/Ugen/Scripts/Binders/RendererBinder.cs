@@ -7,7 +7,7 @@ namespace Ugen.Binders
 {
     [RequireComponent(typeof(Renderer))]
     [AddComponentMenu("Ugen/Ugen Renderer Binder")]
-    public sealed class RendererBinder : MonoBehaviour
+    public sealed class RendererBinder : UgenBinder
     {
         [SerializeField] Renderer _renderer;
         [SerializeField] int _materialIndex;

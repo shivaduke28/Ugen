@@ -6,7 +6,7 @@ namespace Ugen.Binders
 {
     [RequireComponent(typeof(Light))]
     [AddComponentMenu("Ugen/Ugen Light Binder")]
-    public sealed class LightBinder : MonoBehaviour
+    public sealed class LightBinder : UgenBinder
     {
         [SerializeField] Light _light;
         [SerializeField] FloatBinding _intensity;

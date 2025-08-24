@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Ugen.Binders
 {
     [AddComponentMenu("Ugen/Ugen GameObject Binder")]
-    public sealed class GameObjectBinder : MonoBehaviour
+    public sealed class GameObjectBinder : UgenBinder
     {
         [SerializeField] BoolBinding _active;
 

@@ -7,7 +7,7 @@ namespace Ugen.Binders
 {
     [RequireComponent(typeof(Animator))]
     [AddComponentMenu("Ugen/Ugen Animator Binder")]
-    public sealed class UgenAnimatorBinder : MonoBehaviour
+    public sealed class UgenAnimatorBinder : UgenBinder
     {
         [SerializeField] Animator _animator;
 
