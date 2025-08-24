@@ -10,6 +10,7 @@ namespace Ugen.Inputs.Audio
     [AddComponentMenu("Ugen/Ugen Audio Input Device Manager")]
     public sealed class AudioInputDeviceManager : MonoBehaviour
     {
+        [SerializeField] string _deviceName;
         readonly ReactiveProperty<AudioInputDeviceInfo> _currentInputDevice = new(AudioInputDeviceInfo.Empty);
         public ReadOnlyReactiveProperty<AudioInputDeviceInfo> CurrentInputDevice => _currentInputDevice;
 
@@ -19,9 +20,15 @@ namespace Ugen.Inputs.Audio
 
         void Start()
         {
-            // TODO: UIからデバイスを選ぶ
-            var device = GetInputDevices().First(x => x.Name.Contains("Stream"));
-            SwitchDevice(device);
+            var devices = GetInputDevices();
+            foreach (var device in devices)
+            {
+                Debug.Log($"Audio Input Device: {device.Name}");
+                if (device.Name == _deviceName)
+                {
+                    SwitchDevice(device);
+                }
+            }
         }
 
         public IEnumerable<AudioInputDeviceInfo> GetInputDevices()
