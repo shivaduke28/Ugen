@@ -17,16 +17,6 @@ namespace Ugen.Graphs
             Name = name;
             InputPorts = inputPorts;
             OutputPorts = outputPorts;
-
-            // ポートにNodeの参照を設定
-            foreach (var inputPort in inputPorts)
-            {
-                inputPort.Node = this;
-            }
-            foreach (var outputPort in outputPorts)
-            {
-                outputPort.Node = this;
-            }
         }
 
         public void SetPosition(Vector2 position)
@@ -34,7 +24,7 @@ namespace Ugen.Graphs
             Position.Value = position;
         }
 
-        public void Move(Vector2 delta)
+        public void MoveDelta(Vector2 delta)
         {
             Position.Value += delta;
         }

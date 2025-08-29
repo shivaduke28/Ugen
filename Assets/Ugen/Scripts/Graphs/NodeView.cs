@@ -25,7 +25,7 @@ namespace Ugen.Graphs
 
             var dragManipulator = new DragManipulator();
             _root.AddManipulator(dragManipulator);
-            dragManipulator.OnMove().Subscribe(nodeViewModel.Move).AddTo(disposable);
+            dragManipulator.OnMoveDelta().Subscribe(nodeViewModel.MoveDelta).AddTo(disposable);
             Disposable.Create(() => _root.RemoveManipulator(dragManipulator)).AddTo(disposable);
 
             foreach (var inputPort in nodeViewModel.InputPorts)

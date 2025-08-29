@@ -10,7 +10,6 @@ namespace Ugen.Graphs
         readonly VisualElement _root;
         readonly Label _nameLabel;
         readonly VisualElement _connector;
-        readonly OutputPortViewModel _outputPortViewModel;
 
         public OutputPortView(VisualElement container)
         {
@@ -22,15 +21,13 @@ namespace Ugen.Graphs
         public IDisposable Bind(OutputPortViewModel port)
         {
             _nameLabel.text = port.Name;
-            return Observable.EveryValueChanged(this, view => view.GetConnectorWorldPosition())
-                .Subscribe(pos => port.ConnectorWorldPosition.Value = pos);
+            var disposable = new CompositeDisposable();
+            Observable.EveryValueChanged(this, view => view.GetConnectorWorldPosition())
+                .Subscribe(pos => port.ConnectorWorldPosition.Value = pos)
+                .AddTo(disposable);
+            return disposable;
         }
 
-
-        public Vector2 GetConnectorWorldPosition()
-        {
-            var worldBound = _connector.worldBound;
-            return worldBound.center;
-        }
+        Vector2 GetConnectorWorldPosition() => _connector.worldBound.center;
     }
 }
