@@ -1,4 +1,4 @@
-using System;
+using R3;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -6,14 +6,14 @@ namespace Ugen.Graphs
 {
     public class DragManipulator : MouseManipulator
     {
-        readonly Action<Vector2> _onMove;
         bool _isActive;
+        readonly Subject<Vector2> _onMove = new();
+        public Observable<Vector2> OnMove() => _onMove;
 
-        public DragManipulator(Action<Vector2> onMove)
+        public DragManipulator()
         {
-            _onMove = onMove;
             _isActive = false;
-            
+
             activators.Add(new ManipulatorActivationFilter
             {
                 button = MouseButton.LeftMouse
@@ -49,7 +49,7 @@ namespace Ugen.Graphs
             if (!_isActive)
                 return;
 
-            _onMove?.Invoke(evt.mouseDelta);
+            _onMove.OnNext(evt.mouseDelta);
             evt.StopPropagation();
         }
 

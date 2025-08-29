@@ -6,31 +6,27 @@ using UnityEngine.UIElements;
 
 namespace Ugen.Graphs
 {
-    public class NodeView
+    public class NodeView : IDisposable
     {
         public VisualElement Root => _root;
         readonly VisualElement _root;
         readonly Label _nameLabel;
         readonly VisualElement _inputPortContainer;
         readonly VisualElement _outputPortContainer;
+        readonly SerialDisposable _disposable = new();
         public List<InputPortView> InputPortViews { get; } = new();
         public List<OutputPortView> OutputPortViews { get; } = new();
-        DragManipulator _dragManipulator;
 
         public IDisposable Bind(NodeViewModel nodeViewModel)
         {
             var disposable = new CompositeDisposable();
-            // ノード名を設定
+            _disposable.Disposable = disposable;
             _nameLabel.text = nodeViewModel.Name;
 
-            // ドラッグ機能を追加
-            if (_dragManipulator != null)
-            {
-                _root.RemoveManipulator(_dragManipulator);
-            }
-
-            _dragManipulator = new DragManipulator(nodeViewModel.Move);
-            _root.AddManipulator(_dragManipulator);
+            var dragManipulator = new DragManipulator();
+            _root.AddManipulator(dragManipulator);
+            dragManipulator.OnMove().Subscribe(nodeViewModel.Move).AddTo(disposable);
+            Disposable.Create(() => _root.RemoveManipulator(dragManipulator)).AddTo(disposable);
 
             foreach (var inputPort in nodeViewModel.InputPorts)
             {
@@ -68,6 +64,11 @@ namespace Ugen.Graphs
             _nameLabel = _root.Q<Label>("name");
             _inputPortContainer = _root.Q<VisualElement>("input-ports");
             _outputPortContainer = _root.Q<VisualElement>("output-ports");
+        }
+
+        public void Dispose()
+        {
+            _disposable.Dispose();
         }
     }
 }

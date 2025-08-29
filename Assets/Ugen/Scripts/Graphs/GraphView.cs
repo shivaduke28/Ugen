@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using ObservableCollections;
 using R3;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Ugen.Graphs
@@ -49,12 +48,10 @@ namespace Ugen.Graphs
             graphViewModel.Nodes.ObserveRemove().Subscribe(evt =>
             {
                 var nodeId = evt.Value.Key;
-
-                if (_nodeViews.TryGetValue(nodeId, out var nodeView))
+                if (_nodeViews.Remove(nodeId, out var nodeView))
                 {
-                    // TODO: viewとview modelのbindのdisposeが必要
                     _nodeLayer.Remove(nodeView.Root);
-                    _nodeViews.Remove(nodeId);
+                    nodeView.Dispose();
                 }
             }).AddTo(disposable);
 
@@ -77,11 +74,10 @@ namespace Ugen.Graphs
             {
                 var edgeId = evt.Value.Key;
 
-                if (_edgeViews.TryGetValue(edgeId, out var edgeView))
+                if (_edgeViews.Remove(edgeId, out var edgeView))
                 {
                     _edgeLayer.Remove(edgeView);
                     edgeView.Dispose();
-                    _edgeViews.Remove(edgeId);
                 }
             }).AddTo(disposable);
 
@@ -120,6 +116,11 @@ namespace Ugen.Graphs
             }
 
             _edgeViews.Clear();
+            foreach (var nodeView in _nodeViews.Values)
+            {
+                nodeView.Dispose();
+            }
+
             _nodeViews.Clear();
             _disposables.Dispose();
         }
