@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using ObservableCollections;
 using UnityEngine;
 
@@ -38,7 +39,7 @@ namespace Ugen.Graphs
             }
 
             // サンプルのEdgeを作成
-            var nodeList = new System.Collections.Generic.List<NodeViewModel>();
+            var nodeList = new List<NodeViewModel>();
             foreach (var kvp in _nodes)
             {
                 nodeList.Add(kvp.Value);
