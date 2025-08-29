@@ -1,5 +1,6 @@
 :root {
     -unity-font-definition: resource('Ubuntu_Mono/UbuntuMono-Regular SDF');
+    color: rgba(256, 256, 256, 1);
 }
 
 .ugen-node {
@@ -55,4 +56,13 @@
     font-size: 10px;
     margin-left: 2px;
     margin-right: 2px;
+}
+
+.ugen-graph {
+    background-color: rgba(1, 0, 0, 0.39);
+    flex-grow: 1;
+}
+
+.ugen-graph-node-layer {
+    flex-grow: 1;
 }
