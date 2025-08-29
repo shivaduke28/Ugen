@@ -1,3 +1,6 @@
+using System;
+using R3;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Ugen.Graphs
@@ -9,16 +12,25 @@ namespace Ugen.Graphs
         readonly VisualElement _connector;
         readonly OutputPortViewModel _outputPortViewModel;
 
-        public OutputPortViewModel OutputPort => _outputPortViewModel;
-
-        public OutputPortView(VisualElement container, OutputPortViewModel outputPort)
+        public OutputPortView(VisualElement container)
         {
             _root = container.Q<VisualElement>("output-port");
             _nameLabel = _root.Q<Label>("name");
             _connector = _root.Q<VisualElement>("connector");
-            _outputPortViewModel = outputPort;
+        }
 
-            _nameLabel.text = outputPort.Name;
+        public IDisposable Bind(OutputPortViewModel port)
+        {
+            _nameLabel.text = port.Name;
+            return Observable.EveryValueChanged(this, view => view.GetConnectorWorldPosition())
+                .Subscribe(pos => port.ConnectorWorldPosition.Value = pos);
+        }
+
+
+        public Vector2 GetConnectorWorldPosition()
+        {
+            var worldBound = _connector.worldBound;
+            return worldBound.center;
         }
     }
 }

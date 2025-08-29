@@ -15,6 +15,16 @@ namespace Ugen.Graphs
             Name = name;
             InputPorts = inputPorts;
             OutputPorts = outputPorts;
+            
+            // ポートにNodeの参照を設定
+            foreach (var inputPort in inputPorts)
+            {
+                inputPort.Node = this;
+            }
+            foreach (var outputPort in outputPorts)
+            {
+                outputPort.Node = this;
+            }
         }
 
         public void SetPosition(Vector2 position)

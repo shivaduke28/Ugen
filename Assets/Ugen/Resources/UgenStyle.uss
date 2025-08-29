@@ -65,4 +65,10 @@
 
 .ugen-graph-node-layer {
     flex-grow: 1;
+    position: absolute;
+}
+
+.ugen-graph-edge-layer {
+    flex-grow: 1;
+    position: absolute;
 }

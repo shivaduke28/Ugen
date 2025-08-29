@@ -13,12 +13,13 @@ namespace Ugen.Graphs
         readonly Label _nameLabel;
         readonly VisualElement _inputPortContainer;
         readonly VisualElement _outputPortContainer;
-        readonly List<InputPortView> _inputPortViews = new();
-        readonly List<OutputPortView> _outputPortViews = new();
+        public List<InputPortView> InputPortViews { get; } = new();
+        public List<OutputPortView> OutputPortViews { get; } = new();
         DragManipulator _dragManipulator;
 
         public IDisposable Bind(NodeViewModel nodeViewModel)
         {
+            var disposable = new CompositeDisposable();
             // ノード名を設定
             _nameLabel.text = nodeViewModel.Name;
 
@@ -27,6 +28,7 @@ namespace Ugen.Graphs
             {
                 _root.RemoveManipulator(_dragManipulator);
             }
+
             _dragManipulator = new DragManipulator(nodeViewModel.Move);
             _root.AddManipulator(_dragManipulator);
 
@@ -35,8 +37,9 @@ namespace Ugen.Graphs
                 var portElement = VisualElementFactory.Instance.CreateInputPort();
                 _inputPortContainer.Add(portElement);
 
-                var inputPortView = new InputPortView(portElement, inputPort);
-                _inputPortViews.Add(inputPortView);
+                var inputPortView = new InputPortView(portElement);
+                InputPortViews.Add(inputPortView);
+                inputPortView.Bind(inputPort).AddTo(disposable);
             }
 
             foreach (var outputPort in nodeViewModel.OutputPorts)
@@ -44,11 +47,13 @@ namespace Ugen.Graphs
                 var portElement = VisualElementFactory.Instance.CreateOutputPort();
                 _outputPortContainer.Add(portElement);
 
-                var outputPortView = new OutputPortView(portElement, outputPort);
-                _outputPortViews.Add(outputPortView);
+                var outputPortView = new OutputPortView(portElement);
+                OutputPortViews.Add(outputPortView);
+                outputPortView.Bind(outputPort).AddTo(disposable);
             }
 
-            return nodeViewModel.Position.Subscribe(SetPosition);
+            nodeViewModel.Position.Subscribe(SetPosition).AddTo(disposable);
+            return disposable;
         }
 
         void SetPosition(Vector2 position)
