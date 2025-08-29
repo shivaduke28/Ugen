@@ -21,5 +21,10 @@ namespace Ugen.Graphs
         {
             Position.Value = position;
         }
+        
+        public void Move(Vector2 delta)
+        {
+            Position.Value += delta;
+        }
     }
 }

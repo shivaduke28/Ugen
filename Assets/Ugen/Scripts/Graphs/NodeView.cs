@@ -15,11 +15,20 @@ namespace Ugen.Graphs
         readonly VisualElement _outputPortContainer;
         readonly List<InputPortView> _inputPortViews = new();
         readonly List<OutputPortView> _outputPortViews = new();
+        DragManipulator _dragManipulator;
 
         public IDisposable Bind(NodeViewModel nodeViewModel)
         {
             // ノード名を設定
             _nameLabel.text = nodeViewModel.Name;
+
+            // ドラッグ機能を追加
+            if (_dragManipulator != null)
+            {
+                _root.RemoveManipulator(_dragManipulator);
+            }
+            _dragManipulator = new DragManipulator(nodeViewModel.Move);
+            _root.AddManipulator(_dragManipulator);
 
             foreach (var inputPort in nodeViewModel.InputPorts)
             {
