@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ObservableCollections;
 using R3;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -12,86 +13,114 @@ namespace Ugen.Graphs
         readonly VisualElement _nodeLayer;
         readonly VisualElement _edgeLayer;
         readonly CompositeDisposable _disposables = new();
-        readonly List<NodeViewModel> _nodeViewModels = new();
-        readonly List<NodeView> _nodeViews = new();
-        readonly List<EdgeView> _edgeViews = new();
+        readonly Dictionary<NodeId, NodeView> _nodeViews = new();
+        readonly Dictionary<EdgeId, EdgeView> _edgeViews = new();
 
         public GraphView(VisualElement container)
         {
             _root = container.Q<VisualElement>("graph");
             _nodeLayer = _root.Q<VisualElement>("node-layer");
             _edgeLayer = _root.Q<VisualElement>("edge-layer");
+        }
 
-            for (var i = 0; i < 4; i++)
+        public IDisposable Bind(GraphViewModel graphViewModel)
+        {
+            var disposable = new CompositeDisposable();
+
+            // ノードの追加を監視
+            graphViewModel.Nodes.ObserveAdd().Subscribe(evt =>
             {
-                // Node View Modelを作成
-                var inputPorts = new[]
-                {
-                    new InputPortViewModel($"Input {i * 2}"),
-                    new InputPortViewModel($"Input {i * 2 + 1}")
-                };
-
-                var outputPorts = new[]
-                {
-                    new OutputPortViewModel($"Output {i}")
-                };
-
-                var nodeViewModel = new NodeViewModel($"Node {i}", inputPorts, outputPorts);
-                _nodeViewModels.Add(nodeViewModel);
+                var nodeId = evt.Value.Key;
+                var nodeViewModel = evt.Value.Value;
 
                 // NodeViewを作成
                 var nodeElement = VisualElementFactory.Instance.CreateNode();
                 var nodeView = new NodeView(nodeElement);
 
-                // NodeViewをnodeLayerに追加して位置を調整
+                // NodeViewをnodeLayerに追加
                 _nodeLayer.Add(nodeView.Root);
-                nodeView.Bind(nodeViewModel).AddTo(_disposables);
-                _nodeViews.Add(nodeView);
+                nodeView.Bind(nodeViewModel).AddTo(disposable);
 
-                // ノードの位置を設定（横に並べる）
-                var xOffset = i * 250;
-                var yOffset = (i % 2) * 150; // ジグザグ配置
-                nodeViewModel.SetPosition(new Vector2(xOffset, yOffset));
-            }
+                // NodeViewを管理
+                _nodeViews[nodeId] = nodeView;
+            }).AddTo(disposable);
 
-            // サンプルのEdgeを作成（Node 0のOutput 0 → Node 1のInput 0）
-            if (_nodeViews.Count >= 2)
+            // ノードの削除を監視
+            graphViewModel.Nodes.ObserveRemove().Subscribe(evt =>
             {
-                CreateEdge(_nodeViewModels[0], 0, _nodeViewModels[1], 0);
+                var nodeId = evt.Value.Key;
 
-                // Node 1のOutput 0 → Node 2のInput 0
-                if (_nodeViews.Count >= 3)
+                if (_nodeViews.TryGetValue(nodeId, out var nodeView))
                 {
-                    CreateEdge(_nodeViewModels[1], 0, _nodeViewModels[2], 0);
+                    // TODO: viewとview modelのbindのdisposeが必要
+                    _nodeLayer.Remove(nodeView.Root);
+                    _nodeViews.Remove(nodeId);
                 }
+            }).AddTo(disposable);
+
+            // エッジの追加を監視
+            graphViewModel.Edges.ObserveAdd().Subscribe(evt =>
+            {
+                var edgeId = evt.Value.Key;
+                var edgeViewModel = evt.Value.Value;
+
+                // EdgeViewを作成
+                var edgeView = new EdgeView(edgeViewModel);
+                _edgeLayer.Add(edgeView);
+
+                // EdgeViewを管理
+                _edgeViews[edgeId] = edgeView;
+            }).AddTo(disposable);
+
+            // エッジの削除を監視
+            graphViewModel.Edges.ObserveRemove().Subscribe(evt =>
+            {
+                var edgeId = evt.Value.Key;
+
+                if (_edgeViews.TryGetValue(edgeId, out var edgeView))
+                {
+                    _edgeLayer.Remove(edgeView);
+                    edgeView.Dispose();
+                    _edgeViews.Remove(edgeId);
+                }
+            }).AddTo(disposable);
+
+            // 既存のノードとエッジを処理（初期化時）
+            foreach (var kvp in graphViewModel.Nodes)
+            {
+                var nodeId = kvp.Key;
+                var nodeViewModel = kvp.Value;
+
+                var nodeElement = VisualElementFactory.Instance.CreateNode();
+                var nodeView = new NodeView(nodeElement);
+                _nodeLayer.Add(nodeView.Root);
+                nodeView.Bind(nodeViewModel).AddTo(disposable);
+                _nodeViews[nodeId] = nodeView;
             }
-        }
 
-        void CreateEdge(NodeViewModel outputNode, int outputPortIndex, NodeViewModel inputNode, int inputPortIndex)
-        {
-            if (outputNode.OutputPorts.Length <= outputPortIndex ||
-                inputNode.InputPorts.Length <= inputPortIndex)
-                return;
+            foreach (var kvp in graphViewModel.Edges)
+            {
+                var edgeId = kvp.Key;
+                var edgeViewModel = kvp.Value;
 
-            var outputPort = outputNode.OutputPorts[outputPortIndex];
-            var inputPort = inputNode.InputPorts[inputPortIndex];
+                var edgeView = new EdgeView(edgeViewModel);
+                _edgeLayer.Add(edgeView);
+                _edgeViews[edgeId] = edgeView;
+            }
 
-            var edgeViewModel = new EdgeViewModel(
-                outputPort,
-                inputPort);
-
-            var edgeView = new EdgeView(edgeViewModel);
-            _edgeLayer.Add(edgeView);
-            _edgeViews.Add(edgeView);
+            return disposable;
         }
 
         public void Dispose()
         {
-            foreach (var edgeView in _edgeViews)
+            // EdgeViewのDispose
+            foreach (var edgeView in _edgeViews.Values)
             {
                 edgeView.Dispose();
             }
 
+            _edgeViews.Clear();
+            _nodeViews.Clear();
             _disposables.Dispose();
         }
     }
