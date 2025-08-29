@@ -11,9 +11,9 @@ namespace Ugen.Graphs
         public InputPortViewModel[] InputPorts { get; }
         public OutputPortViewModel[] OutputPorts { get; }
 
-        public NodeViewModel(string name, InputPortViewModel[] inputPorts, OutputPortViewModel[] outputPorts)
+        public NodeViewModel(NodeId id, string name, InputPortViewModel[] inputPorts, OutputPortViewModel[] outputPorts)
         {
-            Id = NodeId.New();
+            Id = id;
             Name = name;
             InputPorts = inputPorts;
             OutputPorts = outputPorts;

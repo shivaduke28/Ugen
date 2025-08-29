@@ -17,18 +17,19 @@ namespace Ugen.Graphs
             // サンプルノードを作成
             for (var i = 0; i < 4; i++)
             {
+                var nodeId = NodeId.New();
                 var inputPorts = new[]
                 {
-                    new InputPortViewModel($"Input {i * 2}"),
-                    new InputPortViewModel($"Input {i * 2 + 1}")
+                    new InputPortViewModel(nodeId, 0, $"Input {i * 2}"),
+                    new InputPortViewModel(nodeId, 1, $"Input {i * 2 + 1}")
                 };
 
                 var outputPorts = new[]
                 {
-                    new OutputPortViewModel($"Output {i}")
+                    new OutputPortViewModel(nodeId, 0, $"Output {i}")
                 };
 
-                var nodeViewModel = new NodeViewModel($"Node {i}", inputPorts, outputPorts);
+                var nodeViewModel = new NodeViewModel(NodeId.New(), $"Node {i}", inputPorts, outputPorts);
 
                 // ノードの位置を設定（横に並べる）
                 var xOffset = i * 250;
@@ -69,7 +70,6 @@ namespace Ugen.Graphs
         public void RemoveNode(NodeId nodeId)
         {
             // TODO: nodeからつながっているedgeを削除する
-
             _nodes.Remove(nodeId);
         }
 
@@ -93,19 +93,20 @@ namespace Ugen.Graphs
 
         public NodeViewModel CreateNode(string name, int inputPortCount, int outputPortCount)
         {
+            var nodeId = NodeId.New();
             var inputPorts = new InputPortViewModel[inputPortCount];
             for (var i = 0; i < inputPortCount; i++)
             {
-                inputPorts[i] = new InputPortViewModel($"Input {i}");
+                inputPorts[i] = new InputPortViewModel(nodeId, i, $"Input {i}");
             }
 
             var outputPorts = new OutputPortViewModel[outputPortCount];
             for (var i = 0; i < outputPortCount; i++)
             {
-                outputPorts[i] = new OutputPortViewModel($"Output {i}");
+                outputPorts[i] = new OutputPortViewModel(nodeId, i, $"Output {i}");
             }
 
-            var node = new NodeViewModel(name, inputPorts, outputPorts);
+            var node = new NodeViewModel(nodeId, name, inputPorts, outputPorts);
             AddNode(node);
             return node;
         }

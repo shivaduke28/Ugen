@@ -1,16 +1,11 @@
-using R3;
-using UnityEngine;
-
 namespace Ugen.Graphs
 {
-    public class InputPortViewModel
+    public class InputPortViewModel : PortViewModel
     {
-        public string Name { get; }
-        public ReactiveProperty<Vector2> ConnectorWorldPosition { get; } = new();
+        public override PortDirection Direction => PortDirection.Input;
 
-        public InputPortViewModel(string name)
+        public InputPortViewModel(NodeId nodeId, int index, string name) : base(nodeId, index, name)
         {
-            Name = name;
         }
     }
 }
