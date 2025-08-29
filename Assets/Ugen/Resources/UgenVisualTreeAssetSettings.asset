@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d9f49296ba2492dae39d52d42056d5a, type: 3}
+  m_Name: UgenVisualTreeAssetSettings
+  m_EditorClassIdentifier: Ugen::Ugen.Graphs.VisualTreeAssetSettings
+  _node: {fileID: 9197481963319205126, guid: f6e572188517d48d8bec82ac54557c91, type: 3}
+  _inputPort: {fileID: 9197481963319205126, guid: 71201d336166c4dbc88d58d2402f7ee0, type: 3}
+  _outputPort: {fileID: 9197481963319205126, guid: 036160135663e4c2a91570db8a0548be, type: 3}

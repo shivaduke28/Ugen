@@ -1,0 +1,58 @@
+:root {
+    -unity-font-definition: resource('Ubuntu_Mono/UbuntuMono-Regular SDF');
+}
+
+.ugen-node {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.39);
+    border-width: 0.1px;
+    border-color: rgb(255, 255, 255);
+    border-radius: 2px;
+}
+
+.ugen-node-header {
+    flex-grow: 1;
+    height: 16px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.ugen-node-name-label {
+    -unity-text-align: middle-center;
+}
+
+.ugen-node-body {
+    flex-direction: row;
+    padding-bottom: 2px;
+}
+
+.ugen-input-port {
+    flex-direction: row;
+    align-items: center;
+}
+
+.ugen-port-connector {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    border-width: 0.1px;
+    border-color: rgb(255, 255, 255);
+}
+
+.ugen-input-port-name-label {
+    font-size: 10px;
+    margin-left: 2px;
+    margin-right: 2px;
+}
+
+.ugen-output-port {
+    flex-direction: row;
+    align-items: center;
+}
+
+.ugen-output-port-name-label {
+    font-size: 10px;
+    margin-left: 2px;
+    margin-right: 2px;
+}

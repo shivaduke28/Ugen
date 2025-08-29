@@ -1,0 +1,12 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Ugen/Resources/UgenStyle.uss?fileID=7433441132597879392&amp;guid=34eeab99a139f450abb074d8a0e88acb&amp;type=3#UgenStyle" />
+    <ui:VisualElement name="node" class="ugen-node">
+        <ui:VisualElement name="header" class="ugen-node-header">
+            <ui:Label text="Label" name="name" class="ugen-node-name-label" />
+        </ui:VisualElement>
+        <ui:VisualElement name="body" class="ugen-node-body">
+            <ui:VisualElement name="input-ports" />
+            <ui:VisualElement name="output-ports" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
