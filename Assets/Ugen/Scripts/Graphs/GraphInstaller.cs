@@ -1,3 +1,4 @@
+using R3;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -12,6 +13,8 @@ namespace Ugen.Graphs
         {
             VisualElementFactory.Initialize(_visualTreeAssetSettings);
             var graphView = new GraphView(_document.rootVisualElement);
+
+            graphView.AddTo(this);
         }
     }
 }

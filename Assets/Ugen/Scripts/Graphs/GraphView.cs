@@ -1,12 +1,15 @@
+using System;
+using R3;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Ugen.Graphs
 {
-    public class GraphView
+    public class GraphView : IDisposable
     {
         readonly VisualElement _root;
         readonly VisualElement _nodeLayer;
+        readonly CompositeDisposable _disposables = new();
 
         public GraphView(VisualElement container)
         {
@@ -31,17 +34,22 @@ namespace Ugen.Graphs
 
                 // NodeViewを作成
                 var nodeElement = VisualElementFactory.Instance.CreateNode();
-                var nodeView = new NodeView(nodeElement, nodeViewModel);
+                var nodeView = new NodeView(nodeElement);
 
                 // NodeViewをnodeLayerに追加して位置を調整
                 _nodeLayer.Add(nodeView.Root);
+                nodeView.Bind(nodeViewModel).AddTo(_disposables);
 
                 // ノードの位置を設定（横に並べる）
                 var xOffset = i * 250;
                 var yOffset = (i % 2) * 150; // ジグザグ配置
-                nodeView.Root.style.left = xOffset;
-                nodeView.Root.style.top = yOffset;
+                nodeViewModel.SetPosition(new Vector2(xOffset, yOffset));
             }
+        }
+
+        public void Dispose()
+        {
+            _disposables.Dispose();
         }
     }
 }

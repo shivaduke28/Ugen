@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using R3;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Ugen.Graphs
@@ -9,42 +13,47 @@ namespace Ugen.Graphs
         readonly Label _nameLabel;
         readonly VisualElement _inputPortContainer;
         readonly VisualElement _outputPortContainer;
-        readonly InputPortView[] _inputPortViews;
-        readonly OutputPortView[] _outputPortViews;
+        readonly List<InputPortView> _inputPortViews = new();
+        readonly List<OutputPortView> _outputPortViews = new();
 
-        public NodeView(VisualElement container, NodeViewModel nodeViewModel)
+        public IDisposable Bind(NodeViewModel nodeViewModel)
+        {
+            // ノード名を設定
+            _nameLabel.text = nodeViewModel.Name;
+
+            foreach (var inputPort in nodeViewModel.InputPorts)
+            {
+                var portElement = VisualElementFactory.Instance.CreateInputPort();
+                _inputPortContainer.Add(portElement);
+
+                var inputPortView = new InputPortView(portElement, inputPort);
+                _inputPortViews.Add(inputPortView);
+            }
+
+            foreach (var outputPort in nodeViewModel.OutputPorts)
+            {
+                var portElement = VisualElementFactory.Instance.CreateOutputPort();
+                _outputPortContainer.Add(portElement);
+
+                var outputPortView = new OutputPortView(portElement, outputPort);
+                _outputPortViews.Add(outputPortView);
+            }
+
+            return nodeViewModel.Position.Subscribe(SetPosition);
+        }
+
+        void SetPosition(Vector2 position)
+        {
+            _root.style.left = position.x;
+            _root.style.top = position.y;
+        }
+
+        public NodeView(VisualElement container)
         {
             _root = container.Q<VisualElement>("node");
             _nameLabel = _root.Q<Label>("name");
             _inputPortContainer = _root.Q<VisualElement>("input-ports");
             _outputPortContainer = _root.Q<VisualElement>("output-ports");
-
-            // ノード名を設定
-            _nameLabel.text = nodeViewModel.Name;
-
-            // InputPortViewを作成して初期化
-            _inputPortViews = new InputPortView[nodeViewModel.InputPorts.Length];
-            for (var i = 0; i < nodeViewModel.InputPorts.Length; i++)
-            {
-                var inputPort = nodeViewModel.InputPorts[i];
-                var portElement = VisualElementFactory.Instance.CreateInputPort();
-                _inputPortContainer.Add(portElement);
-
-                var inputPortView = new InputPortView(portElement, inputPort);
-                _inputPortViews[i] = inputPortView;
-            }
-
-            // OutputPortViewを作成して初期化
-            _outputPortViews = new OutputPortView[nodeViewModel.OutputPorts.Length];
-            for (var i = 0; i < nodeViewModel.OutputPorts.Length; i++)
-            {
-                var outputPort = nodeViewModel.OutputPorts[i];
-                var portElement = VisualElementFactory.Instance.CreateOutputPort();
-                _outputPortContainer.Add(portElement);
-
-                var outputPortView = new OutputPortView(portElement, outputPort);
-                _outputPortViews[i] = outputPortView;
-            }
         }
     }
 }
