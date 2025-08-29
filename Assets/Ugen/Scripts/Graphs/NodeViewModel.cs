@@ -5,6 +5,7 @@ namespace Ugen.Graphs
 {
     public class NodeViewModel
     {
+        public NodeId Id { get; }
         public string Name { get; }
         public readonly ReactiveProperty<Vector2> Position = new();
         public InputPortViewModel[] InputPorts { get; }
@@ -12,10 +13,11 @@ namespace Ugen.Graphs
 
         public NodeViewModel(string name, InputPortViewModel[] inputPorts, OutputPortViewModel[] outputPorts)
         {
+            Id = NodeId.New();
             Name = name;
             InputPorts = inputPorts;
             OutputPorts = outputPorts;
-            
+
             // ポートにNodeの参照を設定
             foreach (var inputPort in inputPorts)
             {
@@ -31,7 +33,7 @@ namespace Ugen.Graphs
         {
             Position.Value = position;
         }
-        
+
         public void Move(Vector2 delta)
         {
             Position.Value += delta;

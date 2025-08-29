@@ -5,6 +5,7 @@ namespace Ugen.Graphs
 {
     public class EdgeViewModel
     {
+        public EdgeId Id { get; }
         OutputPortViewModel OutputPort { get; }
         InputPortViewModel InputPort { get; }
         public ReactiveProperty<Vector2> StartPosition => OutputPort.ConnectorWorldPosition;
@@ -12,6 +13,7 @@ namespace Ugen.Graphs
 
         public EdgeViewModel(OutputPortViewModel outputPort, InputPortViewModel inputPort)
         {
+            Id = EdgeId.New();
             OutputPort = outputPort;
             InputPort = inputPort;
         }
