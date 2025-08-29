@@ -46,7 +46,7 @@ namespace Ugen.Graphs
 
             var painter = mgc.painter2D;
             painter.strokeColor = Color.white;
-            painter.lineWidth = 2.0f;
+            painter.lineWidth = 1.0f;
 
             painter.BeginPath();
             painter.MoveTo(_startPos);
