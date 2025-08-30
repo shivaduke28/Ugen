@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using ObservableCollections;
+using R3;
 using UnityEngine;
 
 namespace Ugen.Graphs
@@ -8,10 +10,12 @@ namespace Ugen.Graphs
     {
         readonly ObservableDictionary<NodeId, NodeViewModel> _nodes = new();
         readonly ObservableDictionary<EdgeId, EdgeViewModel> _edges = new();
+        readonly ObservableDictionary<EdgeId, IEdgeEndPoints> _previewEdges = new();
         readonly EdgeCreator _edgeCreator;
 
         public IReadOnlyObservableDictionary<NodeId, NodeViewModel> Nodes => _nodes;
         public IReadOnlyObservableDictionary<EdgeId, EdgeViewModel> Edges => _edges;
+        public IReadOnlyObservableDictionary<EdgeId, IEdgeEndPoints> PreviewEdges => _previewEdges;
 
         public GraphViewModel()
         {
@@ -98,6 +102,13 @@ namespace Ugen.Graphs
             var edgeViewModel = new EdgeViewModel(outputPort, inputPort);
             AddEdge(edgeViewModel);
             return true;
+        }
+
+        public IDisposable CreatePreviewEdge(IEdgeEndPoints endPoints)
+        {
+            var id = EdgeId.New();
+            _previewEdges.Add(id, endPoints);
+            return Disposable.Create(() => _previewEdges.Remove(id));
         }
 
         public NodeViewModel CreateNode(string name, int inputPortCount, int outputPortCount)

@@ -3,13 +3,19 @@ using UnityEngine;
 
 namespace Ugen.Graphs
 {
-    public class EdgeViewModel
+    public interface IEdgeEndPoints
+    {
+        ReadOnlyReactiveProperty<Vector2> StartPosition { get; }
+        ReadOnlyReactiveProperty<Vector2> EndPosition { get; }
+    }
+
+    public class EdgeViewModel : IEdgeEndPoints
     {
         public EdgeId Id { get; }
         OutputPortViewModel OutputPort { get; }
         InputPortViewModel InputPort { get; }
-        public ReactiveProperty<Vector2> StartPosition => OutputPort.ConnectorWorldPosition;
-        public ReactiveProperty<Vector2> EndPosition => InputPort.ConnectorWorldPosition;
+        public ReadOnlyReactiveProperty<Vector2> StartPosition => OutputPort.ConnectorWorldPosition;
+        public ReadOnlyReactiveProperty<Vector2> EndPosition => InputPort.ConnectorWorldPosition;
 
         public EdgeViewModel(OutputPortViewModel outputPort, InputPortViewModel inputPort)
         {

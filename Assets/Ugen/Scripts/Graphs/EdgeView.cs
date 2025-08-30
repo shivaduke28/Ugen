@@ -7,16 +7,13 @@ namespace Ugen.Graphs
 {
     public class EdgeView : VisualElement, IDisposable
     {
-        readonly EdgeViewModel _edgeViewModel;
         readonly CompositeDisposable _disposable = new();
 
         Vector2 _startPos;
         Vector2 _endPos;
 
-        public EdgeView(EdgeViewModel edgeViewModel)
+        public EdgeView(IEdgeEndPoints edgeEndPoints)
         {
-            _edgeViewModel = edgeViewModel;
-
             style.position = Position.Absolute;
             style.left = 0;
             style.top = 0;
@@ -26,13 +23,13 @@ namespace Ugen.Graphs
             generateVisualContent += OnGenerateVisualContent;
 
             // StartPositionとEndPositionの変更を購読して再描画
-            _edgeViewModel.StartPosition.Subscribe(pos =>
+            edgeEndPoints.StartPosition.Subscribe(pos =>
             {
                 _startPos = pos;
                 MarkDirtyRepaint();
             }).AddTo(_disposable);
 
-            _edgeViewModel.EndPosition.Subscribe(pos =>
+            edgeEndPoints.EndPosition.Subscribe(pos =>
             {
                 _endPos = pos;
                 MarkDirtyRepaint();

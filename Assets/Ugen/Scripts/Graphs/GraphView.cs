@@ -14,6 +14,7 @@ namespace Ugen.Graphs
         readonly CompositeDisposable _disposables = new();
         readonly Dictionary<NodeId, NodeView> _nodeViews = new();
         readonly Dictionary<EdgeId, EdgeView> _edgeViews = new();
+        readonly Dictionary<EdgeId, EdgeView> _previewEdgeViews = new();
 
         public GraphView(VisualElement container)
         {
@@ -75,6 +76,30 @@ namespace Ugen.Graphs
                 var edgeId = evt.Value.Key;
 
                 if (_edgeViews.Remove(edgeId, out var edgeView))
+                {
+                    _edgeLayer.Remove(edgeView);
+                    edgeView.Dispose();
+                }
+            }).AddTo(disposable);
+
+            graphViewModel.PreviewEdges.ObserveAdd().Subscribe(evt =>
+            {
+                var edgeId = evt.Value.Key;
+                var endPoints = evt.Value.Value;
+
+                // EdgeViewを作成
+                var edgeView = new EdgeView(endPoints);
+                _edgeLayer.Add(edgeView);
+
+                _previewEdgeViews[edgeId] = edgeView;
+            }).AddTo(disposable);
+
+            // エッジの削除を監視
+            graphViewModel.PreviewEdges.ObserveRemove().Subscribe(evt =>
+            {
+                var edgeId = evt.Value.Key;
+
+                if (_previewEdgeViews.Remove(edgeId, out var edgeView))
                 {
                     _edgeLayer.Remove(edgeView);
                     edgeView.Dispose();

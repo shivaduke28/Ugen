@@ -1,3 +1,5 @@
+using System;
+
 namespace Ugen.Graphs
 {
     public sealed class EdgeCreator
@@ -12,6 +14,11 @@ namespace Ugen.Graphs
         public bool TryCreateEdge(NodeId outputNodeId, int outputPortIndex, NodeId inputNodeId, int inputPortIndex)
         {
             return _graph.TryCreateEdge(outputNodeId, outputPortIndex, inputNodeId, inputPortIndex);
+        }
+
+        public IDisposable CreatePreviewEdge(IEdgeEndPoints endPoints)
+        {
+            return _graph.CreatePreviewEdge(endPoints);
         }
     }
 }
