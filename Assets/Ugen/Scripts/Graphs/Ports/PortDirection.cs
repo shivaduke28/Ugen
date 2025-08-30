@@ -1,4 +1,4 @@
-namespace Ugen.Graphs
+namespace Ugen.Graphs.Ports
 {
     public enum PortDirection
     {

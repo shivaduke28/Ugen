@@ -1,3 +1,5 @@
+using Ugen.Graphs.Ports;
+
 namespace Ugen.Graphs
 {
     public readonly struct EdgeCreationRequest

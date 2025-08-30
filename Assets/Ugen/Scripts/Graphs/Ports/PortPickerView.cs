@@ -1,7 +1,7 @@
 using R3;
 using UnityEngine.UIElements;
 
-namespace Ugen.Graphs
+namespace Ugen.Graphs.Ports
 {
     [UxmlElement("port-picker")]
     public sealed partial class PortPickerView : VisualElement

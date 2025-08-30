@@ -1,7 +1,7 @@
 using R3;
 using UnityEngine;
 
-namespace Ugen.Graphs
+namespace Ugen.Graphs.Ports
 {
     public abstract class PortViewModel
     {

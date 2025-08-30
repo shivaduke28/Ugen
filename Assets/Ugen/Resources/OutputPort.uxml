@@ -2,7 +2,7 @@
     <Style src="project://database/Assets/Ugen/Resources/UgenStyle.uss?fileID=7433441132597879392&amp;guid=34eeab99a139f450abb074d8a0e88acb&amp;type=3#UgenStyle" />
     <ui:VisualElement name="output-port" class="ugen-output-port">
         <ui:Label text="Label" name="name" class="ugen-output-port-name-label" />
-        <Ugen.Graphs.port-connector name="connector" />
-        <Ugen.Graphs.port-picker />
+        <Ugen.Graphs.Ports.port-connector />
+        <Ugen.Graphs.Ports.port-picker />
     </ui:VisualElement>
 </ui:UXML>

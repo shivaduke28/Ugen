@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using ObservableCollections;
 using R3;
+using Ugen.Graphs.Ports;
 using UnityEngine;
 
 namespace Ugen.Graphs
@@ -89,6 +90,7 @@ namespace Ugen.Graphs
 
         public bool TryCreateEdge(NodeId outputNodeId, int outputPortIndex, NodeId inputNodeId, int inputPortIndex)
         {
+            if (outputNodeId == inputNodeId) return false;
             if (!_nodes.TryGetValue(outputNodeId, out var outputNode)) return false;
             if (!_nodes.TryGetValue(inputNodeId, out var inputNode)) return false;
 
