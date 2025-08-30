@@ -5,7 +5,7 @@ namespace Ugen.Graphs
 {
     public interface IEdgeEndPoints
     {
-        ReadOnlyReactiveProperty<Vector2> StartPosition { get; }
-        ReadOnlyReactiveProperty<Vector2> EndPosition { get; }
+        ReadOnlyReactiveProperty<Vector2> OutputPosition { get; }
+        ReadOnlyReactiveProperty<Vector2> InputPosition { get; }
     }
 }

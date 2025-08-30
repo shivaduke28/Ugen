@@ -25,22 +25,22 @@ namespace Ugen.Graphs
 
             _edgeId = edgeViewModel.Id;
             _graphController = edgeViewModel.GraphController;
-            
+
             generateVisualContent += OnGenerateVisualContent;
 
             // StartPositionとEndPositionの変更を購読して再描画
-            edgeViewModel.StartPosition.Subscribe(pos =>
+            edgeViewModel.OutputPosition.Subscribe(pos =>
             {
                 _startPos = pos;
                 MarkDirtyRepaint();
             }).AddTo(_disposable);
 
-            edgeViewModel.EndPosition.Subscribe(pos =>
+            edgeViewModel.InputPosition.Subscribe(pos =>
             {
                 _endPos = pos;
                 MarkDirtyRepaint();
             }).AddTo(_disposable);
-            
+
             // 右クリックでコンテキストメニューを表示
             RegisterCallback<PointerDownEvent>(evt =>
             {
@@ -53,7 +53,7 @@ namespace Ugen.Graphs
             });
         }
 
-        // プレビューエッジ用のコンストラクタ  
+        // プレビューエッジ用のコンストラクタ
         public EdgeView(IEdgeEndPoints edgeEndPoints)
         {
             style.position = Position.Absolute;
@@ -61,20 +61,20 @@ namespace Ugen.Graphs
             style.top = 0;
             style.right = 0;
             style.bottom = 0;
-            
+
             _edgeId = EdgeId.Invalid;
             _graphController = null;
-            
+
             generateVisualContent += OnGenerateVisualContent;
 
             // StartPositionとEndPositionの変更を購読して再描画
-            edgeEndPoints.StartPosition.Subscribe(pos =>
+            edgeEndPoints.OutputPosition.Subscribe(pos =>
             {
                 _startPos = pos;
                 MarkDirtyRepaint();
             }).AddTo(_disposable);
 
-            edgeEndPoints.EndPosition.Subscribe(pos =>
+            edgeEndPoints.InputPosition.Subscribe(pos =>
             {
                 _endPos = pos;
                 MarkDirtyRepaint();

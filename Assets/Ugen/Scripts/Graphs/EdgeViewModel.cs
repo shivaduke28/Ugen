@@ -10,8 +10,8 @@ namespace Ugen.Graphs
         public OutputPortViewModel OutputPort { get; }
         public InputPortViewModel InputPort { get; }
         public IGraphController GraphController { get; }
-        public ReadOnlyReactiveProperty<Vector2> StartPosition => OutputPort.ConnectorWorldPosition;
-        public ReadOnlyReactiveProperty<Vector2> EndPosition => InputPort.ConnectorWorldPosition;
+        public ReadOnlyReactiveProperty<Vector2> OutputPosition => OutputPort.ConnectorWorldPosition;
+        public ReadOnlyReactiveProperty<Vector2> InputPosition => InputPort.ConnectorWorldPosition;
 
         public EdgeViewModel(OutputPortViewModel outputPort, InputPortViewModel inputPort, IGraphController graphController)
         {

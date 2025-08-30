@@ -5,28 +5,28 @@ namespace Ugen.Graphs.Ports
 {
     public sealed class EdgePreviewEndPoints : IEdgeEndPoints
     {
-        readonly ReactiveProperty<Vector2> _startPosition;
-        readonly ReactiveProperty<Vector2> _endPosition;
-        public ReadOnlyReactiveProperty<Vector2> StartPosition => _startPosition;
+        readonly ReactiveProperty<Vector2> _outputPosition;
+        readonly ReactiveProperty<Vector2> _inputPosition;
+        public ReadOnlyReactiveProperty<Vector2> OutputPosition => _outputPosition;
 
-        public ReadOnlyReactiveProperty<Vector2> EndPosition => _endPosition;
+        public ReadOnlyReactiveProperty<Vector2> InputPosition => _inputPosition;
 
         public EdgePreviewEndPoints(
-            ReactiveProperty<Vector2> startPosition = null,
-            ReactiveProperty<Vector2> endPosition = null)
+            ReactiveProperty<Vector2> outputPosition = null,
+            ReactiveProperty<Vector2> inputPosition = null)
         {
-            _startPosition = startPosition ?? new ReactiveProperty<Vector2>();
-            _endPosition = endPosition ?? new ReactiveProperty<Vector2>();
+            _outputPosition = outputPosition ?? new ReactiveProperty<Vector2>();
+            _inputPosition = inputPosition ?? new ReactiveProperty<Vector2>();
         }
 
-        public void SetStartPosition(Vector2 position)
+        public void UpdateOutputPosition(Vector2 position)
         {
-            _startPosition.Value = position;
+            _outputPosition.Value = position;
         }
 
-        public void SetEndPosition(Vector2 position)
+        public void UpdateInputPosition(Vector2 position)
         {
-            _endPosition.Value = position;
+            _inputPosition.Value = position;
         }
     }
 }
