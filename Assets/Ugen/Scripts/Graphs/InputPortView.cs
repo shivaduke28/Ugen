@@ -9,22 +9,28 @@ namespace Ugen.Graphs
     {
         readonly VisualElement _root;
         readonly Label _nameLabel;
-        readonly VisualElement _connector;
+        readonly PortConnectorView _connector;
 
         public InputPortView(VisualElement container)
         {
             _root = container.Q<VisualElement>("input-port");
             _nameLabel = _root.Q<Label>("name");
-            _connector = _root.Q<VisualElement>("connector");
+            _connector = _root.Q<PortConnectorView>();
         }
 
-        public IDisposable Bind(InputPortViewModel inputPort)
+        public IDisposable Bind(InputPortViewModel port)
         {
-            _nameLabel.text = inputPort.Name;
+            _nameLabel.text = port.Name;
             var disposable = new CompositeDisposable();
             Observable.EveryValueChanged(this, view => view.GetConnectorWorldPosition())
-                .Subscribe(pos => inputPort.ConnectorWorldPosition.Value = pos)
+                .Subscribe(pos => port.ConnectorWorldPosition.Value = pos)
                 .AddTo(disposable);
+            var edgeDragger = new EdgeDragger(port.EdgeCreationRequest);
+            _connector.AddManipulator(edgeDragger);
+            _connector.OnEdgeCreationRequested().Subscribe(req =>
+            {
+                port.TryCreateEdge(req.NodeId, req.PortIndex);
+            }).AddTo(disposable);
             return disposable;
         }
 

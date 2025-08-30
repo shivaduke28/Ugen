@@ -1,7 +1,7 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/Ugen/Resources/UgenStyle.uss?fileID=7433441132597879392&amp;guid=34eeab99a139f450abb074d8a0e88acb&amp;type=3#UgenStyle" />
     <ui:VisualElement name="input-port" class="ugen-input-port">
-        <ui:VisualElement name="connector" class="ugen-port-connector" />
+        <Ugen.Graphs.port-connector name="connector" />
         <ui:Label text="Label" name="name" class="ugen-input-port-name-label" />
     </ui:VisualElement>
 </ui:UXML>

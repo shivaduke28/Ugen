@@ -8,9 +8,15 @@ namespace Ugen.Graphs
     {
         readonly ObservableDictionary<NodeId, NodeViewModel> _nodes = new();
         readonly ObservableDictionary<EdgeId, EdgeViewModel> _edges = new();
+        readonly EdgeCreator _edgeCreator;
 
         public IReadOnlyObservableDictionary<NodeId, NodeViewModel> Nodes => _nodes;
         public IReadOnlyObservableDictionary<EdgeId, EdgeViewModel> Edges => _edges;
+
+        public GraphViewModel()
+        {
+            _edgeCreator = new EdgeCreator(this);
+        }
 
         public void AddTestData()
         {
@@ -20,16 +26,16 @@ namespace Ugen.Graphs
                 var nodeId = NodeId.New();
                 var inputPorts = new[]
                 {
-                    new InputPortViewModel(nodeId, 0, $"Input {i * 2}"),
-                    new InputPortViewModel(nodeId, 1, $"Input {i * 2 + 1}")
+                    new InputPortViewModel(nodeId, 0, $"Input {i * 2}", _edgeCreator),
+                    new InputPortViewModel(nodeId, 1, $"Input {i * 2 + 1}", _edgeCreator)
                 };
 
                 var outputPorts = new[]
                 {
-                    new OutputPortViewModel(nodeId, 0, $"Output {i}")
+                    new OutputPortViewModel(nodeId, 0, $"Output {i}", _edgeCreator)
                 };
 
-                var nodeViewModel = new NodeViewModel(NodeId.New(), $"Node {i}", inputPorts, outputPorts);
+                var nodeViewModel = new NodeViewModel(nodeId, $"Node {nodeId}", inputPorts, outputPorts);
 
                 // ノードの位置を設定（横に並べる）
                 var xOffset = i * 250;
@@ -39,20 +45,19 @@ namespace Ugen.Graphs
                 AddNode(nodeViewModel);
             }
 
-            // サンプルのEdgeを作成
-            var nodeList = new List<NodeViewModel>();
+            var nodeIds = new List<NodeId>();
             foreach (var kvp in _nodes)
             {
-                nodeList.Add(kvp.Value);
+                nodeIds.Add(kvp.Key);
             }
 
-            if (nodeList.Count >= 2)
+            if (nodeIds.Count >= 2)
             {
-                CreateEdge(nodeList[0], 0, nodeList[1], 0);
+                TryCreateEdge(nodeIds[0], 0, nodeIds[1], 0);
 
-                if (nodeList.Count >= 3)
+                if (nodeIds.Count >= 3)
                 {
-                    CreateEdge(nodeList[1], 0, nodeList[2], 0);
+                    TryCreateEdge(nodeIds[1], 0, nodeIds[2], 0);
                 }
             }
         }
@@ -78,17 +83,21 @@ namespace Ugen.Graphs
             _edges.Remove(edgeId);
         }
 
-        public void CreateEdge(NodeViewModel outputNode, int outputPortIndex, NodeViewModel inputNode, int inputPortIndex)
+        public bool TryCreateEdge(NodeId outputNodeId, int outputPortIndex, NodeId inputNodeId, int inputPortIndex)
         {
+            if (!_nodes.TryGetValue(outputNodeId, out var outputNode)) return false;
+            if (!_nodes.TryGetValue(inputNodeId, out var inputNode)) return false;
+
             if (outputNode.OutputPorts.Length <= outputPortIndex ||
                 inputNode.InputPorts.Length <= inputPortIndex)
-                return;
+                return false;
 
             var outputPort = outputNode.OutputPorts[outputPortIndex];
             var inputPort = inputNode.InputPorts[inputPortIndex];
 
             var edgeViewModel = new EdgeViewModel(outputPort, inputPort);
             AddEdge(edgeViewModel);
+            return true;
         }
 
         public NodeViewModel CreateNode(string name, int inputPortCount, int outputPortCount)
@@ -97,13 +106,13 @@ namespace Ugen.Graphs
             var inputPorts = new InputPortViewModel[inputPortCount];
             for (var i = 0; i < inputPortCount; i++)
             {
-                inputPorts[i] = new InputPortViewModel(nodeId, i, $"Input {i}");
+                inputPorts[i] = new InputPortViewModel(nodeId, i, $"Input {i}", _edgeCreator);
             }
 
             var outputPorts = new OutputPortViewModel[outputPortCount];
             for (var i = 0; i < outputPortCount; i++)
             {
-                outputPorts[i] = new OutputPortViewModel(nodeId, i, $"Output {i}");
+                outputPorts[i] = new OutputPortViewModel(nodeId, i, $"Output {i}", _edgeCreator);
             }
 
             var node = new NodeViewModel(nodeId, name, inputPorts, outputPorts);

@@ -41,5 +41,7 @@ namespace Ugen.Graphs
         {
             return !left.Equals(right);
         }
+
+        public override string ToString() => _value.ToString();
     }
 }
