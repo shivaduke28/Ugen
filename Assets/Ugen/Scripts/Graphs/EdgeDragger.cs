@@ -72,9 +72,9 @@ namespace Ugen.Graphs
             _isActive = false;
             target.ReleaseMouse();
             var pick = target.panel.Pick(evt.mousePosition);
-            if (pick is PortConnectorView connector)
+            if (pick is PortPickerView picker)
             {
-                connector.TryCreateEdge(_request);
+                picker.TryCreateEdge(_request);
             }
         }
     }

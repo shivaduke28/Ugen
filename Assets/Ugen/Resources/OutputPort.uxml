@@ -3,5 +3,6 @@
     <ui:VisualElement name="output-port" class="ugen-output-port">
         <ui:Label text="Label" name="name" class="ugen-output-port-name-label" />
         <Ugen.Graphs.port-connector name="connector" />
+        <Ugen.Graphs.port-picker />
     </ui:VisualElement>
 </ui:UXML>
