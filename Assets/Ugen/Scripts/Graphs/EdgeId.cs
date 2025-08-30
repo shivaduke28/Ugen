@@ -17,6 +17,8 @@ namespace Ugen.Graphs
             return new EdgeId(_currentValue++);
         }
 
+        public static EdgeId Invalid => new EdgeId(-1);
+
         public bool Equals(EdgeId other)
         {
             return _value == other._value;

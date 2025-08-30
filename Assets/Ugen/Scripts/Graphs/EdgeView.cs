@@ -8,11 +8,14 @@ namespace Ugen.Graphs
     public class EdgeView : VisualElement, IDisposable
     {
         readonly CompositeDisposable _disposable = new();
+        readonly EdgeId _edgeId;
+        readonly IGraphController _graphController;
 
         Vector2 _startPos;
         Vector2 _endPos;
 
-        public EdgeView(IEdgeEndPoints edgeEndPoints)
+        // EdgeViewModel用のコンストラクタ
+        public EdgeView(EdgeViewModel edgeViewModel)
         {
             style.position = Position.Absolute;
             style.left = 0;
@@ -20,6 +23,48 @@ namespace Ugen.Graphs
             style.right = 0;
             style.bottom = 0;
 
+            _edgeId = edgeViewModel.Id;
+            _graphController = edgeViewModel.GraphController;
+            
+            generateVisualContent += OnGenerateVisualContent;
+
+            // StartPositionとEndPositionの変更を購読して再描画
+            edgeViewModel.StartPosition.Subscribe(pos =>
+            {
+                _startPos = pos;
+                MarkDirtyRepaint();
+            }).AddTo(_disposable);
+
+            edgeViewModel.EndPosition.Subscribe(pos =>
+            {
+                _endPos = pos;
+                MarkDirtyRepaint();
+            }).AddTo(_disposable);
+            
+            // 右クリックでコンテキストメニューを表示
+            RegisterCallback<PointerDownEvent>(evt =>
+            {
+                if (evt.button == 1) // 右クリック
+                {
+                    evt.StopPropagation();
+                    var localPosition = this.parent.WorldToLocal(evt.position);
+                    _graphController.ShowEdgeContextMenu(_edgeId, localPosition);
+                }
+            });
+        }
+
+        // プレビューエッジ用のコンストラクタ  
+        public EdgeView(IEdgeEndPoints edgeEndPoints)
+        {
+            style.position = Position.Absolute;
+            style.left = 0;
+            style.top = 0;
+            style.right = 0;
+            style.bottom = 0;
+            
+            _edgeId = EdgeId.Invalid;
+            _graphController = null;
+            
             generateVisualContent += OnGenerateVisualContent;
 
             // StartPositionとEndPositionの変更を購読して再描画
@@ -34,7 +79,6 @@ namespace Ugen.Graphs
                 _endPos = pos;
                 MarkDirtyRepaint();
             }).AddTo(_disposable);
-            RegisterCallback<PointerDownEvent>(evt => Debug.Log($"Edge Clicked:{evt.target}"));
         }
 
         public override bool ContainsPoint(Vector2 localPoint)

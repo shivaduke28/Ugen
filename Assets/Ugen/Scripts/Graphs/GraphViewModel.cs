@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using ObservableCollections;
 using R3;
+using Ugen.Graphs.EdgeContextMenu;
 using Ugen.Graphs.GraphContextMenu;
 using Ugen.Graphs.NodeContextMenu;
 using Ugen.Graphs.Ports;
@@ -20,11 +21,13 @@ namespace Ugen.Graphs
         public IReadOnlyObservableDictionary<EdgeId, IEdgeEndPoints> PreviewEdges => _previewEdges;
         public NodeContextMenuViewModel NodeContextMenu { get; }
         public GraphContextMenuViewModel GraphContextMenu { get; }
+        public EdgeContextMenuViewModel EdgeContextMenu { get; }
 
         public GraphViewModel()
         {
             NodeContextMenu = new NodeContextMenuViewModel(this);
             GraphContextMenu = new GraphContextMenuViewModel(this);
+            EdgeContextMenu = new EdgeContextMenuViewModel(this);
         }
 
         public void AddTestData()
@@ -110,6 +113,11 @@ namespace Ugen.Graphs
             GraphContextMenu.Show(position);
         }
 
+        public void ShowEdgeContextMenu(EdgeId edgeId, Vector2 position)
+        {
+            EdgeContextMenu.Show(edgeId, position);
+        }
+
         public bool RemoveEdge(EdgeId edgeId)
         {
             return _edges.Remove(edgeId);
@@ -124,7 +132,7 @@ namespace Ugen.Graphs
             if (!outputNode.TryGetOutputPort(outputPortIndex, out var outputPort)) return false;
             if (!inputNode.TryGetInputPort(inputPortIndex, out var inputPort)) return false;
 
-            var edgeViewModel = new EdgeViewModel(outputPort, inputPort);
+            var edgeViewModel = new EdgeViewModel(outputPort, inputPort, this);
             AddEdge(edgeViewModel);
             return true;
         }

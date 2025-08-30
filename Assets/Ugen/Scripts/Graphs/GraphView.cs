@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using ObservableCollections;
 using R3;
+using Ugen.Graphs.EdgeContextMenu;
 using Ugen.Graphs.GraphContextMenu;
 using Ugen.Graphs.NodeContextMenu;
 using UnityEngine.UIElements;
@@ -19,6 +20,7 @@ namespace Ugen.Graphs
         readonly Dictionary<EdgeId, EdgeView> _previewEdgeViews = new();
         NodeContextMenuView _nodeContextMenuView;
         GraphContextMenuView _graphContextMenuView;
+        EdgeContextMenuView _edgeContextMenuView;
 
         public GraphView(VisualElement container)
         {
@@ -43,6 +45,12 @@ namespace Ugen.Graphs
             _graphContextMenuView = new GraphContextMenuView(graphContextMenuElement, graphViewModel.GraphContextMenu);
             Disposable.Create(() => _graphContextMenuView.Dispose()).AddTo(disposable);
 
+            // エッジコンテキストメニューを作成
+            var edgeContextMenuElement = VisualElementFactory.Instance.CreateContextMenu();
+            _root.Add(edgeContextMenuElement);
+            _edgeContextMenuView = new EdgeContextMenuView(edgeContextMenuElement, graphViewModel.EdgeContextMenu);
+            Disposable.Create(() => _edgeContextMenuView.Dispose()).AddTo(disposable);
+
             // 背景クリックでメニューを閉じる
             _root.RegisterCallback<PointerDownEvent>(evt =>
             {
@@ -50,6 +58,7 @@ namespace Ugen.Graphs
                 {
                     graphViewModel.NodeContextMenu.Hide();
                     graphViewModel.GraphContextMenu.Hide();
+                    graphViewModel.EdgeContextMenu.Hide();
                 }
                 else if (evt.button == 1) // 右クリック
                 {
