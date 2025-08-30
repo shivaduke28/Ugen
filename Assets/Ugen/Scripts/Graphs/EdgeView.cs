@@ -34,6 +34,49 @@ namespace Ugen.Graphs
                 _endPos = pos;
                 MarkDirtyRepaint();
             }).AddTo(_disposable);
+            RegisterCallback<PointerDownEvent>(evt => Debug.Log($"Edge Clicked:{evt.target}"));
+        }
+
+        public override bool ContainsPoint(Vector2 localPoint)
+        {
+            const float threshold = 10f;
+            const int sampleCount = 20;
+
+            var minDistance = float.MaxValue;
+
+            for (var i = 0; i <= sampleCount; i++)
+            {
+                var t = i / (float)sampleCount;
+                var pointOnCurve = CalculateBezierPoint(t);
+                var distance = Vector2.Distance(localPoint, pointOnCurve);
+                minDistance = Mathf.Min(minDistance, distance);
+
+                if (minDistance <= threshold)
+                    return true;
+            }
+
+            return minDistance <= threshold;
+        }
+
+        Vector2 CalculateBezierPoint(float t)
+        {
+            // ベジェ曲線のコントロールポイントを計算（OnGenerateVisualContentと同じロジック）
+            var distance = Vector2.Distance(_startPos, _endPos);
+            var controlPointOffset = Mathf.Min(distance * 0.5f, 100f);
+            var controlPoint1 = new Vector2(_startPos.x + controlPointOffset, _startPos.y);
+            var controlPoint2 = new Vector2(_endPos.x - controlPointOffset, _endPos.y);
+
+            // 3次ベジェ曲線の計算
+            var oneMinusT = 1f - t;
+            var oneMinusTSquared = oneMinusT * oneMinusT;
+            var oneMinusTCubed = oneMinusTSquared * oneMinusT;
+            var tSquared = t * t;
+            var tCubed = tSquared * t;
+
+            return oneMinusTCubed * _startPos +
+                   3f * oneMinusTSquared * t * controlPoint1 +
+                   3f * oneMinusT * tSquared * controlPoint2 +
+                   tCubed * _endPos;
         }
 
         void OnGenerateVisualContent(MeshGenerationContext mgc)
