@@ -1,14 +1,12 @@
-using Ugen.Graphs.Ports;
-
-namespace Ugen.Graphs
+namespace Ugen.Graphs.Ports
 {
-    public readonly struct EdgeCreationRequest
+    public readonly struct PortData
     {
         public readonly NodeId NodeId;
         public readonly int PortIndex;
         public readonly PortDirection Direction;
 
-        public EdgeCreationRequest(NodeId nodeId, int portIndex, PortDirection direction)
+        public PortData(NodeId nodeId, int portIndex, PortDirection direction)
         {
             NodeId = nodeId;
             PortIndex = portIndex;

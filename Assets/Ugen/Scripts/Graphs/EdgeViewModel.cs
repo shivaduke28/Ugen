@@ -7,8 +7,8 @@ namespace Ugen.Graphs
     public class EdgeViewModel : IEdgeEndPoints
     {
         public EdgeId Id { get; }
-        OutputPortViewModel OutputPort { get; }
-        InputPortViewModel InputPort { get; }
+        public OutputPortViewModel OutputPort { get; }
+        public InputPortViewModel InputPort { get; }
         public ReadOnlyReactiveProperty<Vector2> StartPosition => OutputPort.ConnectorWorldPosition;
         public ReadOnlyReactiveProperty<Vector2> EndPosition => InputPort.ConnectorWorldPosition;
 

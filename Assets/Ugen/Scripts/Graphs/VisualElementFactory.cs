@@ -53,5 +53,12 @@ namespace Ugen.Graphs
             _settings.OutputPort.CloneTree(ve);
             return ve;
         }
+
+        public VisualElement CreateContextMenu()
+        {
+            var ve = new VisualElement();
+            _settings.ContextMenu.CloneTree(ve);
+            return ve;
+        }
     }
 }

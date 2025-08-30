@@ -2,12 +2,13 @@ using System;
 using System.Collections.Generic;
 using ObservableCollections;
 using R3;
+using Ugen.Graphs.NodeContextMenu;
 using Ugen.Graphs.Ports;
 using UnityEngine;
 
 namespace Ugen.Graphs
 {
-    public class GraphViewModel
+    public sealed class GraphViewModel : IGraphController
     {
         readonly ObservableDictionary<NodeId, NodeViewModel> _nodes = new();
         readonly ObservableDictionary<EdgeId, EdgeViewModel> _edges = new();
@@ -17,10 +18,12 @@ namespace Ugen.Graphs
         public IReadOnlyObservableDictionary<NodeId, NodeViewModel> Nodes => _nodes;
         public IReadOnlyObservableDictionary<EdgeId, EdgeViewModel> Edges => _edges;
         public IReadOnlyObservableDictionary<EdgeId, IEdgeEndPoints> PreviewEdges => _previewEdges;
+        public NodeContextMenuViewModel NodeContextMenu { get; }
 
         public GraphViewModel()
         {
             _edgeCreator = new EdgeCreator(this);
+            NodeContextMenu = new NodeContextMenuViewModel(this);
         }
 
         public void AddTestData()
@@ -40,7 +43,7 @@ namespace Ugen.Graphs
                     new OutputPortViewModel(nodeId, 0, $"Output {i}", _edgeCreator)
                 };
 
-                var nodeViewModel = new NodeViewModel(nodeId, $"Node {nodeId}", inputPorts, outputPorts);
+                var nodeViewModel = new NodeViewModel(nodeId, $"Node {nodeId}", inputPorts, outputPorts, this);
 
                 // ノードの位置を設定（横に並べる）
                 var xOffset = i * 250;
@@ -58,11 +61,11 @@ namespace Ugen.Graphs
 
             if (nodeIds.Count >= 2)
             {
-                TryCreateEdge(nodeIds[0], 0, nodeIds[1], 0);
+                CreateEdge(nodeIds[0], 0, nodeIds[1], 0);
 
                 if (nodeIds.Count >= 3)
                 {
-                    TryCreateEdge(nodeIds[1], 0, nodeIds[2], 0);
+                    CreateEdge(nodeIds[1], 0, nodeIds[2], 0);
                 }
             }
         }
@@ -77,29 +80,43 @@ namespace Ugen.Graphs
             _edges.Add(edge.Id, edge);
         }
 
-        public void RemoveNode(NodeId nodeId)
+        public bool RemoveNode(NodeId nodeId)
         {
-            // TODO: nodeからつながっているedgeを削除する
-            _nodes.Remove(nodeId);
+            var edgesToRemove = new List<EdgeId>();
+            foreach (var (edgeId, edge) in _edges)
+            {
+                if (edge.OutputPort.NodeId == nodeId || edge.InputPort.NodeId == nodeId)
+                {
+                    edgesToRemove.Add(edgeId);
+                }
+            }
+
+            foreach (var edgeId in edgesToRemove)
+            {
+                RemoveEdge(edgeId);
+            }
+
+            return _nodes.Remove(nodeId);
         }
 
-        public void RemoveEdge(EdgeId edgeId)
+        public void ShowNodeContextMenu(NodeId nodeId, Vector2 position)
         {
-            _edges.Remove(edgeId);
+            NodeContextMenu.Show(nodeId, position);
         }
 
-        public bool TryCreateEdge(NodeId outputNodeId, int outputPortIndex, NodeId inputNodeId, int inputPortIndex)
+        public bool RemoveEdge(EdgeId edgeId)
+        {
+            return _edges.Remove(edgeId);
+        }
+
+        public bool CreateEdge(NodeId outputNodeId, int outputPortIndex, NodeId inputNodeId, int inputPortIndex)
         {
             if (outputNodeId == inputNodeId) return false;
             if (!_nodes.TryGetValue(outputNodeId, out var outputNode)) return false;
             if (!_nodes.TryGetValue(inputNodeId, out var inputNode)) return false;
 
-            if (outputNode.OutputPorts.Length <= outputPortIndex ||
-                inputNode.InputPorts.Length <= inputPortIndex)
-                return false;
-
-            var outputPort = outputNode.OutputPorts[outputPortIndex];
-            var inputPort = inputNode.InputPorts[inputPortIndex];
+            if (!outputNode.TryGetOutputPort(outputPortIndex, out var outputPort)) return false;
+            if (!inputNode.TryGetInputPort(inputPortIndex, out var inputPort)) return false;
 
             var edgeViewModel = new EdgeViewModel(outputPort, inputPort);
             AddEdge(edgeViewModel);
@@ -111,26 +128,6 @@ namespace Ugen.Graphs
             var id = EdgeId.New();
             _previewEdges.Add(id, endPoints);
             return Disposable.Create(() => _previewEdges.Remove(id));
-        }
-
-        public NodeViewModel CreateNode(string name, int inputPortCount, int outputPortCount)
-        {
-            var nodeId = NodeId.New();
-            var inputPorts = new InputPortViewModel[inputPortCount];
-            for (var i = 0; i < inputPortCount; i++)
-            {
-                inputPorts[i] = new InputPortViewModel(nodeId, i, $"Input {i}", _edgeCreator);
-            }
-
-            var outputPorts = new OutputPortViewModel[outputPortCount];
-            for (var i = 0; i < outputPortCount; i++)
-            {
-                outputPorts[i] = new OutputPortViewModel(nodeId, i, $"Output {i}", _edgeCreator);
-            }
-
-            var node = new NodeViewModel(nodeId, name, inputPorts, outputPorts);
-            AddNode(node);
-            return node;
         }
     }
 }

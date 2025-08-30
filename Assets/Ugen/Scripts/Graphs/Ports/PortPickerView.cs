@@ -6,8 +6,8 @@ namespace Ugen.Graphs.Ports
     [UxmlElement("port-picker")]
     public sealed partial class PortPickerView : VisualElement
     {
-        readonly Subject<EdgeCreationRequest> _onEdgeCreationRequested = new();
-        public Observable<EdgeCreationRequest> OnEdgeCreationRequested() => _onEdgeCreationRequested;
+        readonly Subject<PortData> _onEdgeCreationRequested = new();
+        public Observable<PortData> OnEdgeCreationRequested() => _onEdgeCreationRequested;
         const string ClassName = "ugen-port-picker";
 
         public PortPickerView()
@@ -15,7 +15,7 @@ namespace Ugen.Graphs.Ports
             AddToClassList(ClassName);
         }
 
-        public void TryCreateEdge(EdgeCreationRequest request)
+        public void TryCreateEdge(PortData request)
         {
             _onEdgeCreationRequested.OnNext(request);
         }

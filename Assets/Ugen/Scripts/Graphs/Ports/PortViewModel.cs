@@ -8,7 +8,7 @@ namespace Ugen.Graphs.Ports
         public NodeId NodeId { get; }
         public int Index { get; }
         public abstract PortDirection Direction { get; }
-        public abstract EdgeCreationRequest EdgeCreationRequest { get; }
+        public abstract PortData PortData { get; }
         public string Name { get; }
         public ReactiveProperty<Vector2> ConnectorWorldPosition { get; } = new();
 

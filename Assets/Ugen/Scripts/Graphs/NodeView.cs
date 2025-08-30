@@ -15,8 +15,9 @@ namespace Ugen.Graphs
         readonly VisualElement _inputPortContainer;
         readonly VisualElement _outputPortContainer;
         readonly SerialDisposable _disposable = new();
-        public List<InputPortView> InputPortViews { get; } = new();
-        public List<OutputPortView> OutputPortViews { get; } = new();
+        readonly List<InputPortView> _inputPortViews = new();
+        readonly List<OutputPortView> _outputPortViews = new();
+        readonly Subject<Vector2> _contextMenuRequested = new();
 
         public IDisposable Bind(NodeViewModel nodeViewModel)
         {
@@ -29,13 +30,18 @@ namespace Ugen.Graphs
             dragManipulator.OnMoveDelta().Subscribe(nodeViewModel.MoveDelta).AddTo(disposable);
             Disposable.Create(() => _root.RemoveManipulator(dragManipulator)).AddTo(disposable);
 
+            // 右クリック検出の設定
+            _root.RegisterCallback<PointerDownEvent>(OnPointerDown);
+            Disposable.Create(() => _root.UnregisterCallback<PointerDownEvent>(OnPointerDown)).AddTo(disposable);
+            _contextMenuRequested.Subscribe(pos => nodeViewModel.ShowMenuContext(pos)).AddTo(disposable);
+
             foreach (var inputPort in nodeViewModel.InputPorts)
             {
                 var portElement = VisualElementFactory.Instance.CreateInputPort();
                 _inputPortContainer.Add(portElement);
 
                 var inputPortView = new InputPortView(portElement);
-                InputPortViews.Add(inputPortView);
+                _inputPortViews.Add(inputPortView);
                 inputPortView.Bind(inputPort).AddTo(disposable);
             }
 
@@ -45,7 +51,7 @@ namespace Ugen.Graphs
                 _outputPortContainer.Add(portElement);
 
                 var outputPortView = new OutputPortView(portElement);
-                OutputPortViews.Add(outputPortView);
+                _outputPortViews.Add(outputPortView);
                 outputPortView.Bind(outputPort).AddTo(disposable);
             }
 
@@ -57,6 +63,15 @@ namespace Ugen.Graphs
         {
             _root.style.left = position.x;
             _root.style.top = position.y;
+        }
+
+        void OnPointerDown(PointerDownEvent evt)
+        {
+            if (evt.button == 1)
+            {
+                _contextMenuRequested.OnNext(evt.position);
+                evt.StopPropagation();
+            }
         }
 
         public NodeView(VisualElement container)

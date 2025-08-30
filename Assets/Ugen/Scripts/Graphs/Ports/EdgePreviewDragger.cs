@@ -17,12 +17,12 @@ namespace Ugen.Graphs.Ports
         public Observable<Vector2> OnMove() => _onMove;
         public Observable<Vector2> OnEnd() => _onEnd;
 
-        readonly EdgeCreationRequest _request;
+        readonly PortData _request;
         readonly IEdgeEndPoints _endPoints;
         readonly EdgeCreator _edgeCreator;
         IDisposable _previewEdgeDisposable;
 
-        public EdgePreviewDragger(EdgeCreationRequest request, IEdgeEndPoints endPoints, EdgeCreator edgeCreator)
+        public EdgePreviewDragger(PortData request, IEdgeEndPoints endPoints, EdgeCreator edgeCreator)
         {
             _isActive = false;
             _request = request;

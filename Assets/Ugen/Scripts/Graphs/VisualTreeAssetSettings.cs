@@ -9,9 +9,11 @@ namespace Ugen.Graphs
         [SerializeField] VisualTreeAsset _node;
         [SerializeField] VisualTreeAsset _inputPort;
         [SerializeField] VisualTreeAsset _outputPort;
+        [SerializeField] VisualTreeAsset _contextMenu;
 
         public VisualTreeAsset Node => _node;
         public VisualTreeAsset InputPort => _inputPort;
         public VisualTreeAsset OutputPort => _outputPort;
+        public VisualTreeAsset ContextMenu => _contextMenu;
     }
 }

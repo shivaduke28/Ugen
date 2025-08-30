@@ -27,7 +27,7 @@ namespace Ugen.Graphs.Ports
                 .Subscribe(pos => port.ConnectorWorldPosition.Value = pos)
                 .AddTo(disposable);
             var endPoints = new EdgePreviewEndPoints(endPosition: port.ConnectorWorldPosition);
-            var edgeDragger = new EdgePreviewDragger(port.EdgeCreationRequest, endPoints, port.EdgeCreator);
+            var edgeDragger = new EdgePreviewDragger(port.PortData, endPoints, port.EdgeCreator);
 
             edgeDragger.OnStart().Merge(edgeDragger.OnMove())
                 .Subscribe(pos => endPoints.SetStartPosition(pos))

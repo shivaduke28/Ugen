@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using ObservableCollections;
 using R3;
+using Ugen.Graphs.NodeContextMenu;
 using UnityEngine.UIElements;
 
 namespace Ugen.Graphs
@@ -15,6 +16,7 @@ namespace Ugen.Graphs
         readonly Dictionary<NodeId, NodeView> _nodeViews = new();
         readonly Dictionary<EdgeId, EdgeView> _edgeViews = new();
         readonly Dictionary<EdgeId, EdgeView> _previewEdgeViews = new();
+        NodeContextMenuView _nodeContextMenuView;
 
         public GraphView(VisualElement container)
         {
@@ -26,6 +28,21 @@ namespace Ugen.Graphs
         public IDisposable Bind(GraphViewModel graphViewModel)
         {
             var disposable = new CompositeDisposable();
+
+            // コンテキストメニューを作成
+            var contextMenuElement = VisualElementFactory.Instance.CreateContextMenu();
+            _root.Add(contextMenuElement);
+            _nodeContextMenuView = new NodeContextMenuView(contextMenuElement, graphViewModel.NodeContextMenu);
+            Disposable.Create(() => _nodeContextMenuView.Dispose()).AddTo(disposable);
+
+            // 背景クリックでメニューを閉じる
+            _root.RegisterCallback<PointerDownEvent>(evt =>
+            {
+                if (evt.button == 0) // 左クリック
+                {
+                    graphViewModel.NodeContextMenu.Hide();
+                }
+            });
 
             // ノードの追加を監視
             graphViewModel.Nodes.ObserveAdd().Subscribe(evt =>
@@ -107,23 +124,18 @@ namespace Ugen.Graphs
             }).AddTo(disposable);
 
             // 既存のノードとエッジを処理（初期化時）
-            foreach (var kvp in graphViewModel.Nodes)
+            foreach (var (nodeId, nodeViewModel) in graphViewModel.Nodes)
             {
-                var nodeId = kvp.Key;
-                var nodeViewModel = kvp.Value;
-
                 var nodeElement = VisualElementFactory.Instance.CreateNode();
                 var nodeView = new NodeView(nodeElement);
+
                 _nodeLayer.Add(nodeView.Root);
                 nodeView.Bind(nodeViewModel).AddTo(disposable);
                 _nodeViews[nodeId] = nodeView;
             }
 
-            foreach (var kvp in graphViewModel.Edges)
+            foreach (var (edgeId, edgeViewModel) in graphViewModel.Edges)
             {
-                var edgeId = kvp.Key;
-                var edgeViewModel = kvp.Value;
-
                 var edgeView = new EdgeView(edgeViewModel);
                 _edgeLayer.Add(edgeView);
                 _edgeViews[edgeId] = edgeView;

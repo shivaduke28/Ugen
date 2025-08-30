@@ -12,13 +12,45 @@ namespace Ugen.Graphs
         public InputPortViewModel[] InputPorts { get; }
         public OutputPortViewModel[] OutputPorts { get; }
 
-        public NodeViewModel(NodeId id, string name, InputPortViewModel[] inputPorts, OutputPortViewModel[] outputPorts)
+        readonly IGraphController _graphController;
+
+        public NodeViewModel(NodeId id,
+            string name,
+            InputPortViewModel[] inputPorts,
+            OutputPortViewModel[] outputPorts,
+            IGraphController graphController)
         {
             Id = id;
             Name = name;
             InputPorts = inputPorts;
             OutputPorts = outputPorts;
+            _graphController = graphController;
         }
+
+        public bool TryGetInputPort(int index, out InputPortViewModel port)
+        {
+            if (index < 0 || index >= InputPorts.Length)
+            {
+                port = null;
+                return false;
+            }
+
+            port = InputPorts[index];
+            return true;
+        }
+
+        public bool TryGetOutputPort(int index, out OutputPortViewModel port)
+        {
+            if (index < 0 || index >= OutputPorts.Length)
+            {
+                port = null;
+                return false;
+            }
+
+            port = OutputPorts[index];
+            return true;
+        }
+
 
         public void SetPosition(Vector2 position)
         {
@@ -28,6 +60,11 @@ namespace Ugen.Graphs
         public void MoveDelta(Vector2 delta)
         {
             Position.Value += delta;
+        }
+
+        public void ShowMenuContext(Vector2 pos)
+        {
+            _graphController.ShowNodeContextMenu(Id, pos);
         }
     }
 }
