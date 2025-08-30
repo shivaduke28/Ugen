@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using ObservableCollections;
 using R3;
+using Ugen.Graphs.GraphContextMenu;
 using Ugen.Graphs.NodeContextMenu;
 using Ugen.Graphs.Ports;
 using UnityEngine;
@@ -13,17 +14,17 @@ namespace Ugen.Graphs
         readonly ObservableDictionary<NodeId, NodeViewModel> _nodes = new();
         readonly ObservableDictionary<EdgeId, EdgeViewModel> _edges = new();
         readonly ObservableDictionary<EdgeId, IEdgeEndPoints> _previewEdges = new();
-        readonly EdgeCreator _edgeCreator;
 
         public IReadOnlyObservableDictionary<NodeId, NodeViewModel> Nodes => _nodes;
         public IReadOnlyObservableDictionary<EdgeId, EdgeViewModel> Edges => _edges;
         public IReadOnlyObservableDictionary<EdgeId, IEdgeEndPoints> PreviewEdges => _previewEdges;
         public NodeContextMenuViewModel NodeContextMenu { get; }
+        public GraphContextMenuViewModel GraphContextMenu { get; }
 
         public GraphViewModel()
         {
-            _edgeCreator = new EdgeCreator(this);
             NodeContextMenu = new NodeContextMenuViewModel(this);
+            GraphContextMenu = new GraphContextMenuViewModel(this);
         }
 
         public void AddTestData()
@@ -34,13 +35,13 @@ namespace Ugen.Graphs
                 var nodeId = NodeId.New();
                 var inputPorts = new[]
                 {
-                    new InputPortViewModel(nodeId, 0, $"Input {i * 2}", _edgeCreator),
-                    new InputPortViewModel(nodeId, 1, $"Input {i * 2 + 1}", _edgeCreator)
+                    new InputPortViewModel(nodeId, 0, $"Input {i * 2}", this),
+                    new InputPortViewModel(nodeId, 1, $"Input {i * 2 + 1}", this)
                 };
 
                 var outputPorts = new[]
                 {
-                    new OutputPortViewModel(nodeId, 0, $"Output {i}", _edgeCreator)
+                    new OutputPortViewModel(nodeId, 0, $"Output {i}", this)
                 };
 
                 var nodeViewModel = new NodeViewModel(nodeId, $"Node {nodeId}", inputPorts, outputPorts, this);
@@ -99,9 +100,14 @@ namespace Ugen.Graphs
             return _nodes.Remove(nodeId);
         }
 
-        public void ShowNodeContextMenu(NodeId nodeId, Vector2 position)
+        void IGraphController.ShowNodeContextMenu(NodeId nodeId, Vector2 position)
         {
             NodeContextMenu.Show(nodeId, position);
+        }
+
+        public void ShowGraphContextMenu(Vector2 position)
+        {
+            GraphContextMenu.Show(position);
         }
 
         public bool RemoveEdge(EdgeId edgeId)
@@ -121,6 +127,11 @@ namespace Ugen.Graphs
             var edgeViewModel = new EdgeViewModel(outputPort, inputPort);
             AddEdge(edgeViewModel);
             return true;
+        }
+
+        public bool TryCreateEdge(NodeId outputNodeId, int outputPortIndex, NodeId inputNodeId, int inputPortIndex)
+        {
+            return CreateEdge(outputNodeId, outputPortIndex, inputNodeId, inputPortIndex);
         }
 
         public IDisposable CreatePreviewEdge(IEdgeEndPoints endPoints)

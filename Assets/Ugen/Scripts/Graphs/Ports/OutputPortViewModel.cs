@@ -4,11 +4,11 @@ namespace Ugen.Graphs.Ports
     {
         public override PortDirection Direction => PortDirection.Output;
         public override PortData PortData { get; }
-        public EdgeCreator EdgeCreator { get; }
+        public IGraphController GraphController { get; }
 
-        public OutputPortViewModel(NodeId nodeId, int index, string name, EdgeCreator edgeCreator) : base(nodeId, index, name)
+        public OutputPortViewModel(NodeId nodeId, int index, string name, IGraphController graphController) : base(nodeId, index, name)
         {
-            EdgeCreator = edgeCreator;
+            GraphController = graphController;
             PortData = new PortData(nodeId, index, PortDirection.Output);
         }
     }

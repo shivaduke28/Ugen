@@ -19,15 +19,15 @@ namespace Ugen.Graphs.Ports
 
         readonly PortData _request;
         readonly IEdgeEndPoints _endPoints;
-        readonly EdgeCreator _edgeCreator;
+        readonly IGraphController _graphController;
         IDisposable _previewEdgeDisposable;
 
-        public EdgePreviewDragger(PortData request, IEdgeEndPoints endPoints, EdgeCreator edgeCreator)
+        public EdgePreviewDragger(PortData request, IEdgeEndPoints endPoints, IGraphController graphController)
         {
             _isActive = false;
             _request = request;
             _endPoints = endPoints;
-            _edgeCreator = edgeCreator;
+            _graphController = graphController;
 
             activators.Add(new ManipulatorActivationFilter
             {
@@ -58,7 +58,7 @@ namespace Ugen.Graphs.Ports
             target.CaptureMouse();
             evt.StopPropagation();
             _onStart.OnNext(evt.mousePosition);
-            _previewEdgeDisposable = _edgeCreator.CreatePreviewEdge(_endPoints);
+            _previewEdgeDisposable = _graphController.CreatePreviewEdge(_endPoints);
         }
 
         void OnMouseMove(MouseMoveEvent evt)

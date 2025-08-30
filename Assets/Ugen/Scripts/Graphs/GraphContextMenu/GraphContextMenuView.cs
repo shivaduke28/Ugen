@@ -1,27 +1,27 @@
 using System;
-using Cysharp.Threading.Tasks;
 using R3;
 using Ugen.Graphs.ContextMenu;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Ugen.Graphs.NodeContextMenu
+namespace Ugen.Graphs.GraphContextMenu
 {
-    public class NodeContextMenuView : IDisposable
+    public sealed class GraphContextMenuView : IDisposable
     {
         readonly VisualElement _root;
         readonly VisualElement _menuContainer;
-        readonly CompositeDisposable _disposable = new();
+        readonly CompositeDisposable _disposables = new();
 
-        public NodeContextMenuView(VisualElement container, NodeContextMenuViewModel viewModel)
+        public GraphContextMenuView(VisualElement root, GraphContextMenuViewModel viewModel)
         {
-            _root = container;
+            _root = root;
             _menuContainer = _root.Q<VisualElement>("context-menu");
 
-            foreach (var item in viewModel.GetMenuItems())
+            var menuItems = viewModel.GetMenuItems();
+            foreach (var item in menuItems)
             {
                 var itemView = new ContextMenuItemView();
-                itemView.Bind(item).AddTo(_disposable);
+                itemView.Bind(item).AddTo(_disposables);
                 _menuContainer.Add(itemView);
             }
 
@@ -35,7 +35,7 @@ namespace Ugen.Graphs.NodeContextMenu
                 {
                     HideMenu();
                 }
-            }).AddTo(_disposable);
+            }).AddTo(_disposables);
         }
 
         void ShowMenu(Vector2 position)
@@ -53,7 +53,7 @@ namespace Ugen.Graphs.NodeContextMenu
 
         public void Dispose()
         {
-            _disposable.Dispose();
+            _disposables.Dispose();
         }
     }
 }

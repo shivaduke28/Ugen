@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using ObservableCollections;
 using R3;
+using Ugen.Graphs.GraphContextMenu;
 using Ugen.Graphs.NodeContextMenu;
 using UnityEngine.UIElements;
 
@@ -17,6 +18,7 @@ namespace Ugen.Graphs
         readonly Dictionary<EdgeId, EdgeView> _edgeViews = new();
         readonly Dictionary<EdgeId, EdgeView> _previewEdgeViews = new();
         NodeContextMenuView _nodeContextMenuView;
+        GraphContextMenuView _graphContextMenuView;
 
         public GraphView(VisualElement container)
         {
@@ -29,11 +31,17 @@ namespace Ugen.Graphs
         {
             var disposable = new CompositeDisposable();
 
-            // コンテキストメニューを作成
-            var contextMenuElement = VisualElementFactory.Instance.CreateContextMenu();
-            _root.Add(contextMenuElement);
-            _nodeContextMenuView = new NodeContextMenuView(contextMenuElement, graphViewModel.NodeContextMenu);
+            // ノードコンテキストメニューを作成
+            var nodeContextMenuElement = VisualElementFactory.Instance.CreateContextMenu();
+            _root.Add(nodeContextMenuElement);
+            _nodeContextMenuView = new NodeContextMenuView(nodeContextMenuElement, graphViewModel.NodeContextMenu);
             Disposable.Create(() => _nodeContextMenuView.Dispose()).AddTo(disposable);
+
+            // グラフコンテキストメニューを作成
+            var graphContextMenuElement = VisualElementFactory.Instance.CreateContextMenu();
+            _root.Add(graphContextMenuElement);
+            _graphContextMenuView = new GraphContextMenuView(graphContextMenuElement, graphViewModel.GraphContextMenu);
+            Disposable.Create(() => _graphContextMenuView.Dispose()).AddTo(disposable);
 
             // 背景クリックでメニューを閉じる
             _root.RegisterCallback<PointerDownEvent>(evt =>
@@ -41,6 +49,17 @@ namespace Ugen.Graphs
                 if (evt.button == 0) // 左クリック
                 {
                     graphViewModel.NodeContextMenu.Hide();
+                    graphViewModel.GraphContextMenu.Hide();
+                }
+                else if (evt.button == 1) // 右クリック
+                {
+                    // 他のUI要素上でない場合のみグラフコンテキストメニューを表示
+                    if (evt.target == _root || evt.target == _nodeLayer || evt.target == _edgeLayer)
+                    {
+                        evt.StopPropagation();
+                        var localPosition = _root.WorldToLocal(evt.position);
+                        graphViewModel.ShowGraphContextMenu(localPosition);
+                    }
                 }
             });
 
