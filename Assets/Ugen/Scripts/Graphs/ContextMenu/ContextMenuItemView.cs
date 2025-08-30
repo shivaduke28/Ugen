@@ -15,7 +15,7 @@ namespace Ugen.Graphs.ContextMenu
             _button.AddToClassList("ugen-context-menu-item");
         }
 
-        public IDisposable Bind(ContextMenuItemViewModel viewModel)
+        public IDisposable Bind(ContextMenuItemViewModel viewModel )
         {
             return new CompositeDisposable(
                 _button.OnClickAsObservable().Subscribe(_ => viewModel.State.CurrentValue.OnClick.Invoke()),

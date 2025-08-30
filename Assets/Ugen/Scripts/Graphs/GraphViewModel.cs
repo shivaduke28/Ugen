@@ -2,9 +2,7 @@ using System;
 using System.Collections.Generic;
 using ObservableCollections;
 using R3;
-using Ugen.Graphs.EdgeContextMenu;
-using Ugen.Graphs.GraphContextMenu;
-using Ugen.Graphs.NodeContextMenu;
+using Ugen.Graphs.ContextMenu;
 using Ugen.Graphs.Ports;
 using UnityEngine;
 
@@ -19,15 +17,57 @@ namespace Ugen.Graphs
         public IReadOnlyObservableDictionary<NodeId, NodeViewModel> Nodes => _nodes;
         public IReadOnlyObservableDictionary<EdgeId, EdgeViewModel> Edges => _edges;
         public IReadOnlyObservableDictionary<EdgeId, IEdgeEndPoints> PreviewEdges => _previewEdges;
-        public NodeContextMenuViewModel NodeContextMenu { get; }
-        public GraphContextMenuViewModel GraphContextMenu { get; }
-        public EdgeContextMenuViewModel EdgeContextMenu { get; }
+        public ContextMenuViewModel<NodeId> NodeContextMenu { get; }
+        public ContextMenuViewModel GraphContextMenu { get; }
+        public ContextMenuViewModel<EdgeId> EdgeContextMenu { get; }
 
         public GraphViewModel()
         {
-            NodeContextMenu = new NodeContextMenuViewModel(this);
-            GraphContextMenu = new GraphContextMenuViewModel(this);
-            EdgeContextMenu = new EdgeContextMenuViewModel(this);
+            NodeContextMenu = new ContextMenuViewModel<NodeId>(new[]
+            {
+                new ContextMenuItemViewModel(new ContextMenuItemState("Delete", true, RemoveContextNode)),
+            });
+
+            GraphContextMenu = new ContextMenuViewModel(new[]
+            {
+                new ContextMenuItemViewModel(new ContextMenuItemState("Node2", true, CreateTestNode)),
+            });
+
+            EdgeContextMenu = new ContextMenuViewModel<EdgeId>(new[]
+            {
+                new ContextMenuItemViewModel(new ContextMenuItemState("Delete", true, RemoveContextEdge)),
+            });
+        }
+
+        void RemoveContextNode()
+        {
+            RemoveNode(NodeContextMenu.Value);
+            NodeContextMenu.Hide();
+        }
+
+        void RemoveContextEdge()
+        {
+            RemoveEdge(EdgeContextMenu.Value);
+            EdgeContextMenu.Hide();
+        }
+
+        void CreateTestNode()
+        {
+            var nodeId = NodeId.New();
+            var inputPorts = new[]
+            {
+                new InputPortViewModel(nodeId, 0, $"Input 1", this),
+            };
+
+            var outputPorts = new[]
+            {
+                new OutputPortViewModel(nodeId, 0, $"Output 1", this)
+            };
+
+            var nodeViewModel = new NodeViewModel(nodeId, $"Node {nodeId}", inputPorts, outputPorts, this);
+            nodeViewModel.SetPosition(GraphContextMenu.State.CurrentValue.Position);
+            AddNode(nodeViewModel);
+            GraphContextMenu.Hide();
         }
 
         public void AddTestData()
@@ -105,7 +145,7 @@ namespace Ugen.Graphs
 
         void IGraphController.ShowNodeContextMenu(NodeId nodeId, Vector2 position)
         {
-            NodeContextMenu.Show(nodeId, position);
+            NodeContextMenu.Show(position, nodeId);
         }
 
         public void ShowGraphContextMenu(Vector2 position)
@@ -115,7 +155,7 @@ namespace Ugen.Graphs
 
         public void ShowEdgeContextMenu(EdgeId edgeId, Vector2 position)
         {
-            EdgeContextMenu.Show(edgeId, position);
+            EdgeContextMenu.Show(position, edgeId);
         }
 
         public bool RemoveEdge(EdgeId edgeId)

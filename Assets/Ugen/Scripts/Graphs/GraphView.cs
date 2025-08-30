@@ -2,9 +2,7 @@ using System;
 using System.Collections.Generic;
 using ObservableCollections;
 using R3;
-using Ugen.Graphs.EdgeContextMenu;
-using Ugen.Graphs.GraphContextMenu;
-using Ugen.Graphs.NodeContextMenu;
+using Ugen.Graphs.ContextMenu;
 using UnityEngine.UIElements;
 
 namespace Ugen.Graphs
@@ -18,9 +16,9 @@ namespace Ugen.Graphs
         readonly Dictionary<NodeId, NodeView> _nodeViews = new();
         readonly Dictionary<EdgeId, EdgeView> _edgeViews = new();
         readonly Dictionary<EdgeId, EdgeView> _previewEdgeViews = new();
-        NodeContextMenuView _nodeContextMenuView;
-        GraphContextMenuView _graphContextMenuView;
-        EdgeContextMenuView _edgeContextMenuView;
+        ContextMenuView _nodeContextMenuView;
+        ContextMenuView _graphContextMenuView;
+        ContextMenuView _edgeContextMenuView;
 
         public GraphView(VisualElement container)
         {
@@ -35,20 +33,20 @@ namespace Ugen.Graphs
 
             // ノードコンテキストメニューを作成
             var nodeContextMenuElement = VisualElementFactory.Instance.CreateContextMenu();
-            _root.Add(nodeContextMenuElement);
-            _nodeContextMenuView = new NodeContextMenuView(nodeContextMenuElement, graphViewModel.NodeContextMenu);
+            _nodeContextMenuView = new ContextMenuView(nodeContextMenuElement, graphViewModel.NodeContextMenu);
+            _root.Add(_nodeContextMenuView.Root);
             Disposable.Create(() => _nodeContextMenuView.Dispose()).AddTo(disposable);
 
             // グラフコンテキストメニューを作成
             var graphContextMenuElement = VisualElementFactory.Instance.CreateContextMenu();
-            _root.Add(graphContextMenuElement);
-            _graphContextMenuView = new GraphContextMenuView(graphContextMenuElement, graphViewModel.GraphContextMenu);
+            _graphContextMenuView = new ContextMenuView(graphContextMenuElement, graphViewModel.GraphContextMenu);
+            _root.Add(_graphContextMenuView.Root);
             Disposable.Create(() => _graphContextMenuView.Dispose()).AddTo(disposable);
 
             // エッジコンテキストメニューを作成
             var edgeContextMenuElement = VisualElementFactory.Instance.CreateContextMenu();
-            _root.Add(edgeContextMenuElement);
-            _edgeContextMenuView = new EdgeContextMenuView(edgeContextMenuElement, graphViewModel.EdgeContextMenu);
+            _edgeContextMenuView = new ContextMenuView(edgeContextMenuElement, graphViewModel.EdgeContextMenu);
+            _root.Add(_edgeContextMenuView.Root);
             Disposable.Create(() => _edgeContextMenuView.Dispose()).AddTo(disposable);
 
             // 背景クリックでメニューを閉じる

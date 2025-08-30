@@ -1,28 +1,23 @@
 using System;
-using Cysharp.Threading.Tasks;
 using R3;
-using Ugen.Graphs.ContextMenu;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Ugen.Graphs.NodeContextMenu
+namespace Ugen.Graphs.ContextMenu
 {
-    public class NodeContextMenuView : IDisposable
+    public sealed class ContextMenuView : IDisposable
     {
-        readonly VisualElement _root;
-        readonly VisualElement _menuContainer;
         readonly CompositeDisposable _disposable = new();
+        public VisualElement Root { get; }
 
-        public NodeContextMenuView(VisualElement container, NodeContextMenuViewModel viewModel)
+        public ContextMenuView(VisualElement container, ContextMenuViewModel viewModel)
         {
-            _root = container;
-            _menuContainer = _root.Q<VisualElement>("context-menu");
-
-            foreach (var item in viewModel.GetMenuItems())
+            Root = container.Q<VisualElement>("context-menu");
+            foreach (var item in viewModel.Items)
             {
                 var itemView = new ContextMenuItemView();
                 itemView.Bind(item).AddTo(_disposable);
-                _menuContainer.Add(itemView);
+                Root.Add(itemView);
             }
 
             viewModel.State.Subscribe(state =>
@@ -40,15 +35,14 @@ namespace Ugen.Graphs.NodeContextMenu
 
         void ShowMenu(Vector2 position)
         {
-            // メニューを表示
-            _root.style.display = DisplayStyle.Flex;
-            _root.style.left = position.x;
-            _root.style.top = position.y;
+            Root.style.display = DisplayStyle.Flex;
+            Root.style.left = position.x;
+            Root.style.top = position.y;
         }
 
         void HideMenu()
         {
-            _root.style.display = DisplayStyle.None;
+            Root.style.display = DisplayStyle.None;
         }
 
         public void Dispose()
