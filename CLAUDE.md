@@ -208,3 +208,47 @@ public class MyBinder : UgenBinder
 - Integration tests for graph system
 - Performance tests for reactive stream operations
 - UI tests for custom editors using UI Toolkit Test Framework
+
+## Compile Check Strategy (コンパイルチェック戦略)
+
+### JetBrains IDE MCP Tools for Error Detection
+
+When making code changes, ALWAYS use these MCP tools to verify compilation:
+
+1. **After File Modifications**:
+   ```
+   - mcp__mcp-jetbrains__wait (milliseconds: 2000)  # Wait for IDE to analyze
+   - mcp__mcp-jetbrains__get_current_file_errors     # Check current file errors
+   - mcp__mcp-jetbrains__get_project_problems        # Check project-wide problems
+   ```
+
+2. **Error Checking Workflow**:
+   - ALWAYS check for errors after creating/modifying files
+   - Wait 2-3 seconds for IDE analysis to complete
+   - Check both file-level and project-level errors
+   - Fix compilation errors immediately before proceeding
+
+3. **Common Error Types to Watch**:
+   - Missing interface implementations
+   - Unresolved symbols/references
+   - Type mismatches
+   - Missing using directives
+   - Access modifier issues
+
+4. **Best Practices**:
+   - Run error checks after EVERY significant code change
+   - Don't assume code compiles - always verify
+   - Check errors before marking tasks as complete
+   - If errors persist after fixes, wait longer (5000ms) and recheck
+
+### Example Error Check Pattern
+```
+1. Make code changes
+2. Wait for IDE processing (2000ms)
+3. Check current file errors
+4. Check project problems
+5. Fix any issues found
+6. Repeat check to confirm resolution
+```
+
+This systematic approach ensures code quality and prevents accumulation of compilation errors.
