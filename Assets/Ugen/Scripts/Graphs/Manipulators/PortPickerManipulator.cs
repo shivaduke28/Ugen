@@ -1,11 +1,11 @@
-using System;
 using R3;
+using Ugen.Graphs.Ports;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Ugen.Graphs.Ports
+namespace Ugen.Graphs.Manipulators
 {
-    public class EdgePreviewDragger : MouseManipulator
+    public class PortPickerManipulator : MouseManipulator
     {
         bool _isActive;
         readonly Subject<Vector2> _onStart = new();
@@ -15,9 +15,7 @@ namespace Ugen.Graphs.Ports
         public Observable<Vector2> OnMove() => _onMove;
         public Observable<PortData?> OnEnd() => _onEnd;
 
-        IDisposable _previewEdgeDisposable;
-
-        public EdgePreviewDragger()
+        public PortPickerManipulator()
         {
             _isActive = false;
 
@@ -65,8 +63,6 @@ namespace Ugen.Graphs.Ports
         {
             if (!_isActive)
                 return;
-            _previewEdgeDisposable?.Dispose();
-            _previewEdgeDisposable = null;
 
             PortData? portData = null;
             if (target.panel.Pick(evt.mousePosition) is PortPickerView picker)

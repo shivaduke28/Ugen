@@ -1,5 +1,6 @@
 using System;
 using R3;
+using Ugen.Graphs.Manipulators;
 using UnityEngine.UIElements;
 
 namespace Ugen.Graphs.Ports
@@ -26,7 +27,7 @@ namespace Ugen.Graphs.Ports
             _connector.OnCenterWorldPositionChanged()
                 .Subscribe(pos => port.ConnectorWorldPosition.Value = pos)
                 .AddTo(disposable);
-            var edgeDragger = new EdgePreviewDragger();
+            var edgeDragger = new PortPickerManipulator();
             edgeDragger.OnStart().Subscribe(port.StartPreviewEdge);
             edgeDragger.OnMove()
                 .Subscribe(port.UpdatePreviewOtherEnd)

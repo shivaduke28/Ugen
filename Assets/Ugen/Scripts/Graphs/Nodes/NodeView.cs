@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using R3;
+using Ugen.Graphs.Manipulators;
 using Ugen.Graphs.Ports;
 using UnityEngine;
 using UnityEngine.UIElements;
