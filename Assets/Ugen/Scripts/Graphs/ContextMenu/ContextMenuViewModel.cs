@@ -34,10 +34,10 @@ namespace Ugen.Graphs.ContextMenu
         {
         }
 
-        public void Show(Vector2 position, T value)
+        public void Show(Vector2 panelPosition, T value)
         {
             Value = value;
-            _state.Value = new ContextMenuState(true, position);
+            _state.Value = new ContextMenuState(true, panelPosition);
         }
     }
 }

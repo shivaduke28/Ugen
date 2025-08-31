@@ -21,6 +21,7 @@
 
 .ugen-node-name-label {
     -unity-text-align: middle-center;
+    font-size: 10px;
 }
 
 .ugen-node-body {
@@ -123,5 +124,9 @@
 
 .ugen-port-container {
     width: 50%;
+    flex-grow: 1;
+}
+
+.ugen-graph-translation {
     flex-grow: 1;
 }

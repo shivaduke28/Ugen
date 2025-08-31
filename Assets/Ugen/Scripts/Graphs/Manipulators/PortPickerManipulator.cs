@@ -8,11 +8,11 @@ namespace Ugen.Graphs.Manipulators
     public class PortPickerManipulator : MouseManipulator
     {
         bool _isActive;
-        readonly Subject<Vector2> _onStart = new();
-        readonly Subject<Vector2> _onMove = new();
+        readonly Subject<Vector2> _onStartPanelPosition = new();
+        readonly Subject<Vector2> _onMovePanelPosition = new();
         readonly Subject<PortData?> _onEnd = new();
-        public Observable<Vector2> OnStart() => _onStart;
-        public Observable<Vector2> OnMove() => _onMove;
+        public Observable<Vector2> OnStartPanelPosition() => _onStartPanelPosition;
+        public Observable<Vector2> OnMovePanelPosition() => _onMovePanelPosition;
         public Observable<PortData?> OnEnd() => _onEnd;
 
         public PortPickerManipulator()
@@ -47,7 +47,8 @@ namespace Ugen.Graphs.Manipulators
             _isActive = true;
             target.CaptureMouse();
             evt.StopPropagation();
-            _onStart.OnNext(evt.mousePosition);
+            var panelPosition = evt.mousePosition;
+            _onStartPanelPosition.OnNext(panelPosition);
         }
 
         void OnMouseMove(MouseMoveEvent evt)
@@ -55,7 +56,8 @@ namespace Ugen.Graphs.Manipulators
             if (!_isActive)
                 return;
 
-            _onMove.OnNext(evt.mousePosition);
+            var worldPos = evt.mousePosition;
+            _onMovePanelPosition.OnNext(worldPos);
             evt.StopPropagation();
         }
 

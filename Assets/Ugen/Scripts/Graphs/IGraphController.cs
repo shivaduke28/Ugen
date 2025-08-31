@@ -11,6 +11,5 @@ namespace Ugen.Graphs
         bool RemoveEdge(EdgeId edgeId);
         bool RemoveNode(NodeId nodeId);
         void ShowNodeContextMenu(NodeId nodeId, Vector2 position);
-        void ShowEdgeContextMenu(EdgeId edgeId, Vector2 position);
     }
 }

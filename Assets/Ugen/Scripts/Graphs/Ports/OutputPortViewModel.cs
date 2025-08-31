@@ -17,7 +17,7 @@ namespace Ugen.Graphs.Ports
         {
             _graphController = graphController;
             PortData = new PortData(nodeId, index, PortDirection.Output);
-            _edgePreviewEndPoints = new EdgePreviewEndPoints(outputPosition: ConnectorWorldPosition);
+            _edgePreviewEndPoints = new EdgePreviewEndPoints(outputPosition: ConnectorPanelPosition);
         }
 
         public void UpdatePreviewOtherEnd(Vector2 point)

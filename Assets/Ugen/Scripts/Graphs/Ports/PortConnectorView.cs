@@ -9,7 +9,7 @@ namespace Ugen.Graphs.Ports
     {
         const string ClassName = "ugen-port-connector";
 
-        public Observable<Vector2> OnCenterWorldPositionChanged()
+        public Observable<Vector2> OnCenterPanelPositionChanged()
             => Observable.EveryValueChanged(this, x => x.worldBound.center);
 
         public PortConnectorView()

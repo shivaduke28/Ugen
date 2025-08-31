@@ -8,14 +8,14 @@ namespace Ugen.Graphs
     public class EdgeView : VisualElement, IDisposable
     {
         readonly CompositeDisposable _disposable = new();
-        readonly EdgeId _edgeId;
-        readonly IGraphController _graphController;
+        readonly Subject<Vector2> _onClickPanelPosition = new();
+        public Observable<Vector2> OnClickPanelPosition() => _onClickPanelPosition;
 
-        Vector2 _startPos;
-        Vector2 _endPos;
+        Vector2 _startLocalPosition;
+        Vector2 _endLocalPosition;
 
         // EdgeViewModel用のコンストラクタ
-        public EdgeView(EdgeViewModel edgeViewModel)
+        public EdgeView()
         {
             style.position = Position.Absolute;
             style.left = 0;
@@ -23,23 +23,8 @@ namespace Ugen.Graphs
             style.right = 0;
             style.bottom = 0;
 
-            _edgeId = edgeViewModel.Id;
-            _graphController = edgeViewModel.GraphController;
-
             generateVisualContent += OnGenerateVisualContent;
 
-            // StartPositionとEndPositionの変更を購読して再描画
-            edgeViewModel.OutputPosition.Subscribe(pos =>
-            {
-                _startPos = pos;
-                MarkDirtyRepaint();
-            }).AddTo(_disposable);
-
-            edgeViewModel.InputPosition.Subscribe(pos =>
-            {
-                _endPos = pos;
-                MarkDirtyRepaint();
-            }).AddTo(_disposable);
 
             // 右クリックでコンテキストメニューを表示
             RegisterCallback<PointerDownEvent>(evt =>
@@ -47,36 +32,29 @@ namespace Ugen.Graphs
                 if (evt.button == 1) // 右クリック
                 {
                     evt.StopPropagation();
-                    var localPosition = this.parent.WorldToLocal(evt.position);
-                    _graphController.ShowEdgeContextMenu(_edgeId, localPosition);
+                    _onClickPanelPosition.OnNext(evt.position);
                 }
             });
         }
 
-        // プレビューエッジ用のコンストラクタ
-        public EdgeView(IEdgeEndPoints edgeEndPoints)
+        public void Bind(IEdgeEndPoints edgeViewModel)
         {
-            style.position = Position.Absolute;
-            style.left = 0;
-            style.top = 0;
-            style.right = 0;
-            style.bottom = 0;
-
-            _edgeId = EdgeId.Invalid;
-            _graphController = null;
-
-            generateVisualContent += OnGenerateVisualContent;
-
             // StartPositionとEndPositionの変更を購読して再描画
-            edgeEndPoints.OutputPosition.Subscribe(pos =>
+            // ワールド座標をローカル座標に変換
+            edgeViewModel.OutputPanelPosition.Subscribe(panelPosition =>
             {
-                _startPos = pos;
+                if (parent == null)
+                {
+                    Debug.LogError("parent is null");
+                }
+
+                _startLocalPosition = parent?.WorldToLocal(panelPosition) ?? panelPosition;
                 MarkDirtyRepaint();
             }).AddTo(_disposable);
 
-            edgeEndPoints.InputPosition.Subscribe(pos =>
+            edgeViewModel.InputPanelPosition.Subscribe(panelPosition =>
             {
-                _endPos = pos;
+                _endLocalPosition = parent?.WorldToLocal(panelPosition) ?? panelPosition;
                 MarkDirtyRepaint();
             }).AddTo(_disposable);
         }
@@ -105,10 +83,10 @@ namespace Ugen.Graphs
         Vector2 CalculateBezierPoint(float t)
         {
             // ベジェ曲線のコントロールポイントを計算（OnGenerateVisualContentと同じロジック）
-            var distance = Vector2.Distance(_startPos, _endPos);
+            var distance = Vector2.Distance(_startLocalPosition, _endLocalPosition);
             var controlPointOffset = Mathf.Min(distance * 0.5f, 100f);
-            var controlPoint1 = new Vector2(_startPos.x + controlPointOffset, _startPos.y);
-            var controlPoint2 = new Vector2(_endPos.x - controlPointOffset, _endPos.y);
+            var controlPoint1 = new Vector2(_startLocalPosition.x + controlPointOffset, _startLocalPosition.y);
+            var controlPoint2 = new Vector2(_endLocalPosition.x - controlPointOffset, _endLocalPosition.y);
 
             // 3次ベジェ曲線の計算
             var oneMinusT = 1f - t;
@@ -117,15 +95,15 @@ namespace Ugen.Graphs
             var tSquared = t * t;
             var tCubed = tSquared * t;
 
-            return oneMinusTCubed * _startPos +
+            return oneMinusTCubed * _startLocalPosition +
                    3f * oneMinusTSquared * t * controlPoint1 +
                    3f * oneMinusT * tSquared * controlPoint2 +
-                   tCubed * _endPos;
+                   tCubed * _endLocalPosition;
         }
 
         void OnGenerateVisualContent(MeshGenerationContext mgc)
         {
-            if (_startPos == _endPos)
+            if (_startLocalPosition == _endLocalPosition)
                 return;
 
             var painter = mgc.painter2D;
@@ -133,21 +111,22 @@ namespace Ugen.Graphs
             painter.lineWidth = 1.0f;
 
             painter.BeginPath();
-            painter.MoveTo(_startPos);
+            painter.MoveTo(_startLocalPosition);
 
             // ベジェ曲線のコントロールポイントを計算
-            var distance = Vector2.Distance(_startPos, _endPos);
+            var distance = Vector2.Distance(_startLocalPosition, _endLocalPosition);
             var controlPointOffset = Mathf.Min(distance * 0.5f, 100f);
 
-            var controlPoint1 = new Vector2(_startPos.x + controlPointOffset, _startPos.y);
-            var controlPoint2 = new Vector2(_endPos.x - controlPointOffset, _endPos.y);
+            var controlPoint1 = new Vector2(_startLocalPosition.x + controlPointOffset, _startLocalPosition.y);
+            var controlPoint2 = new Vector2(_endLocalPosition.x - controlPointOffset, _endLocalPosition.y);
 
-            painter.BezierCurveTo(controlPoint1, controlPoint2, _endPos);
+            painter.BezierCurveTo(controlPoint1, controlPoint2, _endLocalPosition);
             painter.Stroke();
         }
 
         public void Dispose()
         {
+            _onClickPanelPosition.Dispose();
             _disposable.Dispose();
             generateVisualContent -= OnGenerateVisualContent;
         }

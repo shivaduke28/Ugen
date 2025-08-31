@@ -24,7 +24,7 @@ namespace Ugen.Graphs.ContextMenu
             {
                 if (state.IsVisible)
                 {
-                    ShowMenu(state.Position);
+                    ShowMenu(state.PanelPosition);
                 }
                 else
                 {
@@ -33,8 +33,9 @@ namespace Ugen.Graphs.ContextMenu
             }).AddTo(_disposable);
         }
 
-        void ShowMenu(Vector2 position)
+        void ShowMenu(Vector2 panelPosition)
         {
+            var position = Root.parent?.WorldToLocal(panelPosition) ?? panelPosition;
             Root.style.display = DisplayStyle.Flex;
             Root.style.left = position.x;
             Root.style.top = position.y;

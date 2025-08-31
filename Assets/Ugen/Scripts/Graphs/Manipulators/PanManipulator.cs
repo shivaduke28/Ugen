@@ -8,13 +8,11 @@ namespace Ugen.Graphs.Manipulators
         Vector2 _startMousePosition;
         Vector2 _startPanPosition;
         bool _isPanning;
-        readonly VisualElement _nodeLayer;
-        readonly VisualElement _edgeLayer;
+        readonly VisualElement _translation;
 
-        public PanManipulator(VisualElement nodeLayer, VisualElement edgeLayer)
+        public PanManipulator(VisualElement translation)
         {
-            _nodeLayer = nodeLayer;
-            _edgeLayer = edgeLayer;
+            _translation = translation;
         }
 
         protected override void RegisterCallbacksOnTarget()
@@ -37,13 +35,12 @@ namespace Ugen.Graphs.Manipulators
         {
             // 左クリックかつ背景上でのみパンを開始
             if (evt.button != 0) return;
-            if (evt.target != target && evt.target != _nodeLayer && evt.target != _edgeLayer) return;
 
             _isPanning = true;
-            _startMousePosition = new Vector2(evt.position.x, evt.position.y);
+            _startMousePosition = evt.position;
 
             // 現在のtranslate値を取得
-            var currentTranslate = _nodeLayer.style.translate.value;
+            var currentTranslate = _translation.style.translate.value;
             _startPanPosition = new Vector2(currentTranslate.x.value, currentTranslate.y.value);
 
             target.CapturePointer(evt.pointerId);
@@ -58,8 +55,7 @@ namespace Ugen.Graphs.Manipulators
             var delta = currentPosition - _startMousePosition;
             var newPosition = _startPanPosition + delta;
 
-            // nodeLayerのtranslateを更新（edgeLayerは動かさない）
-            _nodeLayer.style.translate = new Translate(newPosition.x, newPosition.y);
+            _translation.style.translate = new Translate(newPosition.x, newPosition.y);
 
             evt.StopPropagation();
         }

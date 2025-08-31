@@ -5,15 +5,15 @@ namespace Ugen.Graphs.Manipulators
 {
     public class ZoomManipulator : Manipulator
     {
-        readonly VisualElement _nodeLayer;
+        readonly VisualElement _translation;
         float _currentScale = 1.0f;
         const float MinScale = 0.1f;
         const float MaxScale = 3.0f;
         const float ZoomSpeed = 0.1f;
 
-        public ZoomManipulator(VisualElement nodeLayer)
+        public ZoomManipulator(VisualElement translation)
         {
-            _nodeLayer = nodeLayer;
+            _translation = translation;
         }
 
         protected override void RegisterCallbacksOnTarget()
@@ -42,7 +42,7 @@ namespace Ugen.Graphs.Manipulators
             var mousePosition = target.WorldToLocal(evt.mousePosition);
 
             // 現在のtranslate値を取得
-            var currentTranslate = _nodeLayer.style.translate.value;
+            var currentTranslate = _translation.style.translate.value;
             var currentPosition = new Vector2(currentTranslate.x.value, currentTranslate.y.value);
 
             // ズームの中心点を基準に位置を調整
@@ -53,8 +53,8 @@ namespace Ugen.Graphs.Manipulators
             _currentScale = newScale;
 
             // nodeLayerのみスケールと位置を更新（edgeLayerは動かさない）
-            _nodeLayer.style.scale = new Scale(new Vector3(_currentScale, _currentScale, 1));
-            _nodeLayer.style.translate = new Translate(newPosition.x, newPosition.y);
+            _translation.style.scale = new Scale(new Vector3(_currentScale, _currentScale, 1));
+            _translation.style.translate = new Translate(newPosition.x, newPosition.y);
 
             evt.StopPropagation();
         }

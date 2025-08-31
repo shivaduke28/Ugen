@@ -7,17 +7,17 @@ namespace Ugen.Graphs.ContextMenu
     public readonly struct ContextMenuState : IEquatable<ContextMenuState>
     {
         public readonly bool IsVisible;
-        public readonly Vector2 Position;
+        public readonly Vector2 PanelPosition;
 
-        public ContextMenuState(bool isVisible, Vector2 position)
+        public ContextMenuState(bool isVisible, Vector2 panelPosition)
         {
             IsVisible = isVisible;
-            Position = position;
+            PanelPosition = panelPosition;
         }
 
         public bool Equals(ContextMenuState other)
         {
-            return IsVisible == other.IsVisible && Position.Equals(other.Position);
+            return IsVisible == other.IsVisible && PanelPosition.Equals(other.PanelPosition);
         }
 
         public override bool Equals(object? obj)
@@ -27,7 +27,7 @@ namespace Ugen.Graphs.ContextMenu
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(IsVisible, Position);
+            return HashCode.Combine(IsVisible, PanelPosition);
         }
 
         public static bool operator ==(ContextMenuState left, ContextMenuState right)
@@ -42,7 +42,7 @@ namespace Ugen.Graphs.ContextMenu
 
         public override string ToString()
         {
-            return $"IsVisible: {IsVisible}, Position: {Position}";
+            return $"IsVisible: {IsVisible}, Position: {PanelPosition}";
         }
     }
 }

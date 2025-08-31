@@ -59,7 +59,7 @@ namespace Ugen.Graphs
         void CreateNode(Func<NodeId, Node> factory)
         {
             var node = factory(NodeId.New());
-            AddNode(node, GraphContextMenu.State.CurrentValue.Position);
+            AddNode(node, GraphContextMenu.State.CurrentValue.PanelPosition);
             GraphContextMenu.Hide();
         }
 
@@ -105,9 +105,9 @@ namespace Ugen.Graphs
             GraphContextMenu.Show(position);
         }
 
-        public void ShowEdgeContextMenu(EdgeId edgeId, Vector2 position)
+        public void ShowEdgeContextMenu(EdgeId edgeId, Vector2 panelPosition)
         {
-            EdgeContextMenu.Show(position, edgeId);
+            EdgeContextMenu.Show(panelPosition, edgeId);
         }
 
         public bool RemoveEdge(EdgeId edgeId)

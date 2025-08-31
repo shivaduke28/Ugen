@@ -12,6 +12,7 @@ namespace Ugen.Graphs
     public class GraphView : IDisposable
     {
         readonly VisualElement _root;
+        readonly VisualElement _translation;
         readonly VisualElement _nodeLayer;
         readonly VisualElement _edgeLayer;
         readonly CompositeDisposable _disposables = new();
@@ -27,15 +28,16 @@ namespace Ugen.Graphs
         public GraphView(VisualElement container)
         {
             _root = container.Q<VisualElement>("graph");
+            _translation = _root.Q<VisualElement>("translation");
             _nodeLayer = _root.Q<VisualElement>("node-layer");
             _edgeLayer = _root.Q<VisualElement>("edge-layer");
 
             // パン機能を追加
-            _panManipulator = new PanManipulator(_nodeLayer, _edgeLayer);
+            _panManipulator = new PanManipulator(_translation);
             _root.AddManipulator(_panManipulator);
 
             // ズーム機能を追加
-            _zoomManipulator = new ZoomManipulator(_nodeLayer);
+            _zoomManipulator = new ZoomManipulator(_translation);
             _root.AddManipulator(_zoomManipulator);
         }
 
@@ -117,9 +119,13 @@ namespace Ugen.Graphs
                 var edgeId = evt.Value.Key;
                 var edgeViewModel = evt.Value.Value;
 
-                // EdgeViewを作成
-                var edgeView = new EdgeView(edgeViewModel);
+                var edgeView = new EdgeView();
                 _edgeLayer.Add(edgeView);
+                edgeView.Bind(edgeViewModel);
+                edgeView.OnClickPanelPosition().Subscribe(panelPos =>
+                {
+                    graphViewModel.ShowEdgeContextMenu(edgeId, panelPos);
+                }).AddTo(disposable);
 
                 // EdgeViewを管理
                 _edgeViews[edgeId] = edgeView;
@@ -143,8 +149,9 @@ namespace Ugen.Graphs
                 var endPoints = evt.Value.Value;
 
                 // EdgeViewを作成
-                var edgeView = new EdgeView(endPoints);
+                var edgeView = new EdgeView();
                 _edgeLayer.Add(edgeView);
+                edgeView.Bind(endPoints);
 
                 _previewEdgeViews[edgeId] = edgeView;
             }).AddTo(disposable);
@@ -174,8 +181,9 @@ namespace Ugen.Graphs
 
             foreach (var (edgeId, edgeViewModel) in graphViewModel.Edges)
             {
-                var edgeView = new EdgeView(edgeViewModel);
+                var edgeView = new EdgeView();
                 _edgeLayer.Add(edgeView);
+                edgeView.Bind(edgeViewModel);
                 _edgeViews[edgeId] = edgeView;
             }
 
