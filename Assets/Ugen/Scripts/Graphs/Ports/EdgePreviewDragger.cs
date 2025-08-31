@@ -9,25 +9,17 @@ namespace Ugen.Graphs.Ports
     {
         bool _isActive;
         readonly Subject<Vector2> _onStart = new();
-        readonly Subject<Vector2> _onMoveDelta = new();
         readonly Subject<Vector2> _onMove = new();
-        readonly Subject<Vector2> _onEnd = new();
+        readonly Subject<PortData?> _onEnd = new();
         public Observable<Vector2> OnStart() => _onStart;
-        public Observable<Vector2> OnMoveDelta() => _onMoveDelta;
         public Observable<Vector2> OnMove() => _onMove;
-        public Observable<Vector2> OnEnd() => _onEnd;
+        public Observable<PortData?> OnEnd() => _onEnd;
 
-        readonly PortData _request;
-        readonly IEdgeEndPoints _endPoints;
-        readonly IGraphController _graphController;
         IDisposable _previewEdgeDisposable;
 
-        public EdgePreviewDragger(PortData request, IEdgeEndPoints endPoints, IGraphController graphController)
+        public EdgePreviewDragger()
         {
             _isActive = false;
-            _request = request;
-            _endPoints = endPoints;
-            _graphController = graphController;
 
             activators.Add(new ManipulatorActivationFilter
             {
@@ -58,7 +50,6 @@ namespace Ugen.Graphs.Ports
             target.CaptureMouse();
             evt.StopPropagation();
             _onStart.OnNext(evt.mousePosition);
-            _previewEdgeDisposable = _graphController.CreatePreviewEdge(_endPoints);
         }
 
         void OnMouseMove(MouseMoveEvent evt)
@@ -66,7 +57,6 @@ namespace Ugen.Graphs.Ports
             if (!_isActive)
                 return;
 
-            _onMoveDelta.OnNext(evt.mouseDelta);
             _onMove.OnNext(evt.mousePosition);
             evt.StopPropagation();
         }
@@ -78,14 +68,15 @@ namespace Ugen.Graphs.Ports
             _previewEdgeDisposable?.Dispose();
             _previewEdgeDisposable = null;
 
-            _onEnd.OnNext(evt.mousePosition);
+            PortData? portData = null;
+            if (target.panel.Pick(evt.mousePosition) is PortPickerView picker)
+            {
+                portData = picker.PortData;
+            }
+
+            _onEnd.OnNext(portData);
             _isActive = false;
             target.ReleaseMouse();
-            var pick = target.panel.Pick(evt.mousePosition);
-            if (pick is PortPickerView picker)
-            {
-                picker.TryCreateEdge(_request);
-            }
         }
     }
 }

@@ -26,16 +26,14 @@ namespace Ugen.Graphs.Ports
             _connector.OnCenterWorldPositionChanged()
                 .Subscribe(pos => port.ConnectorWorldPosition.Value = pos)
                 .AddTo(disposable);
-            var endPoints = new EdgePreviewEndPoints(outputPosition: port.ConnectorWorldPosition);
-            var edgeDragger = new EdgePreviewDragger(port.PortData, endPoints, port.GraphController);
-            edgeDragger.OnStart().Merge(edgeDragger.OnMove())
-                .Subscribe(pos => endPoints.UpdateInputPosition(pos))
+            var edgeDragger = new EdgePreviewDragger();
+            edgeDragger.OnStart().Subscribe(port.StartPreviewEdge);
+            edgeDragger.OnMove()
+                .Subscribe(port.UpdatePreviewOtherEnd)
                 .AddTo(disposable);
+            edgeDragger.OnEnd().Subscribe(port.StopPreviewEdge).AddTo(disposable);
+            _portPicker.PortData = port.PortData;
             _portPicker.AddManipulator(edgeDragger);
-            _portPicker.OnEdgeCreationRequested()
-                .Where(req => req.Direction == PortDirection.Input)
-                .Subscribe(req => port.GraphController.CreateEdge(port.NodeId, port.Index, req.NodeId, req.PortIndex))
-                .AddTo(disposable);
             return disposable;
         }
     }

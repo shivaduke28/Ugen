@@ -1,3 +1,4 @@
+#nullable enable
 using R3;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -7,14 +8,8 @@ namespace Ugen.Graphs
     public class DragManipulator : MouseManipulator
     {
         bool _isActive;
-        readonly Subject<Vector2> _onStart = new();
         readonly Subject<Vector2> _onMoveDelta = new();
-        readonly Subject<Vector2> _onMove = new();
-        readonly Subject<Vector2> _onEnd = new();
-        public Observable<Vector2> OnStart() => _onStart;
         public Observable<Vector2> OnMoveDelta() => _onMoveDelta;
-        public Observable<Vector2> OnMove() => _onMove;
-        public Observable<Vector2> OnEnd() => _onEnd;
 
         public DragManipulator()
         {
@@ -56,7 +51,6 @@ namespace Ugen.Graphs
                 return;
 
             _onMoveDelta.OnNext(evt.mouseDelta);
-            _onMove.OnNext(evt.mousePosition);
             evt.StopPropagation();
         }
 
@@ -65,7 +59,6 @@ namespace Ugen.Graphs
             if (!_isActive)
                 return;
 
-            _onEnd.OnNext(evt.mousePosition);
             _isActive = false;
             target.ReleaseMouse();
             evt.StopPropagation();
