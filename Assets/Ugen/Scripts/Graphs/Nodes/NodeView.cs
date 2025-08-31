@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using R3;
 using Ugen.Graphs.Ports;
 using UnityEngine;
@@ -45,6 +46,11 @@ namespace Ugen.Graphs.Nodes
                 inputPortView.Bind(inputPort).AddTo(disposable);
             }
 
+            if (!nodeViewModel.InputPorts.Any())
+            {
+                _inputPortContainer.style.display = DisplayStyle.None;
+            }
+
             foreach (var outputPort in nodeViewModel.OutputPorts)
             {
                 var portElement = VisualElementFactory.Instance.CreateOutputPort();
@@ -53,6 +59,11 @@ namespace Ugen.Graphs.Nodes
                 var outputPortView = new OutputPortView(portElement);
                 _outputPortViews.Add(outputPortView);
                 outputPortView.Bind(outputPort).AddTo(disposable);
+            }
+
+            if (!nodeViewModel.OutputPorts.Any())
+            {
+                _outputPortContainer.style.display = DisplayStyle.None;
             }
 
             nodeViewModel.Position.Subscribe(SetPosition).AddTo(disposable);

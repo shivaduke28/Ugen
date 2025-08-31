@@ -5,8 +5,8 @@
             <ui:Label text="Label" name="name" class="ugen-node-name-label" />
         </ui:VisualElement>
         <ui:VisualElement name="body" class="ugen-node-body">
-            <ui:VisualElement name="input-ports" />
-            <ui:VisualElement name="output-ports" />
+            <ui:VisualElement name="input-ports" class="ugen-port-container" />
+            <ui:VisualElement name="output-ports" class="ugen-port-container" />
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

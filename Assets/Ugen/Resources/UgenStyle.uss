@@ -1,6 +1,6 @@
 :root {
     -unity-font-definition: resource('Ubuntu_Mono/UbuntuMono-Regular SDF');
-    color: rgba(256, 256, 256, 1);
+    color: rgb(255, 255, 255);
 }
 
 .ugen-node {
@@ -50,6 +50,7 @@
 .ugen-output-port {
     flex-direction: row;
     align-items: center;
+    justify-content: flex-end;
 }
 
 .ugen-output-port-name-label {
@@ -107,4 +108,9 @@
 
 .ugen-context-menu-item:active {
     background-color: rgba(255, 255, 255, 0.2);
+}
+
+.ugen-port-container {
+    min-width: 50%;
+    flex-grow: 1;
 }

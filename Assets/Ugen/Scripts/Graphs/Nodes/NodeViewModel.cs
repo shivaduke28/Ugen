@@ -1,3 +1,4 @@
+using System.Linq;
 using R3;
 using Ugen.Graphs.Ports;
 using UnityEngine;
@@ -14,16 +15,13 @@ namespace Ugen.Graphs.Nodes
 
         readonly IGraphController _graphController;
 
-        public NodeViewModel(NodeId id,
-            string name,
-            InputPortViewModel[] inputPorts,
-            OutputPortViewModel[] outputPorts,
+        public NodeViewModel(Node node,
             IGraphController graphController)
         {
-            Id = id;
-            Name = name;
-            InputPorts = inputPorts;
-            OutputPorts = outputPorts;
+            Id = node.Id;
+            Name = node.Name;
+            InputPorts = node.InputPorts.Select((x, i) => new InputPortViewModel(Id, i, x.Name, graphController)).ToArray();
+            OutputPorts = node.OutputPorts.Select((x, i) => new OutputPortViewModel(Id, i, x.Name, graphController)).ToArray();
             _graphController = graphController;
         }
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using ObservableCollections;
 using R3;
 using Ugen.Graphs.ContextMenu;
@@ -31,7 +32,10 @@ namespace Ugen.Graphs
 
             GraphContextMenu = new ContextMenuViewModel(new[]
             {
-                new ContextMenuItemViewModel(new ContextMenuItemState("Node2", true, CreateTestNode)),
+                new ContextMenuItemViewModel(new ContextMenuItemState("Float", true, () => CreateNode(id => new FloatNode(id)))),
+                new ContextMenuItemViewModel(new ContextMenuItemState("Vector3", true, () => CreateNode(id => new Vector3Node(id)))),
+                new ContextMenuItemViewModel(new ContextMenuItemState("Update", true, () => CreateNode(id => new UpdateNode(id)))),
+                new ContextMenuItemViewModel(new ContextMenuItemState("Add Force", true, () => CreateNode(id => new AddForceNode(id)))),
             });
 
             EdgeContextMenu = new ContextMenuViewModel<EdgeId>(new[]
@@ -52,20 +56,10 @@ namespace Ugen.Graphs
             EdgeContextMenu.Hide();
         }
 
-        void CreateTestNode()
+        void CreateNode(Func<NodeId, Node> factory)
         {
-            var nodeId = NodeId.New();
-            var inputPorts = new[]
-            {
-                new InputPortViewModel(nodeId, 0, $"Input 1", this),
-            };
-
-            var outputPorts = new[]
-            {
-                new OutputPortViewModel(nodeId, 0, $"Output 1", this)
-            };
-
-            var nodeViewModel = new NodeViewModel(nodeId, $"Node {nodeId}", inputPorts, outputPorts, this);
+            var node = factory(NodeId.New());
+            var nodeViewModel = new NodeViewModel(node, this);
             nodeViewModel.SetPosition(GraphContextMenu.State.CurrentValue.Position);
             AddNode(nodeViewModel);
             GraphContextMenu.Hide();
@@ -73,36 +67,21 @@ namespace Ugen.Graphs
 
         public void AddTestData()
         {
-            // サンプルノードを作成
-            for (var i = 0; i < 4; i++)
+            var nodes = new Node[]
             {
-                var nodeId = NodeId.New();
-                var inputPorts = new[]
-                {
-                    new InputPortViewModel(nodeId, 0, $"Input {i * 2}", this),
-                    new InputPortViewModel(nodeId, 1, $"Input {i * 2 + 1}", this)
-                };
+                new FloatNode(NodeId.New()),
+                new FloatNode(NodeId.New()),
+                new FloatNode(NodeId.New()),
+                new Vector3Node(NodeId.New()),
+            };
 
-                var outputPorts = new[]
-                {
-                    new OutputPortViewModel(nodeId, 0, $"Output {i}", this)
-                };
-
-                var nodeViewModel = new NodeViewModel(nodeId, $"Node {nodeId}", inputPorts, outputPorts, this);
-
-                // ノードの位置を設定（横に並べる）
-                var xOffset = i * 250;
-                var yOffset = (i % 2) * 150; // ジグザグ配置
-                nodeViewModel.SetPosition(new Vector2(xOffset, yOffset));
-
-                AddNode(nodeViewModel);
+            foreach (var node in nodes)
+            {
+                var vm = new NodeViewModel(node, this);
+                AddNode(vm);
             }
 
-            var nodeIds = new List<NodeId>();
-            foreach (var kvp in _nodes)
-            {
-                nodeIds.Add(kvp.Key);
-            }
+            var nodeIds = nodes.Select(x => x.Id).ToList();
 
             if (nodeIds.Count >= 2)
             {
