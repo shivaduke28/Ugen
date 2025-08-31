@@ -1,6 +1,6 @@
 using System;
 
-namespace Ugen.Graphs
+namespace Ugen.Graphs.Nodes
 {
     public readonly struct NodeId : IEquatable<NodeId>
     {

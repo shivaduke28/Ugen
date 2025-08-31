@@ -1,3 +1,5 @@
+using Ugen.Graphs.Nodes;
+
 namespace Ugen.Graphs.Ports
 {
     public readonly struct PortData

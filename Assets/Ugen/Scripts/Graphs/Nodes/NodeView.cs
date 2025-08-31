@@ -5,7 +5,7 @@ using Ugen.Graphs.Ports;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Ugen.Graphs
+namespace Ugen.Graphs.Nodes
 {
     public class NodeView : IDisposable
     {

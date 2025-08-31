@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using ObservableCollections;
 using R3;
 using Ugen.Graphs.ContextMenu;
+using Ugen.Graphs.Nodes;
 using Ugen.Graphs.Ports;
 using UnityEngine;
 

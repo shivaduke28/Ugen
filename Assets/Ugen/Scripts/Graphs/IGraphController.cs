@@ -1,4 +1,5 @@
 using System;
+using Ugen.Graphs.Nodes;
 using UnityEngine;
 
 namespace Ugen.Graphs

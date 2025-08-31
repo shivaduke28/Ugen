@@ -2,7 +2,7 @@ using R3;
 using Ugen.Graphs.Ports;
 using UnityEngine;
 
-namespace Ugen.Graphs
+namespace Ugen.Graphs.Nodes
 {
     public class NodeViewModel
     {
