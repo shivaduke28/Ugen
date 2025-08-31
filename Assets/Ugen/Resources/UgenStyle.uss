@@ -31,32 +31,43 @@
 .ugen-input-port {
     flex-direction: row;
     align-items: center;
+    flex-shrink: 0;
 }
 
 .ugen-port-connector {
     width: 6px;
     height: 6px;
-    border-radius: 50%;
+    min-width: 6px;
+    min-height: 6px;
+    max-width: 6px;
+    max-height: 6px;
+    border-radius: 3px;
     border-width: 0.1px;
     border-color: rgb(255, 255, 255);
+    flex-shrink: 0;
 }
 
 .ugen-input-port-name-label {
     font-size: 10px;
     margin-left: 2px;
     margin-right: 2px;
+    padding: 0;
+    -unity-text-align: middle-left;
 }
 
 .ugen-output-port {
     flex-direction: row;
     align-items: center;
     justify-content: flex-end;
+    flex-shrink: 0;
 }
 
 .ugen-output-port-name-label {
     font-size: 10px;
     margin-left: 2px;
     margin-right: 2px;
+    padding: 0;
+    -unity-text-align: middle-left;
 }
 
 .ugen-port-picker {
@@ -111,6 +122,6 @@
 }
 
 .ugen-port-container {
-    min-width: 50%;
+    width: 50%;
     flex-grow: 1;
 }
