@@ -6,7 +6,6 @@ namespace Ugen.Graphs
 {
     public interface IGraphController
     {
-        void AddNode(NodeViewModel node);
         bool CreateEdge(NodeId outputNodeId, int outputPortIndex, NodeId inputNodeId, int inputPortIndex);
         IDisposable CreatePreviewEdge(IEdgeEndPoints endPoints);
         bool RemoveEdge(EdgeId edgeId);

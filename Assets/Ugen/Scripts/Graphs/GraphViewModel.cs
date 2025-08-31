@@ -59,44 +59,16 @@ namespace Ugen.Graphs
         void CreateNode(Func<NodeId, Node> factory)
         {
             var node = factory(NodeId.New());
-            var nodeViewModel = new NodeViewModel(node, this);
-            nodeViewModel.SetPosition(GraphContextMenu.State.CurrentValue.Position);
-            AddNode(nodeViewModel);
+            AddNode(node, GraphContextMenu.State.CurrentValue.Position);
             GraphContextMenu.Hide();
         }
 
-        public void AddTestData()
+        public NodeViewModel AddNode(Node node, Vector2 position)
         {
-            var nodes = new Node[]
-            {
-                new FloatNode(NodeId.New()),
-                new FloatNode(NodeId.New()),
-                new FloatNode(NodeId.New()),
-                new Vector3Node(NodeId.New()),
-            };
-
-            foreach (var node in nodes)
-            {
-                var vm = new NodeViewModel(node, this);
-                AddNode(vm);
-            }
-
-            var nodeIds = nodes.Select(x => x.Id).ToList();
-
-            if (nodeIds.Count >= 2)
-            {
-                CreateEdge(nodeIds[0], 0, nodeIds[1], 0);
-
-                if (nodeIds.Count >= 3)
-                {
-                    CreateEdge(nodeIds[1], 0, nodeIds[2], 0);
-                }
-            }
-        }
-
-        public void AddNode(NodeViewModel node)
-        {
-            _nodes.Add(node.Id, node);
+            var vm = new NodeViewModel(node, this);
+            vm.SetPosition(position);
+            _nodes.Add(node.Id, vm);
+            return vm;
         }
 
         public void AddEdge(EdgeViewModel edge)
