@@ -129,4 +129,5 @@
 
 .ugen-graph-translation {
     flex-grow: 1;
+    transform-origin: left top;
 }

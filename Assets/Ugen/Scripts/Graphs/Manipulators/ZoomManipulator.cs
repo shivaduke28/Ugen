@@ -38,23 +38,9 @@ namespace Ugen.Graphs.Manipulators
 
             if (Mathf.Abs(newScale - _currentScale) < 0.001f) return;
 
-            // マウス位置を中心にズーム
-            var mousePosition = target.WorldToLocal(evt.mousePosition);
-
-            // 現在のtranslate値を取得
-            var currentTranslate = _translation.style.translate.value;
-            var currentPosition = new Vector2(currentTranslate.x.value, currentTranslate.y.value);
-
-            // ズームの中心点を基準に位置を調整
-            var scaleRatio = newScale / _currentScale;
-            var newPosition = mousePosition + (currentPosition - mousePosition) * scaleRatio;
-
-            // スケールと位置を更新
+            // スケールを更新
             _currentScale = newScale;
-
-            // nodeLayerのみスケールと位置を更新（edgeLayerは動かさない）
             _translation.style.scale = new Scale(new Vector3(_currentScale, _currentScale, 1));
-            _translation.style.translate = new Translate(newPosition.x, newPosition.y);
 
             evt.StopPropagation();
         }
