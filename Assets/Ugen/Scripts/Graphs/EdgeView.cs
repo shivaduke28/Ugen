@@ -15,6 +15,7 @@ namespace Ugen.Graphs
         Vector2 _endPanelPosition;
         const float Offset = 8f;
         const float Padding = 20f;
+        bool _isHovered;
 
         public EdgeView()
         {
@@ -30,6 +31,19 @@ namespace Ugen.Graphs
                     evt.StopPropagation();
                     _onClickPanelPosition.OnNext(evt.position);
                 }
+            });
+
+            // マウスホバーイベントの登録
+            RegisterCallback<PointerEnterEvent>(_ =>
+            {
+                _isHovered = true;
+                MarkDirtyRepaint();
+            });
+
+            RegisterCallback<PointerLeaveEvent>(_ =>
+            {
+                _isHovered = false;
+                MarkDirtyRepaint();
             });
         }
 
@@ -141,7 +155,7 @@ namespace Ugen.Graphs
             );
 
             var painter = mgc.painter2D;
-            painter.strokeColor = Color.white;
+            painter.strokeColor = _isHovered ? new Color(0.5f, 1f, 1f) : Color.white;
             painter.lineWidth = 1.0f;
 
             painter.BeginPath();
