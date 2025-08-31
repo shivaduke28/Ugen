@@ -62,43 +62,35 @@ namespace Ugen.Graphs
         public override bool ContainsPoint(Vector2 localPoint)
         {
             const float threshold = 10f;
-            const int sampleCount = 20;
+            const float offset = 50f;
 
-            var minDistance = float.MaxValue;
+            // Z字型の4つの点
+            var p1 = _startLocalPosition;
+            var p2 = new Vector2(_startLocalPosition.x + offset, _startLocalPosition.y);
+            var p3 = new Vector2(_endLocalPosition.x - offset, _endLocalPosition.y);
+            var p4 = _endLocalPosition;
 
-            for (var i = 0; i <= sampleCount; i++)
-            {
-                var t = i / (float)sampleCount;
-                var pointOnCurve = CalculateBezierPoint(t);
-                var distance = Vector2.Distance(localPoint, pointOnCurve);
-                minDistance = Mathf.Min(minDistance, distance);
+            // 3つの線分との距離を計算
+            var dist1 = DistanceToLineSegment(localPoint, p1, p2);
+            var dist2 = DistanceToLineSegment(localPoint, p2, p3);
+            var dist3 = DistanceToLineSegment(localPoint, p3, p4);
 
-                if (minDistance <= threshold)
-                    return true;
-            }
-
+            var minDistance = Mathf.Min(dist1, Mathf.Min(dist2, dist3));
             return minDistance <= threshold;
         }
 
-        Vector2 CalculateBezierPoint(float t)
+        static float DistanceToLineSegment(Vector2 point, Vector2 lineStart, Vector2 lineEnd)
         {
-            // ベジェ曲線のコントロールポイントを計算（OnGenerateVisualContentと同じロジック）
-            var distance = Vector2.Distance(_startLocalPosition, _endLocalPosition);
-            var controlPointOffset = Mathf.Min(distance * 0.5f, 100f);
-            var controlPoint1 = new Vector2(_startLocalPosition.x + controlPointOffset, _startLocalPosition.y);
-            var controlPoint2 = new Vector2(_endLocalPosition.x - controlPointOffset, _endLocalPosition.y);
+            var lineVec = lineEnd - lineStart;
+            var pointVec = point - lineStart;
+            var lineLength = lineVec.sqrMagnitude;
 
-            // 3次ベジェ曲線の計算
-            var oneMinusT = 1f - t;
-            var oneMinusTSquared = oneMinusT * oneMinusT;
-            var oneMinusTCubed = oneMinusTSquared * oneMinusT;
-            var tSquared = t * t;
-            var tCubed = tSquared * t;
+            if (lineLength == 0)
+                return Vector2.Distance(point, lineStart);
 
-            return oneMinusTCubed * _startLocalPosition +
-                   3f * oneMinusTSquared * t * controlPoint1 +
-                   3f * oneMinusT * tSquared * controlPoint2 +
-                   tCubed * _endLocalPosition;
+            var t = Mathf.Clamp01(Vector2.Dot(pointVec, lineVec) / lineLength);
+            var projection = lineStart + t * lineVec;
+            return Vector2.Distance(point, projection);
         }
 
         void OnGenerateVisualContent(MeshGenerationContext mgc)
@@ -113,14 +105,14 @@ namespace Ugen.Graphs
             painter.BeginPath();
             painter.MoveTo(_startLocalPosition);
 
-            // ベジェ曲線のコントロールポイントを計算
-            var distance = Vector2.Distance(_startLocalPosition, _endLocalPosition);
-            var controlPointOffset = Mathf.Min(distance * 0.5f, 100f);
+            // Z字型のパス
+            const float offset = 10f;
+            var p2 = new Vector2(_startLocalPosition.x + offset, _startLocalPosition.y);
+            var p3 = new Vector2(_endLocalPosition.x - offset, _endLocalPosition.y);
 
-            var controlPoint1 = new Vector2(_startLocalPosition.x + controlPointOffset, _startLocalPosition.y);
-            var controlPoint2 = new Vector2(_endLocalPosition.x - controlPointOffset, _endLocalPosition.y);
-
-            painter.BezierCurveTo(controlPoint1, controlPoint2, _endLocalPosition);
+            painter.LineTo(p2);
+            painter.LineTo(p3);
+            painter.LineTo(_endLocalPosition);
             painter.Stroke();
         }
 
