@@ -17,6 +17,7 @@ namespace Ugen.Graphs
         readonly Dictionary<NodeId, NodeView> _nodeViews = new();
         readonly Dictionary<EdgeId, EdgeView> _edgeViews = new();
         readonly Dictionary<EdgeId, EdgeView> _previewEdgeViews = new();
+        readonly PanManipulator _panManipulator;
         ContextMenuView _nodeContextMenuView;
         ContextMenuView _graphContextMenuView;
         ContextMenuView _edgeContextMenuView;
@@ -26,6 +27,10 @@ namespace Ugen.Graphs
             _root = container.Q<VisualElement>("graph");
             _nodeLayer = _root.Q<VisualElement>("node-layer");
             _edgeLayer = _root.Q<VisualElement>("edge-layer");
+
+            // パン機能を追加
+            _panManipulator = new PanManipulator(_nodeLayer);
+            _root.AddManipulator(_panManipulator);
         }
 
         public IDisposable Bind(GraphViewModel graphViewModel)
@@ -173,6 +178,9 @@ namespace Ugen.Graphs
 
         public void Dispose()
         {
+            // PanManipulatorを削除
+            _root.RemoveManipulator(_panManipulator);
+
             // EdgeViewのDispose
             foreach (var edgeView in _edgeViews.Values)
             {
