@@ -6,14 +6,13 @@ namespace Ugen.Graphs.Ports
 {
     public class InputPortViewModel : PortViewModel
     {
-        public override PortDirection Direction => PortDirection.Input;
-        public override PortData PortData { get; }
+        public PortData PortData { get; }
 
         readonly EdgePreviewEndPoints _edgePreviewEndPoints;
         readonly SerialDisposable _previewEdgeDisposable = new();
         readonly IGraphController _graphController;
 
-        public InputPortViewModel(NodeId nodeId, int index, string name, IGraphController graphController) : base(nodeId, index, name)
+        public InputPortViewModel(NodeId nodeId, int index, string name, IGraphController graphController) : base(nodeId, name)
         {
             _graphController = graphController;
             PortData = new PortData(nodeId, index, PortDirection.Input);

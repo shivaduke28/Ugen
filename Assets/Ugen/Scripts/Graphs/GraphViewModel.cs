@@ -125,7 +125,7 @@ namespace Ugen.Graphs
             if (!outputNode.TryGetOutputPort(outputPortIndex, out var outputPort)) return false;
             if (!inputNode.TryGetInputPort(inputPortIndex, out var inputPort)) return false;
 
-            var edgeViewModel = new EdgeViewModel(outputPort, inputPort, this);
+            var edgeViewModel = new EdgeViewModel(outputPort, inputPort);
             AddEdge(edgeViewModel);
             return true;
         }

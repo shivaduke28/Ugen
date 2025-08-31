@@ -7,16 +7,12 @@ namespace Ugen.Graphs.Ports
     public abstract class PortViewModel
     {
         public NodeId NodeId { get; }
-        public int Index { get; }
-        public abstract PortDirection Direction { get; }
-        public abstract PortData PortData { get; }
         public string Name { get; }
         public ReactiveProperty<Vector2> ConnectorPanelPosition { get; } = new();
 
-        protected PortViewModel(NodeId nodeId, int index, string name)
+        protected PortViewModel(NodeId nodeId, string name)
         {
             NodeId = nodeId;
-            Index = index;
             Name = name;
         }
     }
