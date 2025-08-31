@@ -67,14 +67,13 @@ namespace Ugen.Graphs.Nodes
                 _outputPortContainer.style.display = DisplayStyle.None;
             }
 
-            nodeViewModel.Position.Subscribe(SetPosition).AddTo(disposable);
+            nodeViewModel.LocalPosition.Subscribe(SetLocalPosition).AddTo(disposable);
             return disposable;
         }
 
-        void SetPosition(Vector2 position)
+        void SetLocalPosition(Vector2 localPosition)
         {
-            _root.style.left = position.x;
-            _root.style.top = position.y;
+            Root.style.translate = new Translate(localPosition.x, localPosition.y, 0);
         }
 
         void OnPointerDown(PointerDownEvent evt)

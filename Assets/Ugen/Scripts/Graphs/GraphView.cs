@@ -78,8 +78,9 @@ namespace Ugen.Graphs
                     if (evt.target == _root || evt.target == _nodeLayer || evt.target == _edgeLayer)
                     {
                         evt.StopPropagation();
-                        var localPosition = _root.WorldToLocal(evt.position);
-                        graphViewModel.ShowGraphContextMenu(localPosition);
+                        var panelPosition = _root.WorldToLocal(evt.position);
+                        var graphPosition = _translation.WorldToLocal(evt.position);
+                        graphViewModel.ShowGraphContextMenu(panelPosition, graphPosition);
                     }
                 }
             });

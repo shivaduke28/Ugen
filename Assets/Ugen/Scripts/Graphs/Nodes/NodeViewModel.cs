@@ -9,7 +9,7 @@ namespace Ugen.Graphs.Nodes
     {
         public NodeId Id { get; }
         public string Name { get; }
-        public readonly ReactiveProperty<Vector2> Position = new();
+        public readonly ReactiveProperty<Vector2> LocalPosition = new();
         public InputPortViewModel[] InputPorts { get; }
         public OutputPortViewModel[] OutputPorts { get; }
 
@@ -50,14 +50,14 @@ namespace Ugen.Graphs.Nodes
         }
 
 
-        public void SetPosition(Vector2 position)
+        public void SetLocalPosition(Vector2 localPosition)
         {
-            Position.Value = position;
+            LocalPosition.Value = localPosition;
         }
 
         public void MoveDelta(Vector2 delta)
         {
-            Position.Value += delta;
+            LocalPosition.Value += delta;
         }
 
         public void ShowMenuContext(Vector2 pos)

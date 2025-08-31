@@ -15,9 +15,9 @@ namespace Ugen.Graphs.ContextMenu
             Items = items;
         }
 
-        public void Show(Vector2 position)
+        public void Show(Vector2 panelPosition)
         {
-            _state.Value = new ContextMenuState(true, position);
+            _state.Value = new ContextMenuState(true, panelPosition);
         }
 
         public void Hide()

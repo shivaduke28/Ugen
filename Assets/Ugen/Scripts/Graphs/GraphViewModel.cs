@@ -20,7 +20,7 @@ namespace Ugen.Graphs
         public IReadOnlyObservableDictionary<EdgeId, EdgeViewModel> Edges => _edges;
         public IReadOnlyObservableDictionary<EdgeId, IEdgeEndPoints> PreviewEdges => _previewEdges;
         public ContextMenuViewModel<NodeId> NodeContextMenu { get; }
-        public ContextMenuViewModel GraphContextMenu { get; }
+        public ContextMenuViewModel<Vector2> GraphContextMenu { get; }
         public ContextMenuViewModel<EdgeId> EdgeContextMenu { get; }
 
         public GraphViewModel()
@@ -30,7 +30,7 @@ namespace Ugen.Graphs
                 new ContextMenuItemViewModel(new ContextMenuItemState("Delete", true, RemoveContextNode)),
             });
 
-            GraphContextMenu = new ContextMenuViewModel(new[]
+            GraphContextMenu = new ContextMenuViewModel<Vector2>(new[]
             {
                 new ContextMenuItemViewModel(new ContextMenuItemState("Float", true, () => CreateNode(id => new FloatNode(id)))),
                 new ContextMenuItemViewModel(new ContextMenuItemState("Vector3", true, () => CreateNode(id => new Vector3Node(id)))),
@@ -59,14 +59,15 @@ namespace Ugen.Graphs
         void CreateNode(Func<NodeId, Node> factory)
         {
             var node = factory(NodeId.New());
-            AddNode(node, GraphContextMenu.State.CurrentValue.PanelPosition);
+            var nodeLocalPosition = GraphContextMenu.Value;
+            AddNode(node, nodeLocalPosition);
             GraphContextMenu.Hide();
         }
 
-        public NodeViewModel AddNode(Node node, Vector2 position)
+        public NodeViewModel AddNode(Node node, Vector2 nodeLocalPosition)
         {
             var vm = new NodeViewModel(node, this);
-            vm.SetPosition(position);
+            vm.SetLocalPosition(nodeLocalPosition);
             _nodes.Add(node.Id, vm);
             return vm;
         }
@@ -100,9 +101,9 @@ namespace Ugen.Graphs
             NodeContextMenu.Show(position, nodeId);
         }
 
-        public void ShowGraphContextMenu(Vector2 position)
+        public void ShowGraphContextMenu(Vector2 panelPosition, Vector2 nodeLocalPosition)
         {
-            GraphContextMenu.Show(position);
+            GraphContextMenu.Show(panelPosition, nodeLocalPosition);
         }
 
         public void ShowEdgeContextMenu(EdgeId edgeId, Vector2 panelPosition)
