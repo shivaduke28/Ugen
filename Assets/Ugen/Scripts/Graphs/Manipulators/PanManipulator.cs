@@ -1,3 +1,4 @@
+using R3;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -5,15 +6,9 @@ namespace Ugen.Graphs.Manipulators
 {
     public class PanManipulator : Manipulator
     {
-        Vector2 _startMousePosition;
-        Vector2 _startPanPosition;
         bool _isPanning;
-        readonly VisualElement _translation;
-
-        public PanManipulator(VisualElement translation)
-        {
-            _translation = translation;
-        }
+        readonly Subject<Vector2> _onPanDelta= new();
+        public Observable<Vector2> OnPanDelta() => _onPanDelta;
 
         protected override void RegisterCallbacksOnTarget()
         {
@@ -37,12 +32,6 @@ namespace Ugen.Graphs.Manipulators
             if (evt.button != 0) return;
 
             _isPanning = true;
-            _startMousePosition = evt.position;
-
-            // 現在のtranslate値を取得
-            var currentTranslate = _translation.style.translate.value;
-            _startPanPosition = new Vector2(currentTranslate.x.value, currentTranslate.y.value);
-
             target.CapturePointer(evt.pointerId);
             evt.StopPropagation();
         }
@@ -51,12 +40,7 @@ namespace Ugen.Graphs.Manipulators
         {
             if (!_isPanning) return;
 
-            var currentPosition = new Vector2(evt.position.x, evt.position.y);
-            var delta = currentPosition - _startMousePosition;
-            var newPosition = _startPanPosition + delta;
-
-            _translation.style.translate = new Translate(newPosition.x, newPosition.y);
-
+            _onPanDelta.OnNext(evt.deltaPosition);
             evt.StopPropagation();
         }
 

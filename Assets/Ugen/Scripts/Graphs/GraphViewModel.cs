@@ -15,10 +15,12 @@ namespace Ugen.Graphs
         readonly ObservableDictionary<NodeId, NodeViewModel> _nodes = new();
         readonly ObservableDictionary<EdgeId, EdgeViewModel> _edges = new();
         readonly ObservableDictionary<EdgeId, IEdgeEndPoints> _previewEdges = new();
+        readonly ReactiveProperty<GraphTransform> _transform = new(GraphTransform.Default);
 
         public IReadOnlyObservableDictionary<NodeId, NodeViewModel> Nodes => _nodes;
         public IReadOnlyObservableDictionary<EdgeId, EdgeViewModel> Edges => _edges;
         public IReadOnlyObservableDictionary<EdgeId, IEdgeEndPoints> PreviewEdges => _previewEdges;
+        public ReadOnlyReactiveProperty<GraphTransform> Transform => _transform;
         public ContextMenuViewModel<NodeId> NodeContextMenu { get; }
         public ContextMenuViewModel<Vector2> GraphContextMenu { get; }
         public ContextMenuViewModel<EdgeId> EdgeContextMenu { get; }
@@ -128,6 +130,11 @@ namespace Ugen.Graphs
             var edgeViewModel = new EdgeViewModel(outputPort, inputPort);
             AddEdge(edgeViewModel);
             return true;
+        }
+
+        public void TransformGraph(GraphTransform transform)
+        {
+            _transform.Value = transform;
         }
 
         public IDisposable CreatePreviewEdge(IEdgeEndPoints endPoints)

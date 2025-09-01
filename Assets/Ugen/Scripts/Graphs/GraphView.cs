@@ -5,6 +5,7 @@ using R3;
 using Ugen.Graphs.ContextMenu;
 using Ugen.Graphs.Manipulators;
 using Ugen.Graphs.Nodes;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Ugen.Graphs
@@ -33,11 +34,11 @@ namespace Ugen.Graphs
             _edgeLayer = _root.Q<VisualElement>("edge-layer");
 
             // パン機能を追加
-            _panManipulator = new PanManipulator(_translation);
+            _panManipulator = new PanManipulator();
             _root.AddManipulator(_panManipulator);
 
             // ズーム機能を追加
-            _zoomManipulator = new ZoomManipulator(_translation);
+            _zoomManipulator = new ZoomManipulator();
             _root.AddManipulator(_zoomManipulator);
         }
 
@@ -62,6 +63,26 @@ namespace Ugen.Graphs
             _edgeContextMenuView = new ContextMenuView(edgeContextMenuElement, graphViewModel.EdgeContextMenu);
             _root.Add(_edgeContextMenuView.Root);
             Disposable.Create(() => _edgeContextMenuView.Dispose()).AddTo(disposable);
+
+            _panManipulator.OnPanDelta().Subscribe(delta =>
+            {
+                var trans = graphViewModel.Transform.CurrentValue;
+                graphViewModel.TransformGraph(new GraphTransform(trans.Position + delta, trans.Zoom));
+            }).AddTo(disposable);
+
+            _zoomManipulator.OnZoomDelta().Subscribe(scaleFactor =>
+            {
+                var trans = graphViewModel.Transform.CurrentValue;
+                var newZoom = trans.Zoom * scaleFactor;
+                newZoom = Mathf.Clamp(newZoom, 0.1f, 3.0f);
+                graphViewModel.TransformGraph(new GraphTransform(trans.Position, newZoom));
+            }).AddTo(disposable);
+
+            graphViewModel.Transform.Subscribe(t =>
+            {
+                _translation.style.translate = new Translate(t.Position.x, t.Position.y, 0);
+                _translation.style.scale = new Scale(Vector3.one * t.Zoom);
+            }).AddTo(disposable);
 
             // 背景クリックでメニューを閉じる
             _root.RegisterCallback<PointerDownEvent>(evt =>
