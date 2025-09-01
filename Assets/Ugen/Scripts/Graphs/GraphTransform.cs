@@ -9,6 +9,7 @@ namespace Ugen.Graphs
 
         public readonly Vector2 Position;
         public readonly float Zoom;
+
         public GraphTransform(Vector2 position, float zoom)
         {
             Position = position;
@@ -38,6 +39,11 @@ namespace Ugen.Graphs
         public static bool operator !=(GraphTransform left, GraphTransform right)
         {
             return !left.Equals(right);
+        }
+
+        public override string ToString()
+        {
+            return $"Position: {Position}, Zoom: {Zoom}";
         }
     }
 }

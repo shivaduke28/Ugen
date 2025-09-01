@@ -70,12 +70,14 @@ namespace Ugen.Graphs
                 graphViewModel.TransformGraph(new GraphTransform(trans.Position + delta, trans.Zoom));
             }).AddTo(disposable);
 
-            _zoomManipulator.OnZoomDelta().Subscribe(scaleFactor =>
+            _zoomManipulator.OnZoomDelta().Subscribe(tuple =>
             {
+                var (panelPosition, zoomDelta) = tuple;
                 var trans = graphViewModel.Transform.CurrentValue;
-                var newZoom = trans.Zoom * scaleFactor;
+                var newZoom = trans.Zoom * zoomDelta;
                 newZoom = Mathf.Clamp(newZoom, 0.1f, 3.0f);
-                graphViewModel.TransformGraph(new GraphTransform(trans.Position, newZoom));
+                var newPosition = trans.Position - (panelPosition - trans.Position) * (newZoom / trans.Zoom - 1.0f);
+                graphViewModel.TransformGraph(new GraphTransform(newPosition, newZoom));
             }).AddTo(disposable);
 
             graphViewModel.Transform.Subscribe(t =>
@@ -144,10 +146,7 @@ namespace Ugen.Graphs
                 var edgeView = new EdgeView();
                 _edgeLayer.Add(edgeView);
                 edgeView.Bind(edgeViewModel);
-                edgeView.OnClickPanelPosition().Subscribe(panelPos =>
-                {
-                    graphViewModel.ShowEdgeContextMenu(edgeId, panelPos);
-                }).AddTo(disposable);
+                edgeView.OnClickPanelPosition().Subscribe(panelPos => { graphViewModel.ShowEdgeContextMenu(edgeId, panelPos); }).AddTo(disposable);
 
                 // EdgeViewを管理
                 _edgeViews[edgeId] = edgeView;

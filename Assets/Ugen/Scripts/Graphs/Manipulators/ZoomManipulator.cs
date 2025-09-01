@@ -6,10 +6,10 @@ namespace Ugen.Graphs.Manipulators
 {
     public class ZoomManipulator : Manipulator
     {
-        readonly Subject<float> _onZoomDelta = new();
+        readonly Subject<(Vector2 panelPosition, float zoomDelta)> _onZoomDelta = new();
         const float ZoomSpeed = 0.1f;
 
-        public Observable<float> OnZoomDelta() => _onZoomDelta;
+        public Observable<(Vector2 panelPosition, float zoomDelta)> OnZoomDelta() => _onZoomDelta;
 
         protected override void RegisterCallbacksOnTarget()
         {
@@ -26,9 +26,9 @@ namespace Ugen.Graphs.Manipulators
             var delta = evt.delta.y;
             if (Mathf.Abs(delta) < 0.01f) return;
 
-            var scaleFactor = 1.0f - delta * ZoomSpeed * 0.01f;
+            var scaleFactor = 1.0f - delta * ZoomSpeed * 0.05f;
 
-            _onZoomDelta.OnNext(scaleFactor);
+            _onZoomDelta.OnNext((evt.mousePosition, scaleFactor));
             evt.StopPropagation();
         }
     }
