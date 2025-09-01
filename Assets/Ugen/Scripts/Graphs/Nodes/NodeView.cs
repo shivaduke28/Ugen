@@ -19,7 +19,7 @@ namespace Ugen.Graphs.Nodes
         readonly SerialDisposable _disposable = new();
         readonly List<InputPortView> _inputPortViews = new();
         readonly List<OutputPortView> _outputPortViews = new();
-        readonly Subject<Vector2> _contextMenuRequested = new();
+        readonly Subject<Vector2> _contextMenuRequestedPanelPosition = new();
 
         public IDisposable Bind(NodeViewModel nodeViewModel)
         {
@@ -35,7 +35,7 @@ namespace Ugen.Graphs.Nodes
             // 右クリック検出の設定
             _root.RegisterCallback<PointerDownEvent>(OnPointerDown);
             Disposable.Create(() => _root.UnregisterCallback<PointerDownEvent>(OnPointerDown)).AddTo(disposable);
-            _contextMenuRequested.Subscribe(pos => nodeViewModel.ShowMenuContext(pos)).AddTo(disposable);
+            _contextMenuRequestedPanelPosition.Subscribe(nodeViewModel.ShowMenuContext).AddTo(disposable);
 
             foreach (var inputPort in nodeViewModel.InputPorts)
             {
@@ -80,7 +80,7 @@ namespace Ugen.Graphs.Nodes
         {
             if (evt.button == 1)
             {
-                _contextMenuRequested.OnNext(evt.position);
+                _contextMenuRequestedPanelPosition.OnNext(evt.position);
                 evt.StopPropagation();
             }
         }

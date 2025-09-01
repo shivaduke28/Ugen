@@ -60,9 +60,9 @@ namespace Ugen.Graphs.Nodes
             LocalPosition.Value += delta;
         }
 
-        public void ShowMenuContext(Vector2 pos)
+        public void ShowMenuContext(Vector2 panelPosition)
         {
-            _graphController.ShowNodeContextMenu(Id, pos);
+            _graphController.ShowNodeContextMenu(Id, panelPosition);
         }
     }
 }
