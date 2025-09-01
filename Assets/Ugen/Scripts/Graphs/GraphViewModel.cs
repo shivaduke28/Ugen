@@ -130,11 +130,6 @@ namespace Ugen.Graphs
             return true;
         }
 
-        public bool TryCreateEdge(NodeId outputNodeId, int outputPortIndex, NodeId inputNodeId, int inputPortIndex)
-        {
-            return CreateEdge(outputNodeId, outputPortIndex, inputNodeId, inputPortIndex);
-        }
-
         public IDisposable CreatePreviewEdge(IEdgeEndPoints endPoints)
         {
             var id = EdgeId.New();
