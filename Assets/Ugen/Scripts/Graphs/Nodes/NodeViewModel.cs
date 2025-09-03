@@ -24,8 +24,8 @@ namespace Ugen.Graphs.Nodes
         {
             Id = node.Id;
             Name = node.Name;
-            InputPorts = node.InputPorts.Select((x, i) => new InputPortViewModel(Id, i, x.Name, graphController)).ToArray();
-            OutputPorts = node.OutputPorts.Select((x, i) => new OutputPortViewModel(Id, i, x.Name, graphController)).ToArray();
+            InputPorts = node.InputPorts.Select((x, i) => new InputPortViewModel(Id, i, x, graphController)).ToArray();
+            OutputPorts = node.OutputPorts.Select((x, i) => new OutputPortViewModel(Id, i, x, graphController)).ToArray();
             _graphController = graphController;
         }
 

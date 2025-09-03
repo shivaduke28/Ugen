@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using ObservableCollections;
 using R3;
 using Ugen.Graphs.ContextMenu;
 using Ugen.Graphs.Edges;
 using Ugen.Graphs.Nodes;
-using Ugen.Graphs.Ports;
 using UnityEngine;
 
 namespace Ugen.Graphs
@@ -17,6 +15,7 @@ namespace Ugen.Graphs
         readonly ObservableDictionary<EdgeId, EdgeViewModel> _edges = new();
         readonly ObservableDictionary<EdgeId, IEdgeEndPoints> _previewEdges = new();
         readonly ReactiveProperty<GraphTransform> _transform = new(GraphTransform.Default);
+        readonly IEdgeFactory _edgeFactory;
 
         public IReadOnlyObservableDictionary<NodeId, NodeViewModel> Nodes => _nodes;
         public IReadOnlyObservableDictionary<EdgeId, EdgeViewModel> Edges => _edges;
@@ -26,8 +25,9 @@ namespace Ugen.Graphs
         public ContextMenuViewModel<Vector2> GraphContextMenu { get; }
         public ContextMenuViewModel<EdgeId> EdgeContextMenu { get; }
 
-        public GraphViewModel()
+        public GraphViewModel(IEdgeFactory edgeFactory)
         {
+            _edgeFactory = edgeFactory;
             NodeContextMenu = new ContextMenuViewModel<NodeId>(new[]
             {
                 new ContextMenuItemViewModel(new ContextMenuItemState("Delete", true, RemoveContextNode)),
@@ -134,7 +134,8 @@ namespace Ugen.Graphs
             if (!outputNode.TryGetOutputPort(outputPortIndex, out var outputPort)) return false;
             if (!inputNode.TryGetInputPort(inputPortIndex, out var inputPort)) return false;
 
-            var edgeViewModel = new EdgeViewModel(outputPort, inputPort);
+            var edge = _edgeFactory.Create(outputPort.Port, inputPort.Port);
+            var edgeViewModel = new EdgeViewModel(edge, outputPort, inputPort);
             AddEdge(edgeViewModel);
             return true;
         }

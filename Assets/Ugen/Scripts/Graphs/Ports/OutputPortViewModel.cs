@@ -6,6 +6,7 @@ namespace Ugen.Graphs.Ports
 {
     public class OutputPortViewModel : PortViewModel
     {
+        public Port Port { get; }
         public PortData PortData { get; }
 
         readonly EdgePreviewEndPoints _edgePreviewEndPoints;
@@ -15,10 +16,11 @@ namespace Ugen.Graphs.Ports
         readonly ReactiveProperty<Vector2> _outputPosition = new();
         readonly ReactiveProperty<Vector2> _inputPosition = new();
 
-        public OutputPortViewModel(NodeId nodeId, int index, string name, IGraphController graphController) : base(nodeId, name)
+        public OutputPortViewModel(NodeId nodeId, int index, Port port, IGraphController graphController) : base(nodeId, port.Name)
         {
-            _graphController = graphController;
+            Port = port;
             PortData = new PortData(nodeId, index, PortDirection.Output);
+            _graphController = graphController;
             _edgePreviewEndPoints = new EdgePreviewEndPoints(_outputPosition, _inputPosition);
         }
 

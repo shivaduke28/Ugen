@@ -1,4 +1,5 @@
 using R3;
+using Ugen.Graphs.Edges;
 using Ugen.Graphs.Nodes;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -18,7 +19,7 @@ namespace Ugen.Graphs
             VisualElementFactory.Initialize(_visualTreeAssetSettings);
 
             // ViewModelを作成
-            _graphViewModel = new GraphViewModel();
+            _graphViewModel = new GraphViewModel(new DefaultEdgeFactory());
 
             // Viewを作成
             _graphView = new GraphView(_document.rootVisualElement);
