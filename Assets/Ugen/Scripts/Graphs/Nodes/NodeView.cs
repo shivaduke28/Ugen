@@ -67,7 +67,7 @@ namespace Ugen.Graphs.Nodes
                 _outputPortContainer.style.display = DisplayStyle.None;
             }
 
-            nodeViewModel.LocalPosition.Subscribe(SetLocalPosition).AddTo(disposable);
+            nodeViewModel.Position.Subscribe(SetLocalPosition).AddTo(disposable);
             return disposable;
         }
 

@@ -103,8 +103,7 @@ namespace Ugen.Graphs
                     {
                         evt.StopPropagation();
                         var panelPosition = _root.WorldToLocal(evt.position);
-                        var graphPosition = _translation.WorldToLocal(evt.position);
-                        graphViewModel.ShowGraphContextMenu(panelPosition, graphPosition);
+                        graphViewModel.ShowGraphContextMenu(panelPosition);
                     }
                 }
             });

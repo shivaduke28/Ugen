@@ -11,22 +11,30 @@ namespace Ugen.Graphs.Ports
         readonly EdgePreviewEndPoints _edgePreviewEndPoints;
         readonly SerialDisposable _previewEdgeDisposable = new();
         readonly IGraphController _graphController;
+        readonly ReactiveProperty<Vector2> _outputPosition = new();
+        readonly ReactiveProperty<Vector2> _inputPosition = new();
+        public ReadOnlyReactiveProperty<Vector2> InputPosition => _inputPosition;
 
         public InputPortViewModel(NodeId nodeId, int index, string name, IGraphController graphController) : base(nodeId, name)
         {
             _graphController = graphController;
             PortData = new PortData(nodeId, index, PortDirection.Input);
-            _edgePreviewEndPoints = new EdgePreviewEndPoints(inputPosition: ConnectorPanelPosition);
+            _edgePreviewEndPoints = new EdgePreviewEndPoints(_outputPosition, _inputPosition);
         }
 
-        public void UpdatePreviewOtherEnd(Vector2 point)
+        public void UpdateOutputPosition(Vector2 panelPosition)
         {
-            _edgePreviewEndPoints.UpdateOutputPosition(point);
+            _outputPosition.Value = _graphController.ConvertPanelToGraph(panelPosition);
         }
 
-        public void StartPreviewEdge(Vector2 point)
+        public void UpdateInputPosition(Vector2 panelPosition)
         {
-            _edgePreviewEndPoints.UpdateOutputPosition(point);
+            _inputPosition.Value = _graphController.ConvertPanelToGraph(panelPosition);
+        }
+
+        public void StartPreviewEdge(Vector2 panelPosition)
+        {
+            UpdateOutputPosition(panelPosition);
             _previewEdgeDisposable.Disposable = _graphController
                 .CreatePreviewEdge(_edgePreviewEndPoints);
         }

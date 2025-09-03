@@ -11,8 +11,8 @@ namespace Ugen.Graphs.Edges
         readonly Subject<Vector2> _onClickPanelPosition = new();
         public Observable<Vector2> OnClickPanelPosition() => _onClickPanelPosition;
 
-        Vector2 _startPanelPosition;
-        Vector2 _endPanelPosition;
+        Vector2 _startPosition;
+        Vector2 _endPosition;
         const float Offset = 8f;
         const float Padding = 20f;
         bool _isHovered;
@@ -50,16 +50,16 @@ namespace Ugen.Graphs.Edges
         public void Bind(IEdgeEndPoints edgeViewModel)
         {
             // StartPositionとEndPositionの変更を購読して再描画
-            edgeViewModel.OutputPanelPosition.Subscribe(panelPosition =>
+            edgeViewModel.OutputPosition.Subscribe(position =>
             {
-                _startPanelPosition = panelPosition;
+                _startPosition = position;
                 UpdateBounds();
                 MarkDirtyRepaint();
             }).AddTo(_disposable);
 
-            edgeViewModel.InputPanelPosition.Subscribe(panelPosition =>
+            edgeViewModel.InputPosition.Subscribe(position =>
             {
-                _endPanelPosition = panelPosition;
+                _endPosition = position;
                 UpdateBounds();
                 MarkDirtyRepaint();
             }).AddTo(_disposable);
@@ -69,9 +69,8 @@ namespace Ugen.Graphs.Edges
         {
             if (parent == null) return;
 
-            // 親要素のローカル座標に変換
-            var startLocal = parent.WorldToLocal(_startPanelPosition);
-            var endLocal = parent.WorldToLocal(_endPanelPosition);
+            var startLocal = _startPosition;
+            var endLocal = _endPosition;
 
             // Z字型の4つの点を考慮した境界矩形を計算
             var p2 = new Vector2(startLocal.x + Offset, startLocal.y);
@@ -94,23 +93,17 @@ namespace Ugen.Graphs.Edges
         {
             const float threshold = 10f;
 
-            var startLocal = Vector2.zero;
-            var endLocal = Vector2.zero;
+            var parentStartLocal = _startPosition;
+            var parentEndLocal = _endPosition;
 
-            if (parent != null)
-            {
-                var parentStartLocal = parent.WorldToLocal(_startPanelPosition);
-                var parentEndLocal = parent.WorldToLocal(_endPanelPosition);
-
-                startLocal = new Vector2(
-                    parentStartLocal.x - style.left.value.value,
-                    parentStartLocal.y - style.top.value.value
-                );
-                endLocal = new Vector2(
-                    parentEndLocal.x - style.left.value.value,
-                    parentEndLocal.y - style.top.value.value
-                );
-            }
+            var startLocal = new Vector2(
+                parentStartLocal.x - style.left.value.value,
+                parentStartLocal.y - style.top.value.value
+            );
+            var endLocal = new Vector2(
+                parentEndLocal.x - style.left.value.value,
+                parentEndLocal.y - style.top.value.value
+            );
 
             var p2 = new Vector2(startLocal.x + Offset, startLocal.y);
             var p3 = new Vector2(endLocal.x - Offset, endLocal.y);
@@ -134,15 +127,14 @@ namespace Ugen.Graphs.Edges
 
         void OnGenerateVisualContent(MeshGenerationContext mgc)
         {
-            if (_startPanelPosition == _endPanelPosition)
+            if (_startPosition == _endPosition)
                 return;
 
             if (parent == null)
                 return;
 
-            // 親要素のローカル座標に変換
-            var parentStartLocal = parent.WorldToLocal(_startPanelPosition);
-            var parentEndLocal = parent.WorldToLocal(_endPanelPosition);
+            var parentStartLocal = _startPosition;
+            var parentEndLocal = _endPosition;
 
             // このEdgeViewのローカル座標系に変換
             var startLocal = new Vector2(

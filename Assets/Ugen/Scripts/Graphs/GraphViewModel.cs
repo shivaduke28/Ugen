@@ -62,15 +62,15 @@ namespace Ugen.Graphs
         void CreateNode(Func<NodeId, Node> factory)
         {
             var node = factory(NodeId.New());
-            var nodeLocalPosition = GraphContextMenu.Value;
-            AddNode(node, nodeLocalPosition);
+            var nodeGraphPosition = GraphContextMenu.Value;
+            AddNode(node, nodeGraphPosition);
             GraphContextMenu.Hide();
         }
 
-        public NodeViewModel AddNode(Node node, Vector2 nodeLocalPosition)
+        public NodeViewModel AddNode(Node node, Vector2 nodeGraphPosition)
         {
             var vm = new NodeViewModel(node, this);
-            vm.SetLocalPosition(nodeLocalPosition);
+            vm.SetPosition(nodeGraphPosition);
             _nodes.Add(node.Id, vm);
             return vm;
         }
@@ -104,9 +104,15 @@ namespace Ugen.Graphs
             NodeContextMenu.Show(position, nodeId);
         }
 
-        public void ShowGraphContextMenu(Vector2 panelPosition, Vector2 nodeLocalPosition)
+        public Vector2 ConvertPanelToGraph(Vector2 panelPosition)
         {
-            GraphContextMenu.Show(panelPosition, nodeLocalPosition);
+            var trans = _transform.Value;
+            return (panelPosition - trans.Position) * (1.0f / trans.Zoom);
+        }
+
+        public void ShowGraphContextMenu(Vector2 panelPosition)
+        {
+            GraphContextMenu.Show(panelPosition, ConvertPanelToGraph(panelPosition));
         }
 
         public void ShowEdgeContextMenu(EdgeId edgeId, Vector2 panelPosition)

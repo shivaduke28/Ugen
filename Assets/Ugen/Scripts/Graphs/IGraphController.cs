@@ -12,5 +12,6 @@ namespace Ugen.Graphs
         bool RemoveEdge(EdgeId edgeId);
         bool RemoveNode(NodeId nodeId);
         void ShowNodeContextMenu(NodeId nodeId, Vector2 position);
+        Vector2 ConvertPanelToGraph(Vector2 panelPosition);
     }
 }

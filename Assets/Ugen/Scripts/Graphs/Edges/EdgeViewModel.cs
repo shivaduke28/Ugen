@@ -9,8 +9,8 @@ namespace Ugen.Graphs.Edges
         public EdgeId Id { get; }
         public OutputPortViewModel OutputPort { get; }
         public InputPortViewModel InputPort { get; }
-        public ReadOnlyReactiveProperty<Vector2> OutputPanelPosition => OutputPort.ConnectorPanelPosition;
-        public ReadOnlyReactiveProperty<Vector2> InputPanelPosition => InputPort.ConnectorPanelPosition;
+        public ReadOnlyReactiveProperty<Vector2> OutputPosition => OutputPort.OutputPosition;
+        public ReadOnlyReactiveProperty<Vector2> InputPosition => InputPort.InputPosition;
 
         public EdgeViewModel(OutputPortViewModel outputPort, InputPortViewModel inputPort)
         {

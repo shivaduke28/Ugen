@@ -25,12 +25,12 @@ namespace Ugen.Graphs.Ports
             _nameLabel.text = port.Name;
             var disposable = new CompositeDisposable();
             _connector.OnCenterPanelPositionChanged()
-                .Subscribe(pos => port.ConnectorPanelPosition.Value = pos)
+                .Subscribe(port.UpdateOutputPosition)
                 .AddTo(disposable);
             var edgeDragger = new PortPickerManipulator();
             edgeDragger.OnStartPanelPosition().Subscribe(port.StartPreviewEdge).AddTo(disposable);
             edgeDragger.OnMovePanelPosition()
-                .Subscribe(port.UpdatePreviewOtherEnd)
+                .Subscribe(port.UpdateInputPosition)
                 .AddTo(disposable);
             edgeDragger.OnEnd().Subscribe(port.StopPreviewEdge).AddTo(disposable);
             _portPicker.PortData = port.PortData;

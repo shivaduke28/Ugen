@@ -9,7 +9,11 @@ namespace Ugen.Graphs.Nodes
     {
         public NodeId Id { get; }
         public string Name { get; }
-        public readonly ReactiveProperty<Vector2> LocalPosition = new();
+
+        /// <summary>
+        /// GraphPosition。グラフの移動や拡縮で変化しない。
+        /// </summary>
+        public readonly ReactiveProperty<Vector2> Position = new();
         public InputPortViewModel[] InputPorts { get; }
         public OutputPortViewModel[] OutputPorts { get; }
 
@@ -50,14 +54,14 @@ namespace Ugen.Graphs.Nodes
         }
 
 
-        public void SetLocalPosition(Vector2 localPosition)
+        public void SetPosition(Vector2 position)
         {
-            LocalPosition.Value = localPosition;
+            Position.Value = position;
         }
 
         public void MoveDelta(Vector2 delta)
         {
-            LocalPosition.Value += delta;
+            Position.Value += delta;
         }
 
         public void ShowMenuContext(Vector2 panelPosition)
