@@ -98,13 +98,9 @@ namespace Ugen.Graphs
                 }
                 else if (evt.button == 1) // 右クリック
                 {
-                    // 他のUI要素上でない場合のみグラフコンテキストメニューを表示
-                    if (evt.target == _root || evt.target == _nodeLayer || evt.target == _edgeLayer)
-                    {
-                        evt.StopPropagation();
-                        var panelPosition = _root.WorldToLocal(evt.position);
-                        graphViewModel.ShowGraphContextMenu(panelPosition);
-                    }
+                    evt.StopPropagation();
+                    var panelPosition = _root.WorldToLocal(evt.position);
+                    graphViewModel.ShowGraphContextMenu(panelPosition);
                 }
             });
 

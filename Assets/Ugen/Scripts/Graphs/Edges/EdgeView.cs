@@ -67,8 +67,6 @@ namespace Ugen.Graphs.Edges
 
         void UpdateBounds()
         {
-            if (parent == null) return;
-
             var startLocal = _startPosition;
             var endLocal = _endPosition;
 
