@@ -3,7 +3,7 @@ using R3;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Ugen.Graphs
+namespace Ugen.Graphs.Edges
 {
     public class EdgeView : VisualElement, IDisposable
     {

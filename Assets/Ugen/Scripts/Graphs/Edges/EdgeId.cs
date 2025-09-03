@@ -1,6 +1,6 @@
 using System;
 
-namespace Ugen.Graphs
+namespace Ugen.Graphs.Edges
 {
     public readonly struct EdgeId : IEquatable<EdgeId>
     {

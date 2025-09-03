@@ -4,6 +4,7 @@ using System.Linq;
 using ObservableCollections;
 using R3;
 using Ugen.Graphs.ContextMenu;
+using Ugen.Graphs.Edges;
 using Ugen.Graphs.Nodes;
 using Ugen.Graphs.Ports;
 using UnityEngine;
